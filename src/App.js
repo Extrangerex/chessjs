@@ -1,23 +1,22 @@
-import logo from "./logo.svg";
 import "./App.css";
 
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-import { types } from "./types";
+import firebase from "firebase";
+import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import { setAuthData } from "./redux/actions";
 
-const socket = io("/");
+function App({ authState }) {
+  const dispatch = useDispatch();
+  const auth = useSelector((state) => state.auth);
 
-function App() {
   const [lobby, setLobby] = useState([]);
   useEffect(() => {
-    socket.on(types.apiGetLobbyData, setLobby);
-
-    console.log(lobby);
-  }, [lobby]);
+    dispatch(setAuthData({ ...authState }));
+  }, [authState, dispatch]);
 
   const createGame = () => {
-    socket.emit(types.boardCreate, socket.id);
-    console.log('createGame');
+    console.log("createGame");
   };
 
   return (
@@ -30,11 +29,19 @@ function App() {
         <div className="navbar-menu">
           <div className="navbar-end">
             <button
-              className="navbar-item button is-primary"
+              className="navbar-item mx-2 button is-primary"
               onClick={createGame}
             >
               Crear Sala
             </button>
+            {!auth?.isAnonymously && (
+              <button
+                className="navbar-item mx-2 button is-info"
+                onClick={createGame}
+              >
+                Iniciar Sesión
+              </button>
+            )}
           </div>
         </div>
       </nav>
@@ -72,5 +79,9 @@ function App() {
     </div>
   );
 }
+
+App.propTypes = {
+  authStateChanged: PropTypes.object.isRequired,
+};
 
 export default App;
