@@ -26,7 +26,7 @@ ReactDOM.render(
       <FirebaseAuthProvider firebase={firebase}>
         <FirebaseAuthConsumer>
           {({ isSignedIn, user, providerId }) => {
-            return <App authStateChanged={{ isSignedIn, user, providerId }} />;
+            return <App authState={{ isSignedIn, user, providerId }} />;
           }}
         </FirebaseAuthConsumer>
       </FirebaseAuthProvider>

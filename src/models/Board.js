@@ -1,4 +1,4 @@
-import { GameConst } from "../conf/Constants";
+import { GameConst } from "../config/Constants";
 import { Tile } from "./Tile";
 
 export class Board {
@@ -56,15 +56,15 @@ export class Board {
     }
 
     this.tiles.push([
-      new Tile( GameConst.bunny, GameConst.white),
-      new Tile(GameConst.pawn,  GameConst.white),
-      new Tile(GameConst.pawn,  GameConst.white),
-      new Tile(GameConst.pawn,  GameConst.white),
-      new Tile(GameConst.bunny,  GameConst.white),
-      new Tile(GameConst.pawn,  GameConst.white),
-      new Tile(GameConst.pawn,  GameConst.white),
-      new Tile(GameConst.pawn,  GameConst.white),
-      new Tile(GameConst.bunny,  GameConst.white),
+      new Tile(GameConst.bunny, GameConst.white),
+      new Tile(GameConst.pawn, GameConst.white),
+      new Tile(GameConst.pawn, GameConst.white),
+      new Tile(GameConst.pawn, GameConst.white),
+      new Tile(GameConst.bunny, GameConst.white),
+      new Tile(GameConst.pawn, GameConst.white),
+      new Tile(GameConst.pawn, GameConst.white),
+      new Tile(GameConst.pawn, GameConst.white),
+      new Tile(GameConst.bunny, GameConst.white),
     ]);
 
     this.tiles.push([

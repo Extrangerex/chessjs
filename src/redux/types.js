@@ -5,5 +5,6 @@ export const types = {
   uiStartLoading: '[UI] Start loading',
   uiFinishLoading: '[UI] Finish loading',
   uiSetError: '[UI] set error',
-  uiClearError: '[UI] clear error'
+  uiClearError: '[UI] clear error',
+  updatedGameBoard: '[Game] updated board'
 };

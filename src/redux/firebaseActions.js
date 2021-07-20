@@ -16,6 +16,14 @@ export const signInWithEmailPassword =
     dispatch(finishLoading());
   };
 
+export const signInAnonymously = () => async (dispatch) => {
+  dispatch(startLoading());
+
+  await firebase.auth().signInAnonymously();
+
+  dispatch(finishLoading());
+};
+
 export const createUserEmailPassword =
   ({ email, password, displayName }) =>
   async (dispatch) => {

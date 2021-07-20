@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import firebase from "firebase";
+import { Redirect, useHistory } from "react-router-dom";
 
 export function Lobby() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+  const history = useHistory();
 
-  const [lobby, setLobby] = useState([]);
+  const [lobby, setLobby] = useState({});
   useEffect(() => {
     const lobbyRef = firebase.database().ref("lobby");
 
     lobbyRef.on("value", (snap) => {
+      console.log(snap.val());
       setLobby(snap.val());
     });
+
+    return () => {
+      lobbyRef.off("value");
+    };
   }, [dispatch]);
 
   const createGame = () => {};
@@ -44,27 +51,40 @@ export function Lobby() {
         </div>
       </nav>
 
-      <h5 className="subtitle is-5 block">
-        Juegos disponibles ({lobby.length})
-      </h5>
-
       <table className="table is-fullwidth">
         <thead>
           <tr>
             <th>Creador:</th>
-            <th>Creado en:</th>
             <th>Estado:</th>
+            <th>Acciones:</th>
           </tr>
         </thead>
         <tbody>
-          {lobby.length > 1 ? (
-            lobby.map((element) => (
-              <tr>
-                <td>{element.creator}</td>
-                <td>{element.createdAt}</td>
-                <td>{element.state}</td>
-              </tr>
-            ))
+          {Object.keys(lobby).length > 1 ? (
+            Object.keys(lobby)
+              .filter((key) => lobby[key]?.player1 !== auth?.user?.uid)
+              .map((key) => {
+                const element = lobby[key];
+
+                return (
+                  <tr key={key}>
+                    <td>{element.player1}</td>
+                    <td>{element.status}</td>
+                    <td>
+                      {element?.status !== "playing" && (
+                        <button
+                          className="button is-danger"
+                          onClick={() =>
+                            history.push(`/game/${key}`)
+                          }
+                        >
+                          Jugar
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
           ) : (
             <tr>
               <td colSpan="3" className="has-text-centered">

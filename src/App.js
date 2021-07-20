@@ -2,31 +2,32 @@ import "./App.css";
 
 import { useEffect, useState } from "react";
 import firebase from "firebase";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { setAuthData } from "./redux/actions";
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Lobby } from "./Lobby";
 import { Game } from "./Game";
+import { signInAnonymously } from "./redux/firebaseActions";
 
 function App({ authState }) {
   const dispatch = useDispatch();
-  
-  useEffect(() => {
-    dispatch(setAuthData({ ...authState }));
 
+  useEffect(() => {
+    dispatch(signInAnonymously());
+    dispatch(setAuthData({ ...authState }));
   }, [authState, dispatch]);
 
   return (
     <Router>
       <Route path="/lobby" component={Lobby} exact></Route>
-      <Route path="/game" component={Game} exact></Route>
+      <Route path="/game/:lobbyItemId?" component={Game} exact></Route>
     </Router>
   );
 }
 
 App.propTypes = {
-  authStateChanged: PropTypes.object.isRequired,
+  authState: PropTypes.object.isRequired,
 };
 
 export default App;

@@ -20,4 +20,10 @@ export const GameConst = {
   tileSize: 50,
   boardWidth: 9,
   boardHeight: 10,
+  colors: {
+    whiteTileColor: "rgb(222, 224, 223)",
+    blackTileColor: "rgb(105,107,106)",
+    middleTileColor: "rgb(150, 150, 150)",
+    highLightTileColor: "rgb(139, 102, 53)",
+  },
 };

@@ -1,3 +1,4 @@
+import { GameConst } from "../config/Constants";
 import { Board } from "../models/Board";
 import { types } from "./types";
 
@@ -20,15 +21,9 @@ export const authReducer = (state = initialAuthReducerState, action) => {
 };
 
 const initialGameReducerState = {
-  gameData: null,
+  lobbyRef: null,
   side: "black" || "whites",
   timeStamp: null,
-  colors: {
-    whiteTileColor: "rgb(222, 224, 223)",
-    blackTileColor: "rgb(105,107,106)",
-    middleTileColor: "rgb(150, 150, 150)",
-    highLightTileColor: "rgb(139, 102, 53)",
-  },
   piecesCharacters: {
     0: "♙",
     1: "♘",
@@ -53,18 +48,10 @@ const initialGameReducerState = {
   njblancas: null,
   njnegras: null,
   tmpjuego: null,
-  contadorleonnegro: null,
-  contadorleonblanco: null,
-  contadorreyblanco: null,
-  contadorreynegro: null,
-  contadortorre1blanco: null,
-  contadortorre1negro: null,
-  contadortorre2blanco: null,
-  contadortorre2negro: null,
   casillasenpeligro: [],
   jaquereyblanco: null,
   jaquereynegro: null,
-  posicionreynegro: '4,0',
+  posicionreynegro: "4,0",
   posicionreyblanco: "4,9",
   comeralpaso: null,
   ultimapiezacapturadanegra: null,
@@ -72,17 +59,27 @@ const initialGameReducerState = {
   ultimotipodemovimiento: null,
   ultimomovimiento: null,
   tablero: [],
-
-
 };
 
-export const gameReducer = (state = {}, action) => {
+export const gameReducer = (state = initialGameReducerState, action) => {
   switch (action.type) {
+    case types.addGame:
+      return {
+        ...state,
+        lobbyRef: action.lobbyItemRef,
+      };
     case types.initGame:
       return {
         ...state,
-        gameData: new Board()
-      }
+        curX: action.curX,
+        curY: action.curY,
+        njblancas: action.njblancas,
+        njnegras: action.njnegras,
+        tmpjuego: action.tmpjuego,
+        side: action.side,
+        whiteCasualities: action.whiteCasualities,
+        blackCasualities: action.blackCasualities,
+      };
     default:
       return state;
   }
