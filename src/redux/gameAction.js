@@ -3,6 +3,7 @@ import firebase from "firebase";
 import { Board } from "../models/Board";
 import { finishLoading, startLoading } from "./actions";
 import { GameConst } from "../config/Constants";
+import { ReactSwal } from "../utils/SwalUtils";
 
 export const newGame = (uid) => async (dispatch) => {
   if (uid === undefined) return;
@@ -50,6 +51,24 @@ export const joinGame = (lobbyItemId, uid) => async (dispatch) => {
     .get();
 
   if (lobbyItemRefSnap.exists()) {
+    const game = lobbyItemRefSnap?.toJSON();
+
+    if (game?.player1 != null && game?.player2 != null) {
+      if (game?.player1 !== uid && game?.player2 !== uid) {
+        ReactSwal.fire(
+          {
+            title: "Opps..",
+            text:  "Esta sala ya esta llena",
+            icon:  "warning",
+            preConfirm: () => {
+              window.location = '/';
+            }
+          }
+        );
+        return;
+      }
+    }
+
     if (uid === lobbyItemRefSnap?.toJSON().player1) {
       dispatch(newGameAction(`lobby/${lobbyItemId}`));
     } else {
@@ -116,7 +135,7 @@ export const updateGame = (lobbyItemId, data) => async (dispatch) => {
 };
 
 export const sendChatMsgAction = () => ({
-  type: types.sendChatMsgGame
+  type: types.sendChatMsgGame,
 });
 
 export const newGameAction = (lobbyItemRef) => ({

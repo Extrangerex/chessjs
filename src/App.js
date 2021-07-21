@@ -5,7 +5,7 @@ import firebase from "firebase";
 import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { setAuthData } from "./redux/actions";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import { Lobby } from "./Lobby";
 import { Game } from "./Game";
 import { signInAnonymously } from "./redux/firebaseActions";
@@ -20,7 +20,7 @@ function App({ authState }) {
 
   return (
     <Router>
-      <Route path="/lobby" component={Lobby} exact></Route>
+      <Route path="/" component={Lobby} exact></Route>
       <Route path="/game/:lobbyItemId?" component={Game} exact></Route>
     </Router>
   );

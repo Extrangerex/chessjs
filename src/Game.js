@@ -59,7 +59,7 @@ export function Game() {
                 <button
                   class="navbar-item button is-primary"
                   onClick={() => {
-                    history.push("/lobby");
+                    history.push("/");
                   }}
                 >
                   Ir al lobby
@@ -100,14 +100,6 @@ export function Game() {
                         const element = chat[key];
                         const msgClass =
                           element.uid !== auth?.user?.uid ? true : false;
-
-                        console.log(
-                          `${element.uid} === ${
-                            firebase.auth().currentUser?.uid
-                          }`
-                        );
-
-                        console.log(element);
 
                         return (
                           <p

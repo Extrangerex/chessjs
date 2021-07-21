@@ -2275,7 +2275,7 @@ function drawPieces() {
         } else {
           var img2 = new Image();
           img2.src = ardilla;
-          img2.src = () => {
+          img2.onload = () => {
             chessCtx.drawImage(
               img2,
               TILE_SIZE * (j + 1 / 4),
