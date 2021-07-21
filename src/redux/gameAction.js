@@ -28,7 +28,7 @@ export const newGame = (uid) => async (dispatch) => {
     jaquereynegro: "No",
     jaquereyblanco: "No",
     createdAt: Date.now(),
-    side: GameConst.white,
+    side: uid,
     whiteCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     blackCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     player1: uid,
@@ -50,12 +50,36 @@ export const joinGame = (lobbyItemId, uid) => async (dispatch) => {
     .get();
 
   if (lobbyItemRefSnap.exists()) {
+    if (uid === lobbyItemRefSnap?.toJSON().player1) {
+      dispatch(newGameAction(`lobby/${lobbyItemId}`));
+    } else {
+      await firebase
+        .database()
+        .ref(`lobby/${lobbyItemId}`)
+        .update({ player2: uid, status: "playing" });
+    }
+
+    dispatch(newGameAction(`lobby/${lobbyItemId}`));
+  }
+
+  dispatch(finishLoading());
+};
+
+export const sendChatMsg = (lobbyItemId, uid, msg) => async (dispatch) => {
+  if (uid === undefined) return;
+  dispatch(startLoading());
+
+  const lobbyItemRefSnap = await firebase
+    .database()
+    .ref(`lobby/${lobbyItemId}`)
+    .get();
+
+  if (lobbyItemRefSnap.exists()) {
     await firebase
       .database()
-      .ref(`lobby/${lobbyItemId}`)
-      .update({ player2: uid, status: "playing" });
-
-    dispatch(newGameAction(lobbyItemRefSnap.ref));
+      .ref(`lobby/${lobbyItemId}/chat`)
+      .push(uid)
+      .set(msg);
   }
 
   dispatch(finishLoading());
@@ -75,6 +99,7 @@ export const updateBoard = (lobbyItemId, newBoard) => async (dispatch) => {
       .ref(`lobby/${lobbyItemId}`)
       .update({ board: newBoard });
   }
+  dispatch(finishLoading());
 };
 
 export const updateGame = (lobbyItemId, data) => async (dispatch) => {
@@ -89,6 +114,10 @@ export const updateGame = (lobbyItemId, data) => async (dispatch) => {
     await firebase.database().ref(`lobby/${lobbyItemId}`).update(data);
   }
 };
+
+export const sendChatMsgAction = () => ({
+  type: types.sendChatMsgGame
+});
 
 export const newGameAction = (lobbyItemRef) => ({
   type: types.addGame,

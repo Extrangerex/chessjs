@@ -1,33 +1,68 @@
+import { GameConst } from "../config/Constants";
 import { Board } from "../models/Board";
+import { EventEmitter } from "fbemitter";
+import firebase from "firebase";
 
-const BOARD_WIDTH = 9;
-const BOARD_HEIGHT = 10;
+/**
+ * imgs
+ */
+import alfil from "../assets/svg/alfil.svg";
+import alfilbco from "../assets/svg/alfilbco.svg";
+import ardilla from "../assets/svg/ardilla.svg";
+import ardillabco from "../assets/svg/ardillabco.svg";
+import caballo from "../assets/svg/caballo.svg";
+import caballobco from "../assets/svg/caballobco.svg";
+import conejo from "../assets/svg/conejo.svg";
+import conejobco from "../assets/svg/conejobco.svg";
+import elefante from "../assets/svg/elefante.svg";
+import elefantebco from "../assets/svg/elefantebco.svg";
+import leon from "../assets/svg/leon.svg";
+import leonbco from "../assets/svg/leonbco.svg";
+import pantera from "../assets/svg/pantera.svg";
+import panterabco from "../assets/svg/panterabco.svg";
+import peon from "../assets/svg/peon.svg";
+import peonbco from "../assets/svg/peonbco.svg";
+import perro from "../assets/svg/perro.svg";
+import perrobco from "../assets/svg/perrobco.svg";
+import reina from "../assets/svg/reina.svg";
+import reinabco from "../assets/svg/reinabco.svg";
+import rey from "../assets/svg/rey.svg";
+import reybco from "../assets/svg/reybco.svg";
+import torre from "../assets/svg/torre.svg";
+import torrebco from "../assets/svg/torrebco.svg";
+import { ReactSwal } from "../utils/SwalUtils";
+import Swal from "sweetalert2";
 
-const TILE_SIZE = 50;
-const WHITE_TILE_COLOR = "rgb(222, 224, 223)";
-const BLACK_TILE_COLOR = "rgb(105,107,106)";
-const MIDDEL_TILE_COLOR = "rgb(150, 150, 150)";
-const HIGHLIGHT_COLOR = "rgb(139, 102, 53)";
-const WHITE = 0;
-const BLACK = 1;
+export const event = new EventEmitter();
 
-const EMPTY = -1;
-const PAWN = 0;
-const KNIGHT = 1;
-const BISHOP = 2;
-const ROOK = 3;
-const QUEEN = 4;
-const KING = 5;
-const ARDILLA = 6;
-const CONEJO = 7;
-const PERRO = 8;
-const PANTERA = 9;
-const ELEFANTE = 10;
-const LEON = 11;
+const BOARD_WIDTH = GameConst.boardWidth;
+const BOARD_HEIGHT = GameConst.boardHeight;
 
-const INVALID = 0;
-const VALID = 1;
-const VALID_CAPTURE = 2;
+const TILE_SIZE = GameConst.tileSize;
+const WHITE_TILE_COLOR = GameConst.colors.whiteTileColor;
+const BLACK_TILE_COLOR = GameConst.colors.blackTileColor;
+const MIDDEL_TILE_COLOR = GameConst.colors.middleTileColor;
+const HIGHLIGHT_COLOR = GameConst.colors.highLightTileColor;
+const WHITE = GameConst.white;
+const BLACK = GameConst.black;
+
+const EMPTY = GameConst.empty;
+const PAWN = GameConst.pawn;
+const KNIGHT = GameConst.knight;
+const BISHOP = GameConst.bishop;
+const ROOK = GameConst.rook;
+const QUEEN = GameConst.queen;
+const KING = GameConst.king;
+const ARDILLA = GameConst.squirrel;
+const CONEJO = GameConst.bunny;
+const PERRO = GameConst.dog;
+const PANTERA = GameConst.panter;
+const ELEFANTE = GameConst.elephant;
+const LEON = GameConst.lyon;
+
+const INVALID = GameConst.invalid;
+const VALID = GameConst.valid;
+const VALID_CAPTURE = GameConst.validCapture;
 
 const piecesCharacters = {
   0: "♙",
@@ -79,7 +114,7 @@ let contadortorre1negro;
 let contadortorre2blanco;
 let contadortorre2negro;
 
-let casillasenpeligro = new Array();
+let casillasenpeligro = [];
 
 let jaquereyblanco;
 let jaquereynegro;
@@ -97,13 +132,15 @@ let ultimomovimiento;
 
 let tablero = [];
 
+let lobbyItemKey;
+
+let serverGameData = {};
+
 function countUp() {
   tmpjuego++;
 }
 
-document.addEventListener("DOMContentLoaded", onLoad);
-
-function onLoad() {
+export function onLoad(_lobbyItemKey) {
   chessCanvas = document.getElementById("chessCanvas");
   chessCtx = chessCanvas.getContext("2d");
   chessCanvas.addEventListener("click", onClick);
@@ -113,11 +150,42 @@ function onLoad() {
   whiteVictories = 0;
   blackVictories = 0;
 
-  startGame();
+  lobbyItemKey = _lobbyItemKey;
+
+  startGame(lobbyItemKey);
 }
 
-function startGame() {
-  board = new Board();
+function getGameDbRef() {
+  return firebase.database().ref(lobbyItemKey);
+}
+
+async function startGame() {
+  const lobbyDbRef = getGameDbRef(lobbyItemKey);
+  lobbyDbRef.on("value", async (snapshot) => {
+    if (!snapshot.exists()) {
+      return;
+    }
+
+    serverGameData = snapshot.val();
+
+    if (serverGameData?.player2 == null) {
+      Swal.fire({
+        title: "Opps..",
+        text: "Debes esperar que se una un jugador para empezar a jugar",
+      });
+    }
+
+    currentTeam =
+      serverGameData?.side === serverGameData?.player1 ? WHITE : BLACK;
+
+    board = new Board(snapshot?.toJSON()?.board);
+
+    repaintBoard();
+    // updateWhiteCasualities();
+    // updateBlackCasualities();
+    // updateTotalVictories();
+  });
+
   curX = -1;
   curY = -1;
   njblancas = 0;
@@ -133,23 +201,27 @@ function startGame() {
   contadortorre2blanco = 0;
   contadortorre2negro = 0;
 
-  var counterInterval = setInterval(function () {
-    countUp();
-  }, 60000);
-
-  currentTeam = WHITE;
-  currentTeamText.textContent = "Turno de las fichas blancas";
-
   whiteCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   blackCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-  repaintBoard();
-  updateWhiteCasualities();
-  updateBlackCasualities();
-  updateTotalVictories();
 }
 
-function onClick(event) {
+async function onClick(event) {
+  if (serverGameData?.player2 == null) {
+    Swal.fire({
+      title: "Opps..",
+      text: "Debes esperar que se una un jugador para empezar a jugar",
+    });
+    return;
+  }
+
+  if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
+    Swal.fire({
+      title: "Opps..",
+      text: "Todavía no es tu turno",
+    });
+    return;
+  }
+
   let chessCanvasX = chessCanvas.getBoundingClientRect().left;
   let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
@@ -276,9 +348,9 @@ function onClick(event) {
       }
       //solo si no hay jaque cambiamos el turno
       if (cambio_de_turno === "Si") {
-        changeCurrentTeam();
+        await changeCurrentTeam();
       }
-      repaintBoard();
+      await repaintBoard();
     }
   } else {
     //si da click en celda vacia reset curx cury
@@ -587,7 +659,17 @@ function checkPossiblePlaysPerro(curX, curY) {
 
   // Check diagonal right capture
   if (
-    curX + 1 <= BOARD_WIDTH -
+    curX + 1 <= BOARD_WIDTH - 1 &&
+    board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE
+  ) {
+    checkPossibleCapture(curX + 1, curY + direction);
+  }
+  if (
+    curX + 2 <= BOARD_WIDTH - 1 &&
+    board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
+    board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
+  ) {
+    checkPossibleCapture(curX + 2, curY + 2 * direction);
   }
 }
 
@@ -743,7 +825,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curX + 2 <= BOARD_WIDTH - 1 && curY - 2 >= 0) {
         if (
           board.tiles[curY - 1][curX + 1].pieceType !== -1 &&
-          board.tiles[curY - 2][curX + 2].pieceType ==== -1
+          board.tiles[curY - 2][curX + 2].pieceType === -1
         ) {
           break;
         } else {
@@ -763,7 +845,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curX + 2 <= BOARD_WIDTH - 1 && curY + 2 <= BOARD_HEIGHT - 1) {
         if (
           board.tiles[curY + 1][curX + 1].pieceType !== -1 &&
-          board.tiles[curY + 2][curX + 2].pieceType ==== -1
+          board.tiles[curY + 2][curX + 2].pieceType === -1
         ) {
           break;
         } else {
@@ -779,7 +861,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curX + 2 <= BOARD_WIDTH - 1) {
         if (
           board.tiles[curY][curX + 1].pieceType !== -1 &&
-          board.tiles[curY][curX + 2].pieceType ==== -1
+          board.tiles[curY][curX + 2].pieceType === -1
         ) {
           break;
         } else {
@@ -799,7 +881,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curX - 2 >= 0 && curY + 2 <= BOARD_HEIGHT - 1) {
         if (
           board.tiles[curY + 1][curX - 1].pieceType !== -1 &&
-          board.tiles[curY + 2][curX - 2].pieceType ==== -1
+          board.tiles[curY + 2][curX - 2].pieceType === -1
         ) {
           break;
         } else {
@@ -815,7 +897,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curX - 2 >= 0 && curY - 2 >= 0) {
         if (
           board.tiles[curY - 1][curX - 1].pieceType !== -1 &&
-          board.tiles[curY - 2][curX - 2].pieceType ==== -1
+          board.tiles[curY - 2][curX - 2].pieceType === -1
         ) {
           break;
         } else {
@@ -831,7 +913,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curX - 2 >= 0) {
         if (
           board.tiles[curY][curX - 1].pieceType !== -1 &&
-          board.tiles[curY][curX - 2].pieceType ==== -1
+          board.tiles[curY][curX - 2].pieceType === -1
         ) {
           break;
         } else {
@@ -847,7 +929,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curY - 2 >= 0) {
         if (
           board.tiles[curY - 1][curX].pieceType !== -1 &&
-          board.tiles[curY - 2][curX].pieceType ==== -1
+          board.tiles[curY - 2][curX].pieceType === -1
         ) {
           break;
         } else {
@@ -863,7 +945,7 @@ function checkPossiblePlaysElefante(curX, curY) {
       if (curY + 2 <= BOARD_HEIGHT - 1) {
         if (
           board.tiles[curY + 1][curX].pieceType !== -1 &&
-          board.tiles[curY + 2][curX].pieceType ==== -1
+          board.tiles[curY + 2][curX].pieceType === -1
         ) {
           break;
         } else {
@@ -942,15 +1024,15 @@ function checkPossiblePlaysKing(curX, curY) {
   }
 
   //posible enroque de las blancas
-  if (currentTeam ==== 0) {
-    if (contadorreyblanco ==== 0 && jaquereyblanco ==== "No") {
+  if (currentTeam === 0) {
+    if (contadorreyblanco === 0 && jaquereyblanco === "No") {
       //torre2
-      if (contadortorre2blanco ==== 0) {
+      if (contadortorre2blanco === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX + 1, curY) ==== false &&
-          checkTileUnderAttack(curX + 2, curY) ==== false &&
-          checkTileUnderAttack(curX + 3, curY) ==== false
+          checkTileUnderAttack(curX + 1, curY) === false &&
+          checkTileUnderAttack(curX + 2, curY) === false &&
+          checkTileUnderAttack(curX + 3, curY) === false
         ) {
           //marcamos las casillas para que se pueda enrocar
           checkPossiblePlay(curX + 2, curY);
@@ -961,9 +1043,9 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre1blanco === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX - 1, curY) ==== false &&
-          checkTileUnderAttack(curX - 2, curY) ==== false &&
-          checkTileUnderAttack(curX - 3, curY) ==== false
+          checkTileUnderAttack(curX - 1, curY) === false &&
+          checkTileUnderAttack(curX - 2, curY) === false &&
+          checkTileUnderAttack(curX - 3, curY) === false
         ) {
           //marcamos las casillas para que se pueda enrocar
           checkPossiblePlay(curX - 2, curY);
@@ -973,15 +1055,15 @@ function checkPossiblePlaysKing(curX, curY) {
     }
   }
   //posible enroque de las negras
-  if (currentTeam ==== 1) {
-    if (contadorreynegro ==== 0 && jaquereynegro ==== "No") {
+  if (currentTeam === 1) {
+    if (contadorreynegro === 0 && jaquereynegro === "No") {
       //torre2
-      if (contadortorre2negro ==== 0) {
+      if (contadortorre2negro === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX + 1, curY) ==== false &&
-          checkTileUnderAttack(curX + 2, curY) ==== false &&
-          checkTileUnderAttack(curX + 3, curY) ==== false
+          checkTileUnderAttack(curX + 1, curY) === false &&
+          checkTileUnderAttack(curX + 2, curY) === false &&
+          checkTileUnderAttack(curX + 3, curY) === false
         ) {
           //marcamos las casillas para que se pueda enrocar
           checkPossiblePlay(curX + 2, curY);
@@ -992,9 +1074,9 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre1negro === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX - 1, curY) ==== false &&
-          checkTileUnderAttack(curX - 2, curY) ==== false &&
-          checkTileUnderAttack(curX - 3, curY) ==== false
+          checkTileUnderAttack(curX - 1, curY) === false &&
+          checkTileUnderAttack(curX - 2, curY) === false &&
+          checkTileUnderAttack(curX - 3, curY) === false
         ) {
           //marcamos las casillas para que se pueda enrocar
           checkPossiblePlay(curX - 2, curY);
@@ -1017,6 +1099,7 @@ function checkPossibleMove(x, y) {
   if (board.tiles[y][x].team !== EMPTY) return false;
 
   board.validMoves[y][x] = VALID;
+
   drawCircle(x, y, HIGHLIGHT_COLOR);
   return true;
 }
@@ -1025,21 +1108,22 @@ function checkPossibleCapture(x, y) {
   if (board.tiles[y][x].team !== getOppositeTeam(currentTeam)) return false;
 
   board.validMoves[y][x] = VALID_CAPTURE;
+
   drawCorners(x, y, HIGHLIGHT_COLOR);
   return true;
 }
 
 function checkValidMovement(x, y) {
   if (
-    board.validMoves[y][x] ==== VALID ||
-    board.validMoves[y][x] ==== VALID_CAPTURE
+    board.validMoves[y][x] === VALID ||
+    board.validMoves[y][x] === VALID_CAPTURE
   )
     return true;
   else return false;
 }
 
 function checkValidCapture(x, y) {
-  if (board.validMoves[y][x] ==== VALID_CAPTURE) return true;
+  if (board.validMoves[y][x] === VALID_CAPTURE) return true;
   else return false;
 }
 
@@ -1334,7 +1418,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
 
     if (piece === CONEJO && oldY - 2 === y) {
-      var lugar_saltado = oldY - 1;
+      lugar_saltado = oldY - 1;
       //console.log(board.tiles[lugar_saltado][oldX].pieceType+'/'+board.tiles[lugar_saltado][oldX].team);
 
       //vemos si habia pieza en el lugar saltado y de que equipo es
@@ -1576,7 +1660,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
 
     //revisamos si movio ardilla y 2 lugares hacia el frente
     if (piece === ARDILLA && oldY + 2 === y) {
-      var lugar_saltado = oldY + 1;
+      lugar_saltado = oldY + 1;
 
       //vemos si habia pieza en el lugar saltado y de que equipo es
       if (board.tiles[lugar_saltado][oldX].pieceType !== -1) {
@@ -1607,8 +1691,8 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
     //revisamos si movio ardilla y 3 lugares hacia el frente
     if (piece === ARDILLA && oldY + 3 === y) {
-      var lugar_saltado1 = oldY + 1;
-      var lugar_saltado2 = oldY + 2;
+      lugar_saltado1 = oldY + 1;
+      lugar_saltado2 = oldY + 2;
 
       //vemos si habia pieza en el lugar saltado 1 y de que equipo es
       if (
@@ -1767,7 +1851,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
 
     if (piece === CONEJO && oldY + 2 === y) {
-      var lugar_saltado = oldY + 1;
+      lugar_saltado = oldY + 1;
 
       //vemos si habia pieza en el lugar saltado y de que equipo es
       if (board.tiles[lugar_saltado][oldX].pieceType !== -1) {
@@ -1929,9 +2013,9 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
 
   //revisamos si al mover hace jaque
   if (currentTeam === 0 && jaquereyblanco === "Si") {
-    combo_posicionreyblanco = posicionreyblanco.split(",");
-    checkX = combo_posicionreyblanco[0];
-    checkY = combo_posicionreyblanco[1];
+    const combo_posicionreyblanco = posicionreyblanco.split(",");
+    const checkX = combo_posicionreyblanco[0];
+    const checkY = combo_posicionreyblanco[1];
 
     if (checkKingWhiteMovepossible(checkX, checkY) === true) {
       //alert('Movimiento inválido');
@@ -1943,8 +2027,9 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
 
       //si capturo ficha la devolvemos
       if (ultimotipodemovimiento === "Captura") {
-        combo_ultimapiezacapturadanegra = ultimapiezacapturadanegra.split("/");
-        combo_xy = combo_ultimapiezacapturadanegra[1].split(",");
+        const combo_ultimapiezacapturadanegra =
+          ultimapiezacapturadanegra.split("/");
+        const combo_xy = combo_ultimapiezacapturadanegra[1].split(",");
         board.tiles[combo_xy[1]][combo_xy[0]].pieceType =
           combo_ultimapiezacapturadanegra[0];
         board.tiles[combo_xy[1]][combo_xy[0]].team = 1;
@@ -1955,9 +2040,9 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
   }
 
   if (currentTeam === 1 && jaquereynegro === "Si") {
-    combo_posicionreynegro = posicionreynegro.split(",");
-    checkX = combo_posicionreynegro[0];
-    checkY = combo_posicionreynegro[1];
+    const combo_posicionreynegro = posicionreynegro.split(",");
+    const checkX = combo_posicionreynegro[0];
+    const checkY = combo_posicionreynegro[1];
 
     if (checkKingBlackMovepossible(checkX, checkY) === true) {
       //alert('Movimiento inválido');
@@ -1969,9 +2054,9 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
 
       //si capturo ficha la devolvemos
       if (ultimotipodemovimiento === "Captura") {
-        combo_ultimapiezacapturadablanca =
+        const combo_ultimapiezacapturadablanca =
           ultimapiezacapturadablanca.split("/");
-        combo_xy = combo_ultimapiezacapturadablanca[1].split(",");
+        const combo_xy = combo_ultimapiezacapturadablanca[1].split(",");
         board.tiles[combo_xy[1]][combo_xy[0]].pieceType =
           combo_ultimapiezacapturadablanca[0];
         board.tiles[combo_xy[1]][combo_xy[0]].team = 0;
@@ -2015,23 +2100,32 @@ function ganoleon() {
   }
 }
 
-function changeCurrentTeam() {
-  if (currentTeam ==== WHITE) {
-    currentTeamText.textContent = "Turno de las fichas negras";
-    njblancas = njblancas + 1;
-    jugadasBlancasText.textContent = "Jugadas Blancas:" + njblancas;
+async function changeCurrentTeam() {
+  if (serverGameData == null) return;
 
-    currentTeam = BLACK;
+  if (currentTeam === WHITE) {
+    await getGameDbRef()
+      .update({
+        side: serverGameData?.player2,
+        board,
+      })
+      .catch(console.error);
   } else {
-    currentTeamText.textContent = "Turno de las fichas blancas";
-    njnegras = njnegras + 1;
-    jugadasNegrasText.textContent = "Jugadas Negras:" + njnegras;
-
-    currentTeam = WHITE;
+    await getGameDbRef()
+      .update({
+        side: serverGameData?.player1,
+        board,
+      })
+      .catch(console.error);
   }
 }
 
-function repaintBoard() {
+async function repaintBoard() {
+  /**
+   * dispatch update board
+   */
+
+  await getGameDbRef().update({ board }).catch(console.error);
   drawBoard();
   checkPossiblePlays();
   drawPieces();
@@ -2044,13 +2138,13 @@ function drawBoard() {
   for (let i = 0; i < BOARD_HEIGHT; i++) {
     if (i > 2 && i < 7) {
       for (let j = 0; j < BOARD_WIDTH; j++) {
-        if ((i + j) % 2 ==== 1) {
+        if ((i + j) % 2 === 1) {
           drawTile(j, i, MIDDEL_TILE_COLOR);
         }
       }
     } else {
       for (let j = 0; j < BOARD_WIDTH; j++) {
-        if ((i + j) % 2 ==== 1) {
+        if ((i + j) % 2 === 1) {
           drawTile(j, i, BLACK_TILE_COLOR);
         }
       }
@@ -2152,9 +2246,9 @@ function drawPieces() {
 
   for (let i = 0; i < BOARD_HEIGHT; i++) {
     for (let j = 0; j < BOARD_WIDTH; j++) {
-      if (board.tiles[i][j].team ==== EMPTY) continue;
+      if (board.tiles[i][j].team === EMPTY) continue;
 
-      if (board.tiles[i][j].team ==== WHITE) {
+      if (board.tiles[i][j].team === WHITE) {
         chessCtx.fillStyle = "#FF0000";
       } else {
         chessCtx.fillStyle = "#0000FF";
@@ -2166,10 +2260,10 @@ function drawPieces() {
       let equipo = board.tiles[i][j].team;
 
       if (pieceType === 6) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img1 = new Image();
-          img1.src = "ardillabco.svg";
-          img1.onload = function () {
+          img1.src = ardillabco;
+          img1.onload = () => {
             chessCtx.drawImage(
               img1,
               TILE_SIZE * (j + 1 / 4),
@@ -2180,8 +2274,8 @@ function drawPieces() {
           };
         } else {
           var img2 = new Image();
-          img2.src = "ardilla.svg";
-          img2.onload = function () {
+          img2.src = ardilla;
+          img2.src = () => {
             chessCtx.drawImage(
               img2,
               TILE_SIZE * (j + 1 / 4),
@@ -2192,10 +2286,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 0) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img3 = new Image();
-          img3.src = "peonbco.svg";
-          img3.onload = function () {
+          img3.src = peonbco;
+          img3.onload = () => {
             chessCtx.drawImage(
               img3,
               TILE_SIZE * (j + 1 / 4),
@@ -2206,8 +2300,8 @@ function drawPieces() {
           };
         } else {
           var img4 = new Image();
-          img4.src = "peon.svg";
-          img4.onload = function () {
+          img4.src = peon;
+          img4.onload = () => {
             chessCtx.drawImage(
               img4,
               TILE_SIZE * (j + 1 / 4),
@@ -2218,10 +2312,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 1) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img5 = new Image();
-          img5.src = "caballobco.svg";
-          img5.onload = function () {
+          img5.src = caballobco;
+          img5.onload = () => {
             chessCtx.drawImage(
               img5,
               TILE_SIZE * (j + 1 / 4),
@@ -2232,8 +2326,8 @@ function drawPieces() {
           };
         } else {
           var img6 = new Image();
-          img6.src = "caballo.svg";
-          img6.onload = function () {
+          img6.src = caballo;
+          img6.onload = () => {
             chessCtx.drawImage(
               img6,
               TILE_SIZE * (j + 1 / 4),
@@ -2244,10 +2338,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 2) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img7 = new Image();
-          img7.src = "alfilbco.svg";
-          img7.onload = function () {
+          img7.src = alfilbco;
+          img7.onload = () => {
             chessCtx.drawImage(
               img7,
               TILE_SIZE * (j + 1 / 4),
@@ -2258,8 +2352,8 @@ function drawPieces() {
           };
         } else {
           var img8 = new Image();
-          img8.src = "alfil.svg";
-          img8.onload = function () {
+          img8.src = alfil;
+          img8.onload = () => {
             chessCtx.drawImage(
               img8,
               TILE_SIZE * (j + 1 / 4),
@@ -2270,10 +2364,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 3) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img9 = new Image();
-          img9.src = "torrebco.svg";
-          img9.onload = function () {
+          img9.src = torrebco;
+          img9.onload = () => {
             chessCtx.drawImage(
               img9,
               TILE_SIZE * (j + 1 / 4),
@@ -2284,8 +2378,8 @@ function drawPieces() {
           };
         } else {
           var img10 = new Image();
-          img10.src = "torre.svg";
-          img10.onload = function () {
+          img10.src = torre;
+          img10.onload = () => {
             chessCtx.drawImage(
               img10,
               TILE_SIZE * (j + 1 / 4),
@@ -2296,10 +2390,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 4) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img11 = new Image();
-          img11.src = "reinabco.svg";
-          img11.onload = function () {
+          img11.src = reinabco;
+          img11.onload = () => {
             chessCtx.drawImage(
               img11,
               TILE_SIZE * (j + 1 / 4),
@@ -2310,8 +2404,8 @@ function drawPieces() {
           };
         } else {
           var img12 = new Image();
-          img12.src = "reina.svg";
-          img12.onload = function () {
+          img12.src = reina;
+          img12.onload = () => {
             chessCtx.drawImage(
               img12,
               TILE_SIZE * (j + 1 / 4),
@@ -2322,10 +2416,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 5) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img13 = new Image();
-          img13.src = "reybco.svg";
-          img13.onload = function () {
+          img13.src = reybco;
+          img13.onload = () => {
             chessCtx.drawImage(
               img13,
               TILE_SIZE * (j + 1 / 4),
@@ -2336,8 +2430,8 @@ function drawPieces() {
           };
         } else {
           var img14 = new Image();
-          img14.src = "rey.svg";
-          img14.onload = function () {
+          img14.src = rey;
+          img14.onload = () => {
             chessCtx.drawImage(
               img14,
               TILE_SIZE * (j + 1 / 4),
@@ -2348,10 +2442,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 7) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img15 = new Image();
-          img15.src = "conejobco.svg";
-          img15.onload = function () {
+          img15.src = conejobco;
+          img15.onload = () => {
             chessCtx.drawImage(
               img15,
               TILE_SIZE * (j + 1 / 4),
@@ -2362,8 +2456,8 @@ function drawPieces() {
           };
         } else {
           var img16 = new Image();
-          img16.src = "conejo.svg";
-          img16.onload = function () {
+          img16.src = conejo;
+          img16.onload = () => {
             chessCtx.drawImage(
               img16,
               TILE_SIZE * (j + 1 / 4),
@@ -2374,10 +2468,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 8) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img17 = new Image();
-          img17.src = "perrobco.svg";
-          img17.onload = function () {
+          img17.src = perrobco;
+          img17.onload = () => {
             chessCtx.drawImage(
               img17,
               TILE_SIZE * (j + 1 / 4),
@@ -2388,8 +2482,8 @@ function drawPieces() {
           };
         } else {
           var img18 = new Image();
-          img18.src = "perro.svg";
-          img18.onload = function () {
+          img18.src = perro;
+          img18.onload = () => {
             chessCtx.drawImage(
               img18,
               TILE_SIZE * (j + 1 / 4),
@@ -2400,10 +2494,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 9) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img19 = new Image();
-          img19.src = "panterabco.svg";
-          img19.onload = function () {
+          img19.src = panterabco;
+          img19.onload = () => {
             chessCtx.drawImage(
               img19,
               TILE_SIZE * (j + 1 / 4),
@@ -2414,8 +2508,8 @@ function drawPieces() {
           };
         } else {
           var img20 = new Image();
-          img20.src = "pantera.svg";
-          img20.onload = function () {
+          img20.src = pantera;
+          img20.onload = () => {
             chessCtx.drawImage(
               img20,
               TILE_SIZE * (j + 1 / 4),
@@ -2426,10 +2520,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 10) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img21 = new Image();
-          img21.src = "elefantebco.svg";
-          img21.onload = function () {
+          img21.src = elefantebco;
+          img21.onload = () => {
             chessCtx.drawImage(
               img21,
               TILE_SIZE * (j + 1 / 4),
@@ -2440,8 +2534,8 @@ function drawPieces() {
           };
         } else {
           var img22 = new Image();
-          img22.src = "elefante.svg";
-          img22.onload = function () {
+          img22.src = elefante;
+          img22.onload = () => {
             chessCtx.drawImage(
               img22,
               TILE_SIZE * (j + 1 / 4),
@@ -2452,10 +2546,10 @@ function drawPieces() {
           };
         }
       } else if (pieceType === 11) {
-        if (equipo ==== WHITE) {
+        if (equipo === WHITE) {
           var img23 = new Image();
-          img23.src = "leonbco.svg";
-          img23.onload = function () {
+          img23.src = leonbco;
+          img23.onload = () => {
             chessCtx.drawImage(
               img23,
               TILE_SIZE * (j + 1 / 4),
@@ -2466,8 +2560,8 @@ function drawPieces() {
           };
         } else {
           var img24 = new Image();
-          img24.src = "leon.svg";
-          img24.onload = function () {
+          img24.src = leon;
+          img24.onload = () => {
             chessCtx.drawImage(
               img24,
               TILE_SIZE * (j + 1 / 4),
@@ -2494,64 +2588,57 @@ function updateCasualities(casualities, text) {
   let none = true;
 
   for (let i = LEON; i >= PAWN; i--) {
-    if (casualities[i] ==== 0) continue;
+    if (casualities[i] === 0) continue;
 
     if (none) {
-      text.textContent = casualities[i] + " " + piecesCharacters[i];
       none = false;
     } else {
-      text.textContent += " - " + casualities[i] + " " + piecesCharacters[i];
     }
   }
-
-  if (none) text.textContent = "Ninguna";
 }
 
-function updateTotalVictories() {
-  totalVictoriesText.textContent =
-    "Juegos ganados: blancas " + whiteVictories + " - negras " + blackVictories;
-}
+function updateTotalVictories() {}
 
 function getOppositeTeam(team) {
-  if (team ==== WHITE) return BLACK;
-  else if (team ==== BLACK) return WHITE;
+  if (team === WHITE) return BLACK;
+  else if (team === BLACK) return WHITE;
   else return EMPTY;
 }
 
-function checkTileUnderAttack(x, y) {
+async function checkTileUnderAttack(x, y) {
   //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
   for (let xx = 0; xx <= 8; xx++) {
     for (let yy = 0; yy <= 9; yy++) {
       //vemos que la pieza sea enemiga
-      if (board.tiles[yy][xx].team ==== getOppositeTeam(currentTeam)) {
-        changeCurrentTeam();
+      if (board.tiles[yy][xx].team === getOppositeTeam(currentTeam)) {
+        await changeCurrentTeam();
         let tile = board.tiles[yy][xx];
-        if (tile.pieceType ==== PAWN) checkPossiblePlaysPawnJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== KNIGHT)
+        if (tile.pieceType === PAWN) checkPossiblePlaysPawnJUSTCHECK(xx, yy);
+        else if (tile.pieceType === KNIGHT)
           checkPossiblePlaysKnightJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== BISHOP)
+        else if (tile.pieceType === BISHOP)
           checkPossiblePlaysBishopJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== ROOK)
+        else if (tile.pieceType === ROOK)
           checkPossiblePlaysRookJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== QUEEN)
+        else if (tile.pieceType === QUEEN)
           checkPossiblePlaysQueenJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== KING)
+        else if (tile.pieceType === KING)
           checkPossiblePlaysKingJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== ARDILLA)
+        else if (tile.pieceType === ARDILLA)
           checkPossiblePlaysArdillaJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== CONEJO)
+        else if (tile.pieceType === CONEJO)
           checkPossiblePlaysConejoJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== PERRO)
+        else if (tile.pieceType === PERRO)
           checkPossiblePlaysPerroJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== PANTERA)
+        else if (tile.pieceType === PANTERA)
           checkPossiblePlaysPanteraJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== ELEFANTE)
+        else if (tile.pieceType === ELEFANTE)
           checkPossiblePlaysElefanteJUSTCHECK(xx, yy);
-        else if (tile.pieceType ==== LEON)
+        else if (tile.pieceType === LEON)
           checkPossiblePlaysLeonJUSTCHECK(xx, yy);
 
         //console.log('X:'+xx+'Y:'+yy+'Pieza:'+board.tiles[yy][xx].pieceType);
-        changeCurrentTeam();
+        await changeCurrentTeam();
       }
     }
   }
@@ -2569,7 +2656,7 @@ function checkTileUnderAttack(x, y) {
 function checkPossiblePlaysPawnJUSTCHECK(curX, curY) {
   let direction;
 
-  if (currentTeam ==== WHITE) direction = -1;
+  if (currentTeam === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
@@ -2599,7 +2686,7 @@ function checkPossiblePlaysPawnJUSTCHECK(curX, curY) {
 function checkPossiblePlaysConejoJUSTCHECK(curX, curY) {
   let direction;
 
-  if (currentTeam ==== WHITE) direction = -1;
+  if (currentTeam === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
@@ -2647,7 +2734,7 @@ function checkPossiblePlaysConejoJUSTCHECK(curX, curY) {
 function checkPossiblePlaysArdillaJUSTCHECK(curX, curY) {
   let direction;
 
-  if (currentTeam ==== WHITE) direction = -1;
+  if (currentTeam === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
@@ -2737,7 +2824,7 @@ function checkPossiblePlaysArdillaJUSTCHECK(curX, curY) {
 function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   let direction;
 
-  if (currentTeam ==== WHITE) direction = -1;
+  if (currentTeam === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
@@ -2746,7 +2833,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   checkPossibleMoveJUSTCHECK(curX, curY + direction);
   checkPossibleCaptureJUSTCHECK(curX, curY + direction);
 
-  if (board.tiles[curY + 1 * direction][curX].pieceType ==== EMPTY) {
+  if (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY) {
     // Advance two tile
     checkPossibleMoveJUSTCHECK(curX, curY + 2 * direction);
     checkPossibleCaptureJUSTCHECK(curX, curY + 2 * direction);
@@ -2756,13 +2843,13 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   if (curX > 0) {
     checkPossibleMoveJUSTCHECK(curX - 1, curY);
   }
-  if (curX > 1 && board.tiles[curY][curX - 1].pieceType ==== EMPTY) {
+  if (curX > 1 && board.tiles[curY][curX - 1].pieceType === EMPTY) {
     checkPossibleMoveJUSTCHECK(curX - 2, curY);
   }
   if (curX < 8) {
     checkPossibleMoveJUSTCHECK(curX + 1, curY);
   }
-  if (curX < 7 && board.tiles[curY][curX + 1].pieceType ==== EMPTY) {
+  if (curX < 7 && board.tiles[curY][curX + 1].pieceType === EMPTY) {
     checkPossibleMoveJUSTCHECK(curX + 2, curY);
   }
 
@@ -2772,7 +2859,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   }
   if (
     curX + 2 <= BOARD_WIDTH - 2 &&
-    board.tiles[curY + direction][curX + 1].pieceType ==== EMPTY
+    board.tiles[curY + direction][curX + 1].pieceType === EMPTY
   ) {
     checkPossibleMoveJUSTCHECK(curX + 2, curY + 2 * direction);
   }
@@ -2783,7 +2870,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   }
   if (
     curX - 2 >= 0 &&
-    board.tiles[curY + direction][curX - 1].pieceType ==== EMPTY
+    board.tiles[curY + direction][curX - 1].pieceType === EMPTY
   ) {
     checkPossibleMoveJUSTCHECK(curX - 2, curY + 2 * direction);
   }
@@ -2798,7 +2885,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   if (
     curX - 2 >= 0 &&
     board.tiles[curY + 2 * direction][curX - 2].pieceType !== ELEFANTE &&
-    board.tiles[curY + 1 * direction][curX - 1].pieceType ==== EMPTY
+    board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
     checkPossibleCaptureJUSTCHECK(curX - 2, curY + 2 * direction);
   }
@@ -2813,7 +2900,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   if (
     curX + 2 <= BOARD_WIDTH - 1 &&
     board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
-    board.tiles[curY + 1 * direction][curX + 1].pieceType ==== EMPTY
+    board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
     checkPossibleCaptureJUSTCHECK(curX + 2, curY + 2 * direction);
   }
@@ -3201,7 +3288,7 @@ function checkPossibleCaptureJUSTCHECK(x, y) {
   casillasenpeligro.push(x + "/" + y);
   /*
 	if(board.tiles[y][x].pieceType === KING){
-		if (currentTeam ==== WHITE){
+		if (currentTeam === WHITE){
 			jaquereynegro = 'Si';	
 			posicionreynegro = x+","+y;
 			if(moverelreynegro(x,y) === false){
@@ -3303,70 +3390,6 @@ function guardar_tablero() {
     }
   }
   alert("Guardado");
-}
-
-function restaurar_tablero() {
-  currentTeamText = SAVED_currentTeamText;
-  whiteCasualitiesText = SAVED_whiteCasualitiesText;
-  blackCasualitiesText = SAVED_blackCasualitiesText;
-  tmpjuego = SAVED_tmpjuego;
-  whiteCasualities = SAVED_whiteCasualities;
-  blackCasualities = SAVED_blackCasualities;
-  totalVictoriesText = SAVED_totalVictoriesText;
-
-  currentTeam = SAVED_currentTeam;
-  curX = SAVED_curX;
-  curY = SAVED_curY;
-
-  whiteVictories = SAVED_whiteVictories;
-  blackVictories = SAVED_blackVictories;
-  njblancas = SAVED_njblancas;
-  njnegras = SAVED_njnegras;
-
-  contadorleonnegro = SAVED_contadorleonnegro;
-  contadorleonblanco = SAVED_contadorleonblanco;
-  contadorreyblanco = SAVED_contadorreyblanco;
-  contadorreynegro = SAVED_contadorreynegro;
-  contadortorre1blanco = SAVED_contadortorre1blanco;
-  contadortorre1negro = SAVED_contadortorre1negro;
-  contadortorre2blanco = SAVED_contadortorre2blanco;
-  contadortorre2negro = SAVED_contadortorre2negro;
-  jaquereyblanco = SAVED_jaquereyblanco;
-  jaquereynegro = SAVED_jaquereynegro;
-  posicionreynegro = SAVED_posicionreynegro;
-  posicionreyblanco = SAVED_posicionreyblanco;
-  comeralpaso = SAVED_comeralpaso;
-  ultimapiezacapturadanegra = SAVED_ultimapiezacapturadanegra;
-  ultimapiezacapturadablanca = SAVED_ultimapiezacapturadablanca;
-  ultimotipodemovimiento = SAVED_ultimotipodemovimiento;
-  ultimomovimiento = SAVED_ultimomovimiento;
-
-  for (i = 0; i < tablero.length; i++) {
-    var equis = tablero[i].equis;
-    var yee = tablero[i].yee;
-    var type = tablero[i].type;
-    var team = tablero[i].team;
-
-    board.tiles[yee][equis].pieceType = type;
-    board.tiles[yee][equis].team = team;
-  }
-  console.log(JSON.stringify(tablero));
-
-  repaintBoard();
-
-  document.getElementById("currentTeamText").innerHTML = SAVED_currentTeamText;
-  document.getElementById("jugadasBlancas").innerHTML =
-    SAVED_jugadasBlancasText;
-  document.getElementById("jugadasNegras").innerHTML = SAVED_jugadasNegrasText;
-  document.getElementById("tiempojugado").innerHTML =
-    "Tiempo Jugado en minutos: " + SAVED_tmpjuego;
-  document.getElementById("whiteCasualities").innerHTML =
-    SAVED_whiteCasualities;
-  document.getElementById("blackCasualities").innerHTML =
-    SAVED_blackCasualities;
-  document.getElementById("totalVictories").innerHTML =
-    SAVED_totalVictoriesText;
-  alert("Restaurado");
 }
 
 function moverelreynegro(x, y) {

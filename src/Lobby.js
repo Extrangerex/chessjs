@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import firebase from "firebase";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 
 export function Lobby() {
   const dispatch = useDispatch();
@@ -13,7 +13,9 @@ export function Lobby() {
     const lobbyRef = firebase.database().ref("lobby");
 
     lobbyRef.on("value", (snap) => {
-      console.log(snap.val());
+      if (snap?.val() === null) {
+        return;
+      }
       setLobby(snap.val());
     });
 
@@ -22,7 +24,10 @@ export function Lobby() {
     };
   }, [dispatch]);
 
-  const createGame = () => {};
+  const createGame = () => {
+    window.location = '/game';
+    return;
+  };
 
   return (
     <div className="container">
@@ -39,14 +44,14 @@ export function Lobby() {
             >
               Crear Sala
             </button>
-            {(!auth?.isSignedIn || auth?.isAnonymously) && (
+            {/* {(!auth?.isSignedIn || auth?.isAnonymously) && (
               <button
                 className="navbar-item mx-2 button is-info"
                 onClick={createGame}
               >
                 Iniciar Sesión
               </button>
-            )}
+            )} */}
           </div>
         </div>
       </nav>
@@ -60,7 +65,7 @@ export function Lobby() {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(lobby).length > 1 ? (
+          {Object.keys(lobby).length > 0 ? (
             Object.keys(lobby)
               .filter((key) => lobby[key]?.player1 !== auth?.user?.uid)
               .map((key) => {
@@ -74,9 +79,7 @@ export function Lobby() {
                       {element?.status !== "playing" && (
                         <button
                           className="button is-danger"
-                          onClick={() =>
-                            history.push(`/game/${key}`)
-                          }
+                          onClick={() => window.location = `/game/${key}`}
                         >
                           Jugar
                         </button>

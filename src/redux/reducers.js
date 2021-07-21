@@ -80,6 +80,10 @@ export const gameReducer = (state = initialGameReducerState, action) => {
         whiteCasualities: action.whiteCasualities,
         blackCasualities: action.blackCasualities,
       };
+    case types.sendChatMsgGame:
+      return {
+        ...state
+      }
     default:
       return state;
   }
