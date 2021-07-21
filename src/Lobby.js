@@ -25,7 +25,7 @@ export function Lobby() {
   }, [dispatch]);
 
   const createGame = () => {
-    window.location = '/game';
+    window.location = "/game";
     return;
   };
 
@@ -66,27 +66,24 @@ export function Lobby() {
         </thead>
         <tbody>
           {Object.keys(lobby).length > 0 ? (
-            Object.keys(lobby)
-              .map((key) => {
-                const element = lobby[key];
+            Object.keys(lobby).map((key) => {
+              const element = lobby[key];
 
-                return (
-                  <tr key={key}>
-                    <td>{element.player1}</td>
-                    <td>{element.status}</td>
-                    <td>
-                      {element?.status !== "playing" && (
-                        <button
-                          className="button is-danger"
-                          onClick={() => window.location = `/game/${key}`}
-                        >
-                          Jugar
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })
+              return (
+                <tr key={key}>
+                  <td>{element.player1}</td>
+                  <td>{element.status}</td>
+                  <td>
+                    <button
+                      className="button is-danger"
+                      onClick={() => (window.location = `/game/${key}`)}
+                    >
+                      Jugar
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
           ) : (
             <tr>
               <td colSpan="3" className="has-text-centered">
