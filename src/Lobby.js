@@ -67,7 +67,6 @@ export function Lobby() {
         <tbody>
           {Object.keys(lobby).length > 0 ? (
             Object.keys(lobby)
-              .filter((key) => lobby[key]?.player1 !== auth?.user?.uid)
               .map((key) => {
                 const element = lobby[key];
 
