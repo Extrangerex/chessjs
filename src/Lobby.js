@@ -74,12 +74,22 @@ export function Lobby() {
                   <td>{element.player1}</td>
                   <td>{element.status}</td>
                   <td>
-                    <button
-                      className="button is-danger"
-                      onClick={() => (window.location = `/game/${key}`)}
-                    >
-                      Jugar
-                    </button>
+                    {element?.player1 === auth?.user?.uid ||
+                    element?.player2 === auth?.user?.uid ? (
+                      <button
+                        className="button is-primary"
+                        onClick={() => (window.location = `/game/${key}`)}
+                      >
+                        Volver a jugar
+                      </button>
+                    ) : (
+                      <button
+                        className="button is-danger"
+                        onClick={() => (window.location = `/game/${key}`)}
+                      >
+                        Jugar
+                      </button>
+                    )}
                   </td>
                 </tr>
               );
