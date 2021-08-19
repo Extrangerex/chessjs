@@ -1,0 +1,42 @@
+#fondo_juego{
+    background-color: #3B424E;
+}
+
+#extras{
+    height:580px;
+    background-color: #1B232F;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    border-radius: .25rem;
+}
+#chat_mensajes{
+    height: 16vh;
+    overflow: auto;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: .25rem;
+    background-color: white;
+}
+.form-group{
+    margin-bottom: 0;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: .25rem;
+}
+#chessCanvas{
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+}
+#jugadas{
+    height: 45vh;
+    overflow: auto;
+}
+#turno{
+    color:white;
+}
+.btn_enviar{
+    color:white;
+    background-color: darkgray;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}

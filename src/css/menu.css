@@ -1,0 +1,39 @@
+.navbar .navbar-brand{
+    color: rgb(55,153,189) !important;
+    font-size: 28px;
+}
+.navbar .navbar-brand img{
+    width: 200px;
+}
+
+.navbar #navcol-1{
+    height: 60px;margin-top: 15px;
+}
+.navbar .nav-item .nav-link{
+    padding-bottom: 0px;
+    padding-top: 25px;
+    line-height: 0px;
+}
+.navbar .nav-item .active{
+    color: rgb(55,153,189) !important;
+    padding-bottom: 0px;padding-top: 25px;line-height: 0px;height: 20px;
+}
+.navbar .nav-item .dropdown-toggle{
+    padding-bottom: 17px;
+    padding-top: 17px;
+    line-height: 0px;
+}
+.navbar .navbar-text{
+    padding-bottom: 0px;padding-top: 0px;height: 46px;
+}
+.navbar .login{
+    line-height: 0px;
+}
+.navbar .action-button{
+    background: rgb(55,153,189) !important;
+    margin-top: 10px;margin-bottom: 10px;padding-top: 6px;padding-bottom: 6px;
+}
+
+.navbar .dropdown-item{
+    width: auto;
+}
