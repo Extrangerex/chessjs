@@ -198,57 +198,57 @@ async function startGame() {
     leer_posicionleonnegro();
     leer_act_numero_turno();
     leer_act_bloque();
-    if(numero_turno === 7){
+    if (numero_turno === 7) {
       marca_bloque(2);
       document.getElementById("bloque1").style.backgroundColor = 'red';
     }
-    if(numero_turno === 14){
+    if (numero_turno === 14) {
       marca_bloque(3);
       document.getElementById("bloque2").style.backgroundColor = 'red';
     }
-    if(numero_turno === 21){
+    if (numero_turno === 21) {
       marca_bloque(4);
       document.getElementById("bloque3").style.backgroundColor = 'red';
     }
-    if(numero_turno === 28){
+    if (numero_turno === 28) {
       marca_bloque(5);
       document.getElementById("bloque4").style.backgroundColor = 'red';
     }
-    if(numero_turno === 35){
+    if (numero_turno === 35) {
       marca_bloque(6);
       document.getElementById("bloque5").style.backgroundColor = 'red';
     }
-    if(numero_turno === 42){
+    if (numero_turno === 42) {
       marca_bloque(7);
       document.getElementById("bloque6").style.backgroundColor = 'red';
     }
-    if(numero_turno === 49){
+    if (numero_turno === 49) {
       marca_bloque(8);
       document.getElementById("bloque7").style.backgroundColor = 'red';
     }
-    if(numero_turno === 56){
+    if (numero_turno === 56) {
       marca_bloque(9);
       document.getElementById("bloque8").style.backgroundColor = 'red';
     }
-    if(numero_turno === 63){
+    if (numero_turno === 63) {
       marca_bloque(10);
       document.getElementById("bloque9").style.backgroundColor = 'red';
     }
-    if(numero_turno === 70){
+    if (numero_turno === 70) {
       marca_bloque(10);
       document.getElementById("bloque10").style.backgroundColor = 'red';
     }
-    
+
     repaintBoard();
 
-    
 
-    if(serverGameData?.side !== firebase?.auth()?.currentUser?.uid){
+
+    if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
       document.getElementById('turno').innerHTML = "Turno de tu oponente";
-    }else{
-      document.getElementById('turno').innerHTML = "Tu turno";      
-    } 
-    if(currentTeam === BLACK){
+    } else {
+      document.getElementById('turno').innerHTML = "Tu turno";
+    }
+    if (currentTeam === BLACK) {
       var jugador1a = document.getElementById('jugador2');
       jugador1a.style.border = "1px solid white";
       jugador1a.style.borderRadius = "50%";
@@ -259,7 +259,7 @@ async function startGame() {
       jugador2a.style.borderRadius = "0";
       jugador2a.style.padding = "0";
 
-    }else{
+    } else {
       var jugador1b = document.getElementById('jugador1');
       jugador1b.style.border = "1px solid white";
       jugador1b.style.borderRadius = "50%";
@@ -318,10 +318,23 @@ async function onClick(event) {
   let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
   let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
+  if (serverGameData?.numero_turno % 7 == 1) {
+    if (serverGameData?.lastPiecejoue?.x == x && serverGameData?.lastPiecejoue?.y == y) {
+
+      Swal.fire({
+        title: "Opps..",
+        text: "No puedes mover la misma pieza",
+      });
+      return;
+    }
+  }
+
   ganoleon();
 
   if (checkValidMovement(x, y) === true) {
     ultimotipodemovimiento = "Movimiento";
+
+
     if (checkValidCapture(x, y) === true) {
       if (board.tiles[y][x].pieceType === KING) {
         if (currentTeam === WHITE) whiteVictories++;
@@ -349,43 +362,43 @@ async function onClick(event) {
       moveSelectedPiece(x, y, tile.pieceType, curX, curY);
 
       //vemos si despues de que movio gano el leon coronado
-      if(currentTeam === BLACK){
-        var CLEANposicionleonblanco = posicionleonblanco.replace('"','');
+      if (currentTeam === BLACK) {
+        var CLEANposicionleonblanco = posicionleonblanco.replace('"', '');
         var Wcombopos = CLEANposicionleonblanco.split(",");
-        var WposY = Wcombopos[0]; 
-        var WposX = Wcombopos[1]; 
+        var WposY = Wcombopos[0];
+        var WposX = Wcombopos[1];
         //console.log("status:"+leoncoronadoblancocomible);
         //console.log("x:"+WposX);
         //console.log("y:"+WposY);
         /*if(WposX !== -1 && WposY !== -1){
           console.log(board.tiles[WposY][WposX].pieceType);
         }*/
-        if(leoncoronadoblancocomible === true && board.tiles[WposY][WposX].pieceType === FAKEKING){
+        if (leoncoronadoblancocomible === true && board.tiles[WposY][WposX].pieceType === FAKEKING) {
           Swal.fire({
             title: "Ganaron las Blancas",
             icon: 'warning',
             type: "success",
             allowOutsideClick: false,
             allowEscapeKey: false
-          }).then(function() {
-              window.location = "/lobby";
+          }).then(function () {
+            window.location = "/lobby";
           });
         }
-      }else{
-        var CLEANposicionleonnegro = posicionleonnegro.replace('"','');
+      } else {
+        var CLEANposicionleonnegro = posicionleonnegro.replace('"', '');
         var Bcombopos = CLEANposicionleonnegro.split(",");
-        var BposY = Bcombopos[0]; 
-        var BposX = Bcombopos[1]; 
-        if(leoncoronadonegrocomible === true && board.tiles[BposY][BposX].pieceType === FAKEKING){
-            Swal.fire({
-              title: "Ganaron las Negras",
-              icon: 'warning',
-              type: "success",
-              allowOutsideClick: false,
-              allowEscapeKey: false
-            }).then(function() {
-                window.location = "/lobby";
-            });
+        var BposY = Bcombopos[0];
+        var BposX = Bcombopos[1];
+        if (leoncoronadonegrocomible === true && board.tiles[BposY][BposX].pieceType === FAKEKING) {
+          Swal.fire({
+            title: "Ganaron las Negras",
+            icon: 'warning',
+            type: "success",
+            allowOutsideClick: false,
+            allowEscapeKey: false
+          }).then(function () {
+            window.location = "/lobby";
+          });
         }
       }
 
@@ -479,9 +492,16 @@ async function onClick(event) {
       }
       //solo si no hay jaque cambiamos el turno
       if (cambio_de_turno === "Si") {
+        await getGameDbRef()
+          .update({
+            board,
+            lastPiecejoue: { x, y }
+          })
+          .catch(console.error);
+
         if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
           await changeCurrentTeam();
-        }  
+        }
       }
       /*await repaintBoard();*/
     }
@@ -496,7 +516,7 @@ async function onClick(event) {
     }
   }
 
- repaintBoard();
+  repaintBoard();
 }
 
 function checkPossiblePlays() {
@@ -2152,8 +2172,8 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
 
   //guardamos el ultimo movimiento
   ultimomovimiento = piece + "/" + oldX + "," + oldY + "/" + x + "," + y;
-  nomenclatura = piecesCharacters[piece]+"/"+ oldX + "," + oldY + "/" + x + "," + y;
-  
+  nomenclatura = piecesCharacters[piece] + "/" + oldX + "," + oldY + "/" + x + "," + y;
+
 }
 function ganoleon() {
   for (let j = 0; j < BOARD_WIDTH; j++) {
@@ -2188,13 +2208,24 @@ function ganoleon() {
 async function changeCurrentTeam() {
   if (serverGameData == null) return;
 
+  if (serverGameData?.numero_turno % 7 == 0) {
+
+    await getGameDbRef()
+      .update({
+        board,
+        numero_turno: numero_turno + 1,
+      })
+      .catch(console.error);
+    return;
+  }
+
   if (currentTeam === WHITE) {
     await getGameDbRef()
       .update({
         board,
         whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
         side: serverGameData?.player2,
-        numero_turno:numero_turno+1, 
+        numero_turno: numero_turno + 1,
       })
       .catch(console.error);
   } else {
@@ -2203,18 +2234,18 @@ async function changeCurrentTeam() {
         board,
         blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
         side: serverGameData?.player1,
-        numero_turno:numero_turno+1, 
+        numero_turno: numero_turno + 1,
       })
       .catch(console.error);
   }
   await getGameDbRef()
-  .child("jugadas")
-  .push({
-    uid: firebase.auth().currentUser?.uid,
-    movimiento: nomenclatura,
-    createdAt: Date.now(),
-  })
-  .catch(console.error);
+    .child("jugadas")
+    .push({
+      uid: firebase.auth().currentUser?.uid,
+      movimiento: nomenclatura,
+      createdAt: Date.now(),
+    })
+    .catch(console.error);
 }
 
 async function repaintBoard() {
@@ -2223,8 +2254,8 @@ async function repaintBoard() {
    */
 
   /*await getGameDbRef().update({ board }).catch(console.error);*/
-  
-     
+
+
 
   drawBoard();
   checkPossiblePlays();
@@ -2362,10 +2393,10 @@ function drawPieces() {
       board.tiles[0][j].pieceType = FAKEKING;
       if (currentTeam === WHITE) {
         marcaleonnegro(true);
-        marcarposicionleonnegro('0,'+j);
+        marcarposicionleonnegro('0,' + j);
       } else {
         marcaleonblanco(true);
-        marcarposicionleonblanco('0,'+j);
+        marcarposicionleonblanco('0,' + j);
       }
     }
   }
@@ -2376,10 +2407,10 @@ function drawPieces() {
       board.tiles[9][j].pieceType = FAKEKING;
       if (currentTeam === WHITE) {
         marcaleonnegro(true);
-        marcarposicionleonnegro('9,'+j);
+        marcarposicionleonnegro('9,' + j);
       } else {
         marcaleonblanco(true);
-        marcarposicionleonblanco('9,'+j);
+        marcarposicionleonblanco('9,' + j);
       }
     }
   }
@@ -2409,7 +2440,7 @@ function drawPieces() {
               img1,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2420,7 +2451,7 @@ function drawPieces() {
               img2,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2433,7 +2464,7 @@ function drawPieces() {
               img3,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2444,7 +2475,7 @@ function drawPieces() {
               img4,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2457,7 +2488,7 @@ function drawPieces() {
               img5,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2468,7 +2499,7 @@ function drawPieces() {
               img6,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2481,7 +2512,7 @@ function drawPieces() {
               img7,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2492,7 +2523,7 @@ function drawPieces() {
               img8,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2505,7 +2536,7 @@ function drawPieces() {
               img9,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2516,7 +2547,7 @@ function drawPieces() {
               img10,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2529,7 +2560,7 @@ function drawPieces() {
               img11,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2540,7 +2571,7 @@ function drawPieces() {
               img12,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2553,7 +2584,7 @@ function drawPieces() {
               img13,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2564,7 +2595,7 @@ function drawPieces() {
               img14,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2577,7 +2608,7 @@ function drawPieces() {
               img15,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2588,7 +2619,7 @@ function drawPieces() {
               img16,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2601,7 +2632,7 @@ function drawPieces() {
               img17,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2612,7 +2643,7 @@ function drawPieces() {
               img18,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2625,7 +2656,7 @@ function drawPieces() {
               img19,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2636,7 +2667,7 @@ function drawPieces() {
               img20,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2649,7 +2680,7 @@ function drawPieces() {
               img21,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2660,7 +2691,7 @@ function drawPieces() {
               img22,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2673,7 +2704,7 @@ function drawPieces() {
               img23,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2684,7 +2715,7 @@ function drawPieces() {
               img24,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2697,7 +2728,7 @@ function drawPieces() {
               img25,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         } else {
@@ -2708,7 +2739,7 @@ function drawPieces() {
               img26,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50,50
+              50, 50
             );
           };
         }
@@ -2752,7 +2783,7 @@ function checkTileUnderAttack(x, y) {
     for (let yy = 0; yy <= 9; yy++) {
       //vemos que la pieza sea enemiga
       if (board.tiles[yy][xx].team === getOppositeTeam(currentTeam)) {
-        
+
         currentTeamJUSTCHECK = getOppositeTeam(currentTeam);
         let tile = board.tiles[yy][xx];
         if (tile.pieceType === PAWN) checkPossiblePlaysPawnJUSTCHECK(xx, yy);
@@ -2780,7 +2811,7 @@ function checkTileUnderAttack(x, y) {
           checkPossiblePlaysLeonJUSTCHECK(xx, yy);
 
         //console.log('X:'+xx+'Y:'+yy+'Pieza:'+board.tiles[yy][xx].pieceType);
-       
+
       }
     }
   }
@@ -4875,7 +4906,7 @@ async function leer_comer_al_paso() {
     .get()
     .then((snapshot) => {
       comeralpaso = snapshot.val();
-     }).catch((error) => {
+    }).catch((error) => {
       console.error(error);
     });
 }
@@ -4901,7 +4932,7 @@ async function leer_leoncoronadoblancocomible() {
     .get()
     .then((snapshot) => {
       leoncoronadoblancocomible = snapshot.val();
-     }).catch((error) => {
+    }).catch((error) => {
       console.error(error);
     });
 }
@@ -4979,8 +5010,8 @@ async function leer_act_bloque() {
 }
 async function marca_bloque(val) {
   await getGameDbRef()
-  .update({
-    bloque:val, 
-  })
-  .catch(console.error);
+    .update({
+      bloque: val,
+    })
+    .catch(console.error);
 }
