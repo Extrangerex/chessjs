@@ -6,14 +6,12 @@ import * as chess from "./lib/chess";
 import "./Game.css";
 
 import "bootstrap/dist/css/bootstrap.css";
-import { Container, Row, Col, Navbar, NavDropdown, Nav } from 'react-bootstrap';
-
+import { Container, Row, Col, Navbar, NavDropdown, Nav } from "react-bootstrap";
 
 import logo from "./images/logo-megachess.png";
 import logo_footer from "./images/logo-megachess-bco.svg";
 import peon from "./assets/svg/peon.svg";
 import peonbco from "./assets/svg/peonbco.svg";
-
 
 import firebase from "firebase";
 
@@ -25,6 +23,38 @@ export function Game() {
   const { loading } = useSelector((state) => state.ui);
   const [chat, setChat] = useState({});
   const [jugadas, setJugadas] = useState({});
+  const [serverData, setServerData] = useState({});
+
+  function getMillisecondsFromCreatedAt() {
+    const date1 = new Date(serverData?.createdAt);
+    const date2 = Date.now();
+    return Math.abs(date2 - date1);
+  }
+
+  function getMinutesFromCreatedAt() {
+    const date1 = new Date(serverData?.createdAt);
+    const date2 = Date.now();
+    const diffTime = Math.abs(date2 - date1);
+    let seconds = (diffTime / 1000) % 60;
+    let minutes = (diffTime / (1000 * 60)) % 60;
+    return parseInt(minutes);
+  }
+
+  function getRemainingFromCreatedAt() {
+    const date1 = new Date(serverData?.createdAt);
+    console.log(serverData?.createdAt);
+    const date2 = Date.now();
+    const diffTime = Math.abs(date2 - date1);
+    let seconds = (diffTime / 1000) % 60;
+    let minutes = (diffTime / (1000 * 60)) % 60;
+    return `${parseInt(minutes)}:${parseInt(seconds)}`;
+  }
+
+  const timerInterval = setInterval(() => {
+    if (serverData?.createdAt != null) {
+      chess.setTimerFromCreatedAt();
+    }
+  }, 1000);
 
   useEffect(() => {
     if (!game?.lobbyRef) {
@@ -40,6 +70,15 @@ export function Game() {
 
     const chatRef = firebase.database().ref(`${game?.lobbyRef}/chat`);
     const jugadasRef = firebase.database().ref(`${game?.lobbyRef}/jugadas`);
+    const gameRef = firebase.database().ref(`${game?.lobbyRef}`);
+
+    gameRef.on("value", (snapshot) => {
+      if (!snapshot.exists()) {
+        return;
+      }
+
+      setServerData(snapshot.val());
+    });
 
     chatRef.on("value", (snapshot) => {
       if (!snapshot.exists()) {
@@ -47,7 +86,7 @@ export function Game() {
       }
       setChat(snapshot.val());
       //mandamos el scroll hasta abajo
-      var chatBox = document.getElementById('chat_mensajes');
+      var chatBox = document.getElementById("chat_mensajes");
       chatBox.scrollTop = chatBox.scrollHeight;
     });
 
@@ -57,19 +96,18 @@ export function Game() {
       }
       setJugadas(snapshot.val());
       //mandamos el scroll hasta abajo
-      var jugadasBox = document.getElementById('jugadas');
+      var jugadasBox = document.getElementById("jugadas");
       jugadasBox.scrollTop = jugadasBox.scrollHeight;
     });
 
     return () => {
+      clearInterval(timerInterval);
       chatRef.off("value");
       jugadasRef.off("value");
     };
-
   }, [dispatch, auth, game, lobbyItemId, loading]);
 
   return (
-
     <section>
       <Navbar bg="light" expand="md">
         <Container>
@@ -82,7 +120,9 @@ export function Game() {
               <Nav.Link href="/">Inicio</Nav.Link>
               <NavDropdown title="Aprender" id="basic-nav-dropdown">
                 <NavDropdown.Item href="/videos">Videos</NavDropdown.Item>
-                <NavDropdown.Item href="/movimientos">Movimientos</NavDropdown.Item>
+                <NavDropdown.Item href="/movimientos">
+                  Movimientos
+                </NavDropdown.Item>
                 <NavDropdown.Item href="/piezas">Piezas</NavDropdown.Item>
               </NavDropdown>
               <Nav.Link href="/lobby">Lobby</Nav.Link>
@@ -93,70 +133,175 @@ export function Game() {
         </Container>
       </Navbar>
 
-
       <Container fluid id="fondo_juego">
         <Row>
           <Col xs={12} md={2} style={{ padding: 0 }}>
             <div align="center" style={{ height: "40vh" }}>
-              <img id="jugador2" src={peon} alt="" style={{ width: "100px", height: "100px", marginTop: "12vh" }} ></img>
+              <img
+                id="jugador2"
+                src={peon}
+                alt=""
+                style={{ width: "100px", height: "100px", marginTop: "12vh" }}
+              ></img>
             </div>
             <div align="center" style={{ height: "10vh" }}>
               <div style={{ marginTop: "0", marginBottom: "0" }}>
-                <h4 style={{ color: "white" }}>Bloque: <span id="bloque"></span></h4>
-                <h4 style={{ color: "white" }}>Jugada: <span id="numero_turno"></span></h4>
+                <h4 style={{ color: "white" }}>
+                  Bloque: <span id="bloque"></span>
+                </h4>
+                <h4 style={{ color: "white" }}>
+                  Jugada: <span id="numero_turno"></span>
+                </h4>
               </div>
             </div>
             <div align="center" style={{ height: "45vh" }}>
-              <img id="jugador1" src={peonbco} alt="" style={{ border: "1px solid white", borderRadius: "50%", padding: "5px", width: "100px", height: "100px", marginTop: "10vh" }} ></img>
+              <img
+                id="jugador1"
+                src={peonbco}
+                alt=""
+                style={{
+                  border: "1px solid white",
+                  borderRadius: "50%",
+                  padding: "5px",
+                  width: "100px",
+                  height: "100px",
+                  marginTop: "10vh",
+                }}
+              ></img>
             </div>
           </Col>
           <Col xs={12} md={1} style={{ padding: 0 }}>
             <div align="right" style={{ marginTop: "20px" }}>
-              <button id="bloque10" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque10"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque9" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque9"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque8" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque8"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque7" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque7"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque6" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque6"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque5" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque5"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque4" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque4"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque3" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque3"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque2" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque2"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
               <br></br>
-              <button id="bloque1" style={{ margin: "20px", width: "16px", height: "16px", borderRadius: "8px", border: "0" }}></button>
+              <button
+                id="bloque1"
+                style={{
+                  margin: "20px",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "8px",
+                  border: "0",
+                }}
+              ></button>
             </div>
           </Col>
           <Col xs={12} md={5} style={{ padding: 0 }}>
-            <canvas
-              id="chessCanvas"
-              width="600"
-              height="600"
-            ></canvas>
+            <canvas id="chessCanvas" width="600" height="600"></canvas>
           </Col>
-          <Col xs={12} md={3} >
+          <Col xs={12} md={3}>
             <div id="extras">
               <div id="jugadas" align="center">
                 {Object.keys(jugadas).length > 0 ? (
                   Object.keys(jugadas).map((llave) => {
                     const element = jugadas[llave];
                     return (
-                      <p align="left"
+                      <p
+                        align="left"
                         style={{
-                          marginBottom:"0",
+                          marginBottom: "0",
                           overflowWrap: "normal",
                           fontSize: ".75rem",
                         }}
                       >
-                        <span style={{color:"white"}}
-                          key={llave.createdAt}
-                        >
+                        <span style={{ color: "white" }} key={llave.createdAt}>
                           {element.movimiento}
                         </span>
                       </p>
@@ -164,12 +309,13 @@ export function Game() {
                   })
                 ) : (
                   <p align="center" style={{ margin: "5px" }}>
-                    <span>
-                    </span>
+                    <span></span>
                   </p>
                 )}
               </div>
-              <h4 align="center" id="turno"> </h4>
+              <h4 align="center" id="turno">
+                {" "}
+              </h4>
               <div id="chat_mensajes">
                 {Object.keys(chat).length > 0 ? (
                   Object.keys(chat).map((key, i) => {
@@ -188,8 +334,9 @@ export function Game() {
                       >
                         <span
                           key={key}
-                          className={`badge badge-info ${msgClass ? "is-success" : "is-info"
-                            }`}
+                          className={`badge badge-info ${
+                            msgClass ? "is-success" : "is-info"
+                          }`}
                         >
                           {element.msg}
                         </span>
@@ -198,8 +345,7 @@ export function Game() {
                   })
                 ) : (
                   <p align="center" style={{ margin: "5px" }}>
-                    <span>
-                    </span>
+                    <span></span>
                   </p>
                 )}
               </div>
@@ -219,7 +365,7 @@ export function Game() {
                     });
                   e.target.reset();
                   //mandamos el scroll hasta abajo
-                  var chatBox = document.getElementById('chat_mensajes');
+                  var chatBox = document.getElementById("chat_mensajes");
                   chatBox.scrollTop = chatBox.scrollHeight;
                 }}
               >
@@ -231,9 +377,18 @@ export function Game() {
                     placeholder="Escribe tu mensaje"
                   />
                 </div>
-                <div align="center" style={{ backgroundColor: "#1B232F", paddingTop: "10px", paddingBottom: "5px" }}>
+                <div
+                  align="center"
+                  style={{
+                    backgroundColor: "#1B232F",
+                    paddingTop: "10px",
+                    paddingBottom: "5px",
+                  }}
+                >
                   <button className="btn btn_enviar">Enviar</button>
-                  <p style={{ marginTop: "10px", color: "white" }}><a href="#!">Regístrate</a> para usar el chat</p>
+                  <p style={{ marginTop: "10px", color: "white" }}>
+                    <a href="#!">Regístrate</a> para usar el chat
+                  </p>
                 </div>
               </form>
             </div>
@@ -245,16 +400,34 @@ export function Game() {
         <Container>
           <Row>
             <Col xs={12} lg={1} style={{ padding: 0 }}>
-              <p id="logo_footer"><img src={logo_footer} alt="" /></p>
+              <p id="logo_footer">
+                <img src={logo_footer} alt="" />
+              </p>
             </Col>
             <Col xs={12} lg={5} style={{ padding: 0 }}>
-              <p id="marca_footer"> Mega Chess ® 2021 Todos los derechos reservados.</p>
+              <p id="marca_footer">
+                {" "}
+                Mega Chess ® 2021 Todos los derechos reservados.
+              </p>
             </Col>
             <Col xs={12} lg={3} style={{ padding: 0 }}>
               <p style={{ textAlign: "center" }}>Diseñado por Agencia NUBA</p>
             </Col>
             <Col xs={12} lg={3} style={{ padding: 0 }}>
-              <div className="item social"><a href="#!"><i className="icon ion-social-facebook"></i></a><a href="#!"><i className="la la-twitter"></i></a><a href="#!"><i className="icon ion-social-youtube-outline"></i></a><a href="#!"><i className="fab fa-instagram"></i></a></div>
+              <div className="item social">
+                <a href="#!">
+                  <i className="icon ion-social-facebook"></i>
+                </a>
+                <a href="#!">
+                  <i className="la la-twitter"></i>
+                </a>
+                <a href="#!">
+                  <i className="icon ion-social-youtube-outline"></i>
+                </a>
+                <a href="#!">
+                  <i className="fab fa-instagram"></i>
+                </a>
+              </div>
             </Col>
           </Row>
         </Container>
@@ -262,5 +435,3 @@ export function Game() {
     </section>
   );
 }
-
-

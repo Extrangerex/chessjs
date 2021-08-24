@@ -134,7 +134,6 @@ let posicionleonnegro;
 let numero_turno;
 let bloque;
 
-
 let ultimapiezacapturadanegra;
 let ultimapiezacapturadablanca;
 
@@ -149,7 +148,6 @@ let lobbyItemKey;
 
 let serverGameData = {};
 
-
 export function onLoad(_lobbyItemKey) {
   chessCanvas = document.getElementById("chessCanvas");
   chessCtx = chessCanvas.getContext("2d");
@@ -159,8 +157,6 @@ export function onLoad(_lobbyItemKey) {
   whiteVictories = 0;
   blackVictories = 0;
 
-
-
   lobbyItemKey = _lobbyItemKey;
 
   startGame(lobbyItemKey);
@@ -168,6 +164,49 @@ export function onLoad(_lobbyItemKey) {
 
 function getGameDbRef() {
   return firebase.database().ref(lobbyItemKey);
+}
+
+let isTriggeredChangeTeam = false;
+
+export function setTimerFromCreatedAt() {
+  /**
+   * We change of current player's side every 10 minuts
+   */
+  if (
+    parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60) %
+      2 ==
+    0
+  ) {
+    if (!isTriggeredChangeTeam) {
+      changeCurrentTeam(true);
+      isTriggeredChangeTeam = true;
+    }
+  } else {
+    isTriggeredChangeTeam = false;
+  }
+}
+
+function getMinutesFromCreatedAt() {
+  const date1 = new Date(serverGameData?.createdAt);
+  const date2 = Date.now();
+  const diffTime = Math.abs(date2 - date1);
+  let seconds = (diffTime / 1000) % 60;
+  let minutes = (diffTime / (1000 * 60)) % 60;
+  return `${Math.ceil(minutes)}:${Math.ceil(seconds)}`;
+}
+
+function getMillisecondsFromCreatedAt() {
+  const date1 = new Date(serverGameData?.createdAt);
+  const date2 = Date.now();
+  return Math.abs(date2 - date1);
+}
+
+function getMillisecondsFromLastPieceJoueCreatedAt() {
+  const date1 = new Date(
+    serverGameData?.lastPiecejoue?.createdAt ?? serverGameData?.createdAt
+  );
+  const date2 = Date.now();
+  return Math.abs(date2 - date1);
 }
 
 async function startGame() {
@@ -190,7 +229,7 @@ async function startGame() {
       serverGameData?.side === serverGameData?.player1 ? WHITE : BLACK;
 
     board = new Board(snapshot?.toJSON()?.board);
-    //leemos de firebase 
+    //leemos de firebase
     leer_comer_al_paso();
     leer_leoncoronadoblancocomible();
     leer_leoncoronadonegrocomible();
@@ -200,72 +239,69 @@ async function startGame() {
     leer_act_bloque();
     if (numero_turno === 7) {
       marca_bloque(2);
-      document.getElementById("bloque1").style.backgroundColor = 'red';
+      document.getElementById("bloque1").style.backgroundColor = "red";
     }
     if (numero_turno === 14) {
       marca_bloque(3);
-      document.getElementById("bloque2").style.backgroundColor = 'red';
+      document.getElementById("bloque2").style.backgroundColor = "red";
     }
     if (numero_turno === 21) {
       marca_bloque(4);
-      document.getElementById("bloque3").style.backgroundColor = 'red';
+      document.getElementById("bloque3").style.backgroundColor = "red";
     }
     if (numero_turno === 28) {
       marca_bloque(5);
-      document.getElementById("bloque4").style.backgroundColor = 'red';
+      document.getElementById("bloque4").style.backgroundColor = "red";
     }
     if (numero_turno === 35) {
       marca_bloque(6);
-      document.getElementById("bloque5").style.backgroundColor = 'red';
+      document.getElementById("bloque5").style.backgroundColor = "red";
     }
     if (numero_turno === 42) {
       marca_bloque(7);
-      document.getElementById("bloque6").style.backgroundColor = 'red';
+      document.getElementById("bloque6").style.backgroundColor = "red";
     }
     if (numero_turno === 49) {
       marca_bloque(8);
-      document.getElementById("bloque7").style.backgroundColor = 'red';
+      document.getElementById("bloque7").style.backgroundColor = "red";
     }
     if (numero_turno === 56) {
       marca_bloque(9);
-      document.getElementById("bloque8").style.backgroundColor = 'red';
+      document.getElementById("bloque8").style.backgroundColor = "red";
     }
     if (numero_turno === 63) {
       marca_bloque(10);
-      document.getElementById("bloque9").style.backgroundColor = 'red';
+      document.getElementById("bloque9").style.backgroundColor = "red";
     }
     if (numero_turno === 70) {
       marca_bloque(10);
-      document.getElementById("bloque10").style.backgroundColor = 'red';
+      document.getElementById("bloque10").style.backgroundColor = "red";
     }
 
     repaintBoard();
 
-
-
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
-      document.getElementById('turno').innerHTML = "Turno de tu oponente";
+      document.getElementById("turno").innerHTML = "Turno de tu oponente";
     } else {
-      document.getElementById('turno').innerHTML = "Tu turno";
+      document.getElementById("turno").innerHTML = "Tu turno";
     }
     if (currentTeam === BLACK) {
-      var jugador1a = document.getElementById('jugador2');
+      var jugador1a = document.getElementById("jugador2");
       jugador1a.style.border = "1px solid white";
       jugador1a.style.borderRadius = "50%";
       jugador1a.style.padding = "5px";
 
-      var jugador2a = document.getElementById('jugador1');
+      var jugador2a = document.getElementById("jugador1");
       jugador2a.style.border = "0";
       jugador2a.style.borderRadius = "0";
       jugador2a.style.padding = "0";
-
     } else {
-      var jugador1b = document.getElementById('jugador1');
+      var jugador1b = document.getElementById("jugador1");
       jugador1b.style.border = "1px solid white";
       jugador1b.style.borderRadius = "50%";
       jugador1b.style.padding = "5px";
 
-      var jugador2b = document.getElementById('jugador2');
+      var jugador2b = document.getElementById("jugador2");
       jugador2b.style.border = "0";
       jugador2b.style.borderRadius = "0";
       jugador2b.style.padding = "0";
@@ -319,8 +355,10 @@ async function onClick(event) {
   let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
   if (serverGameData?.numero_turno % 7 == 1) {
-    if (serverGameData?.lastPiecejoue?.x == x && serverGameData?.lastPiecejoue?.y == y) {
-
+    if (
+      serverGameData?.lastPiecejoue?.x == x &&
+      serverGameData?.lastPiecejoue?.y == y
+    ) {
       Swal.fire({
         title: "Opps..",
         text: "No puedes mover la misma pieza",
@@ -333,7 +371,6 @@ async function onClick(event) {
 
   if (checkValidMovement(x, y) === true) {
     ultimotipodemovimiento = "Movimiento";
-
 
     if (checkValidCapture(x, y) === true) {
       if (board.tiles[y][x].pieceType === KING) {
@@ -363,7 +400,7 @@ async function onClick(event) {
 
       //vemos si despues de que movio gano el leon coronado
       if (currentTeam === BLACK) {
-        var CLEANposicionleonblanco = posicionleonblanco.replace('"', '');
+        var CLEANposicionleonblanco = posicionleonblanco.replace('"', "");
         var Wcombopos = CLEANposicionleonblanco.split(",");
         var WposY = Wcombopos[0];
         var WposX = Wcombopos[1];
@@ -373,29 +410,35 @@ async function onClick(event) {
         /*if(WposX !== -1 && WposY !== -1){
           console.log(board.tiles[WposY][WposX].pieceType);
         }*/
-        if (leoncoronadoblancocomible === true && board.tiles[WposY][WposX].pieceType === FAKEKING) {
+        if (
+          leoncoronadoblancocomible === true &&
+          board.tiles[WposY][WposX].pieceType === FAKEKING
+        ) {
           Swal.fire({
             title: "Ganaron las Blancas",
-            icon: 'warning',
+            icon: "warning",
             type: "success",
             allowOutsideClick: false,
-            allowEscapeKey: false
+            allowEscapeKey: false,
           }).then(function () {
             window.location = "/lobby";
           });
         }
       } else {
-        var CLEANposicionleonnegro = posicionleonnegro.replace('"', '');
+        var CLEANposicionleonnegro = posicionleonnegro.replace('"', "");
         var Bcombopos = CLEANposicionleonnegro.split(",");
         var BposY = Bcombopos[0];
         var BposX = Bcombopos[1];
-        if (leoncoronadonegrocomible === true && board.tiles[BposY][BposX].pieceType === FAKEKING) {
+        if (
+          leoncoronadonegrocomible === true &&
+          board.tiles[BposY][BposX].pieceType === FAKEKING
+        ) {
           Swal.fire({
             title: "Ganaron las Negras",
-            icon: 'warning',
+            icon: "warning",
             type: "success",
             allowOutsideClick: false,
-            allowEscapeKey: false
+            allowEscapeKey: false,
           }).then(function () {
             window.location = "/lobby";
           });
@@ -495,7 +538,7 @@ async function onClick(event) {
         await getGameDbRef()
           .update({
             board,
-            lastPiecejoue: { x, y }
+            lastPiecejoue: { x, y, createdAt: Date.now() },
           })
           .catch(console.error);
 
@@ -555,8 +598,10 @@ function checkPossiblePlaysPawn(curX, curY) {
   checkPossibleMove(curX, curY + direction);
 
   // First double move
-  if ((curY === 2 && board.tiles[curY][curX].team === BLACK) ||
-    (curY === 7 && board.tiles[curY][curX].team === WHITE)) {
+  if (
+    (curY === 2 && board.tiles[curY][curX].team === BLACK) ||
+    (curY === 7 && board.tiles[curY][curX].team === WHITE)
+  ) {
     if (board.tiles[curY + direction][curX].pieceType === EMPTY) {
       checkPossibleMove(curX, curY + 2 * direction);
     }
@@ -664,8 +709,12 @@ function checkPossiblePlaysArdilla(curX, curY) {
 
   // Advance two tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
-  if (curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1) {
+  if (
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1
+  ) {
     if (board.tiles[curY + 1 * direction][curX].team !== currentTeam) {
       if (
         board.tiles[curY + 1 * direction][curX].pieceType === 0 ||
@@ -679,9 +728,13 @@ function checkPossiblePlaysArdilla(curX, curY) {
 
   // Advance three tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
-  if (curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 3 * direction >= 0 && curY + 3 * direction <= BOARD_HEIGHT - 1
+  if (
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 3 * direction >= 0 &&
+    curY + 3 * direction <= BOARD_HEIGHT - 1
   ) {
     if (
       board.tiles[curY + 1 * direction][curX].team !== currentTeam &&
@@ -755,7 +808,12 @@ function checkPossiblePlaysPerro(curX, curY) {
     checkPossibleCapture(curX, curY + direction);
   }
 
-  if (curY + 2 * direction > 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 && board.tiles[curY + 1 * direction][curX].pieceType === EMPTY) {
+  if (
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
+  ) {
     // Advance two tile
     checkPossibleMove(curX, curY + 2 * direction);
     if (board.tiles[curY + 2 * direction][curX].pieceType !== ELEFANTE) {
@@ -807,7 +865,9 @@ function checkPossiblePlaysPerro(curX, curY) {
     checkPossibleCapture(curX - 1, curY + direction);
   }
   if (
-    curX - 2 >= 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX - 2 >= 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX - 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
@@ -822,7 +882,9 @@ function checkPossiblePlaysPerro(curX, curY) {
     checkPossibleCapture(curX + 1, curY + direction);
   }
   if (
-    curX + 2 <= BOARD_WIDTH - 1 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX + 2 <= BOARD_WIDTH - 1 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
@@ -986,7 +1048,11 @@ function checkPossiblePlaysElefante(curX, curY) {
   }
 
   // Diagonal arriba derecha
-  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX + 1].team !== currentTeam) {
         checkPossiblePlay(curX + i, curY + i);
@@ -1004,7 +1070,11 @@ function checkPossiblePlaysElefante(curX, curY) {
   }
 
   // diagonal arriba izquierda
-  for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX - 1].team !== currentTeam) {
         checkPossiblePlay(curX - i, curY + i);
@@ -1225,7 +1295,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
   if (currentTeam === 0) {
     if (piece === PAWN) {
       //revisamos si acaba de comer al paso
-      if ((x + "," + y) === comeralpaso) {
+      if (x + "," + y === comeralpaso) {
         //actualizamos score y tablero
 
         //blackCasualities[board.tiles[y + 1][x].pieceType]++;
@@ -1236,14 +1306,12 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //capturamos la ficha
         board.tiles[y + 1][x].pieceType = EMPTY;
         board.tiles[y + 1][x].team = EMPTY;
-
       } else {
         //revisamos si se lo pueden comer al paso
         if (oldY - 2 === y) {
           comeralpaso = x + "," + (oldY - 1);
           //guardamos en firebase
           guardar_comer_al_paso(comeralpaso);
-
         } else {
           comeralpaso = "";
           //guardamos en firebase
@@ -2172,8 +2240,8 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
 
   //guardamos el ultimo movimiento
   ultimomovimiento = piece + "/" + oldX + "," + oldY + "/" + x + "," + y;
-  nomenclatura = piecesCharacters[piece] + "/" + oldX + "," + oldY + "/" + x + "," + y;
-
+  nomenclatura =
+    piecesCharacters[piece] + "/" + oldX + "," + oldY + "/" + x + "," + y;
 }
 function ganoleon() {
   for (let j = 0; j < BOARD_WIDTH; j++) {
@@ -2205,11 +2273,10 @@ function ganoleon() {
   }
 }
 
-async function changeCurrentTeam() {
+export async function changeCurrentTeam(skip = false) {
   if (serverGameData == null) return;
 
   if (serverGameData?.numero_turno % 7 == 0) {
-
     await getGameDbRef()
       .update({
         board,
@@ -2238,14 +2305,16 @@ async function changeCurrentTeam() {
       })
       .catch(console.error);
   }
-  await getGameDbRef()
-    .child("jugadas")
-    .push({
-      uid: firebase.auth().currentUser?.uid,
-      movimiento: nomenclatura,
-      createdAt: Date.now(),
-    })
-    .catch(console.error);
+  if (!skip) {
+    await getGameDbRef()
+      .child("jugadas")
+      .push({
+        uid: firebase.auth().currentUser?.uid,
+        movimiento: nomenclatura,
+        createdAt: Date.now(),
+      })
+      .catch(console.error);
+  }
 }
 
 async function repaintBoard() {
@@ -2254,8 +2323,6 @@ async function repaintBoard() {
    */
 
   /*await getGameDbRef().update({ board }).catch(console.error);*/
-
-
 
   drawBoard();
   checkPossiblePlays();
@@ -2393,10 +2460,10 @@ function drawPieces() {
       board.tiles[0][j].pieceType = FAKEKING;
       if (currentTeam === WHITE) {
         marcaleonnegro(true);
-        marcarposicionleonnegro('0,' + j);
+        marcarposicionleonnegro("0," + j);
       } else {
         marcaleonblanco(true);
-        marcarposicionleonblanco('0,' + j);
+        marcarposicionleonblanco("0," + j);
       }
     }
   }
@@ -2407,10 +2474,10 @@ function drawPieces() {
       board.tiles[9][j].pieceType = FAKEKING;
       if (currentTeam === WHITE) {
         marcaleonnegro(true);
-        marcarposicionleonnegro('9,' + j);
+        marcarposicionleonnegro("9," + j);
       } else {
         marcaleonblanco(true);
-        marcarposicionleonblanco('9,' + j);
+        marcarposicionleonblanco("9," + j);
       }
     }
   }
@@ -2440,7 +2507,8 @@ function drawPieces() {
               img1,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2451,7 +2519,8 @@ function drawPieces() {
               img2,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2464,7 +2533,8 @@ function drawPieces() {
               img3,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2475,7 +2545,8 @@ function drawPieces() {
               img4,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2488,7 +2559,8 @@ function drawPieces() {
               img5,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2499,7 +2571,8 @@ function drawPieces() {
               img6,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2512,7 +2585,8 @@ function drawPieces() {
               img7,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2523,7 +2597,8 @@ function drawPieces() {
               img8,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2536,7 +2611,8 @@ function drawPieces() {
               img9,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2547,7 +2623,8 @@ function drawPieces() {
               img10,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2560,7 +2637,8 @@ function drawPieces() {
               img11,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2571,7 +2649,8 @@ function drawPieces() {
               img12,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2584,7 +2663,8 @@ function drawPieces() {
               img13,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2595,7 +2675,8 @@ function drawPieces() {
               img14,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2608,7 +2689,8 @@ function drawPieces() {
               img15,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2619,7 +2701,8 @@ function drawPieces() {
               img16,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2632,7 +2715,8 @@ function drawPieces() {
               img17,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2643,7 +2727,8 @@ function drawPieces() {
               img18,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2656,7 +2741,8 @@ function drawPieces() {
               img19,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2667,7 +2753,8 @@ function drawPieces() {
               img20,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2680,7 +2767,8 @@ function drawPieces() {
               img21,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2691,7 +2779,8 @@ function drawPieces() {
               img22,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2704,7 +2793,8 @@ function drawPieces() {
               img23,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2715,7 +2805,8 @@ function drawPieces() {
               img24,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2728,7 +2819,8 @@ function drawPieces() {
               img25,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         } else {
@@ -2739,7 +2831,8 @@ function drawPieces() {
               img26,
               TILE_SIZE * (j + 1 / 11),
               TILE_SIZE * (i + 1 / 11),
-              50, 50
+              50,
+              50
             );
           };
         }
@@ -2769,7 +2862,7 @@ function updateCasualities(casualities, text) {
   }
 }
 
-function updateTotalVictories() { }
+function updateTotalVictories() {}
 
 function getOppositeTeam(team) {
   if (team === WHITE) return BLACK;
@@ -2783,7 +2876,6 @@ function checkTileUnderAttack(x, y) {
     for (let yy = 0; yy <= 9; yy++) {
       //vemos que la pieza sea enemiga
       if (board.tiles[yy][xx].team === getOppositeTeam(currentTeam)) {
-
         currentTeamJUSTCHECK = getOppositeTeam(currentTeam);
         let tile = board.tiles[yy][xx];
         if (tile.pieceType === PAWN) checkPossiblePlaysPawnJUSTCHECK(xx, yy);
@@ -2811,7 +2903,6 @@ function checkTileUnderAttack(x, y) {
           checkPossiblePlaysLeonJUSTCHECK(xx, yy);
 
         //console.log('X:'+xx+'Y:'+yy+'Pieza:'+board.tiles[yy][xx].pieceType);
-
       }
     }
   }
@@ -2917,8 +3008,11 @@ function checkPossiblePlaysArdillaJUSTCHECK(curX, curY) {
 
   // Advance two tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
-  if (curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1
+  if (
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1
   ) {
     if (board.tiles[curY + 1 * direction][curX].team !== currentTeamJUSTCHECK) {
       if (
@@ -2934,9 +3028,12 @@ function checkPossiblePlaysArdillaJUSTCHECK(curX, curY) {
   // Advance three tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
   if (
-    curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 3 * direction >= 0 && curY + 3 * direction <= BOARD_HEIGHT - 1
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 3 * direction >= 0 &&
+    curY + 3 * direction <= BOARD_HEIGHT - 1
   ) {
     if (
       board.tiles[curY + 1 * direction][curX].team !== currentTeamJUSTCHECK &&
@@ -3009,7 +3106,12 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
     checkPossibleCaptureJUSTCHECK(curX, curY + direction);
   }
 
-  if (curY + 2 * direction > 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 && board.tiles[curY + 1 * direction][curX].pieceType === EMPTY) {
+  if (
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
+  ) {
     // Advance two tile
     checkPossibleMoveJUSTCHECK(curX, curY + 2 * direction);
     if (board.tiles[curY + 2 * direction][curX].pieceType !== ELEFANTE) {
@@ -3061,7 +3163,9 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
     checkPossibleCaptureJUSTCHECK(curX - 1, curY + direction);
   }
   if (
-    curX - 2 >= 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX - 2 >= 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX - 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
@@ -3076,7 +3180,9 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
     checkPossibleCaptureJUSTCHECK(curX + 1, curY + direction);
   }
   if (
-    curX + 2 <= BOARD_WIDTH - 1 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX + 2 <= BOARD_WIDTH - 1 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
@@ -3252,7 +3358,11 @@ function checkPossiblePlaysElefanteJUSTCHECK(curX, curY) {
   }
 
   // Diagonal arriba derecha
-  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX + 1].team !== currentTeamJUSTCHECK) {
         checkPossiblePlayJUSTCHECK(curX + i, curY + i);
@@ -3270,7 +3380,11 @@ function checkPossiblePlaysElefanteJUSTCHECK(curX, curY) {
   }
 
   // diagonal arriba izquierda
-  for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX - 1].team !== currentTeamJUSTCHECK) {
         checkPossiblePlayJUSTCHECK(curX - i, curY + i);
@@ -3398,7 +3512,8 @@ function checkPossibleMoveJUSTCHECK(x, y) {
 }
 
 function checkPossibleCaptureJUSTCHECK(x, y) {
-  if (board.tiles[y][x].team !== getOppositeTeam(currentTeamJUSTCHECK)) return false;
+  if (board.tiles[y][x].team !== getOppositeTeam(currentTeamJUSTCHECK))
+    return false;
   casillasenpeligro.push(x + "/" + y);
   /*
   if(board.tiles[y][x].pieceType === KING){
@@ -3423,8 +3538,6 @@ function checkPossibleCaptureJUSTCHECK(x, y) {
 */
   return true;
 }
-
-
 
 function moverelreynegro(x, y) {
   //vemos si se puede movar a lugares vacios o con piezas enemigas dentro del rango de movimiento del rey
@@ -3801,8 +3914,11 @@ function checkPossiblePlaysArdillaAGAINSTBLACK(curX, curY) {
 
   // Advance two tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
-  if (curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1
+  if (
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1
   ) {
     if (board.tiles[curY + 1 * direction][curX].team !== WHITE) {
       if (
@@ -3818,9 +3934,12 @@ function checkPossiblePlaysArdillaAGAINSTBLACK(curX, curY) {
   // Advance three tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
   if (
-    curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 3 * direction >= 0 && curY + 3 * direction <= BOARD_HEIGHT - 1
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 3 * direction >= 0 &&
+    curY + 3 * direction <= BOARD_HEIGHT - 1
   ) {
     if (
       board.tiles[curY + 1 * direction][curX].team !== WHITE &&
@@ -3891,7 +4010,12 @@ function checkPossiblePlaysPerroAGAINSTBLACK(curX, curY) {
     checkPossibleCaptureAGAINSTBLACK(curX, curY + direction);
   }
 
-  if (curY + 2 * direction > 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 && board.tiles[curY + 1 * direction][curX].pieceType === EMPTY) {
+  if (
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
+  ) {
     // Advance two tile
     checkPossibleMoveAGAINSTBLACK(curX, curY + 2 * direction);
     if (board.tiles[curY + 2 * direction][curX].pieceType !== ELEFANTE) {
@@ -3943,7 +4067,9 @@ function checkPossiblePlaysPerroAGAINSTBLACK(curX, curY) {
     checkPossibleCaptureAGAINSTBLACK(curX - 1, curY + direction);
   }
   if (
-    curX - 2 >= 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX - 2 >= 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX - 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
@@ -3958,7 +4084,9 @@ function checkPossiblePlaysPerroAGAINSTBLACK(curX, curY) {
     checkPossibleCaptureAGAINSTBLACK(curX + 1, curY + direction);
   }
   if (
-    curX + 2 <= BOARD_WIDTH - 1 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX + 2 <= BOARD_WIDTH - 1 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
@@ -4129,7 +4257,11 @@ function checkPossiblePlaysElefanteAGAINSTBLACK(curX, curY) {
   }
 
   // Diagonal arriba derecha
-  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX + 1].team !== currentTeam) {
         checkPossiblePlayAGAINSTBLACK(curX + i, curY + i);
@@ -4147,7 +4279,11 @@ function checkPossiblePlaysElefanteAGAINSTBLACK(curX, curY) {
   }
 
   // diagonal arriba izquierda
-  for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX - 1].team !== currentTeam) {
         checkPossiblePlayAGAINSTBLACK(curX - i, curY + i);
@@ -4416,8 +4552,11 @@ function checkPossiblePlaysArdillaAGAINSTWHITE(curX, curY) {
 
   // Advance two tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
-  if (curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1
+  if (
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1
   ) {
     if (board.tiles[curY + 1 * direction][curX].team !== BLACK) {
       if (
@@ -4433,9 +4572,12 @@ function checkPossiblePlaysArdillaAGAINSTWHITE(curX, curY) {
   // Advance three tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
   if (
-    curY + 1 * direction >= 0 && curY + 1 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 2 * direction >= 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    curY + 3 * direction >= 0 && curY + 3 * direction <= BOARD_HEIGHT - 1
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 3 * direction >= 0 &&
+    curY + 3 * direction <= BOARD_HEIGHT - 1
   ) {
     if (
       board.tiles[curY + 1 * direction][curX].team !== BLACK &&
@@ -4506,7 +4648,12 @@ function checkPossiblePlaysPerroAGAINSTWHITE(curX, curY) {
     checkPossibleCaptureAGAINSTWHITE(curX, curY + direction);
   }
 
-  if (curY + 2 * direction > 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 && board.tiles[curY + 1 * direction][curX].pieceType === EMPTY) {
+  if (
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
+  ) {
     // Advance two tile
     checkPossibleMoveAGAINSTWHITE(curX, curY + 2 * direction);
     if (board.tiles[curY + 2 * direction][curX].pieceType !== ELEFANTE) {
@@ -4558,7 +4705,9 @@ function checkPossiblePlaysPerroAGAINSTWHITE(curX, curY) {
     checkPossibleCaptureAGAINSTWHITE(curX - 1, curY + direction);
   }
   if (
-    curX - 2 >= 0 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX - 2 >= 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX - 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
@@ -4573,7 +4722,9 @@ function checkPossiblePlaysPerroAGAINSTWHITE(curX, curY) {
     checkPossibleCaptureAGAINSTWHITE(curX + 1, curY + direction);
   }
   if (
-    curX + 2 <= BOARD_WIDTH - 1 && curY + 2 * direction > 0 && curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curX + 2 <= BOARD_WIDTH - 1 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
@@ -4744,7 +4895,11 @@ function checkPossiblePlaysElefanteAGAINSTWHITE(curX, curY) {
   }
 
   // Diagonal arriba derecha
-  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX + 1].team !== currentTeam) {
         checkPossiblePlayAGAINSTWHITE(curX + i, curY + i);
@@ -4762,7 +4917,11 @@ function checkPossiblePlaysElefanteAGAINSTWHITE(curX, curY) {
   }
 
   // diagonal arriba izquierda
-  for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+  for (
+    let i = 1;
+    curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
     if (curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1) {
       if (board.tiles[curY + 1][curX - 1].team !== currentTeam) {
         checkPossiblePlayAGAINSTWHITE(curX - i, curY + i);
@@ -4906,7 +5065,8 @@ async function leer_comer_al_paso() {
     .get()
     .then((snapshot) => {
       comeralpaso = snapshot.val();
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
@@ -4932,7 +5092,8 @@ async function leer_leoncoronadoblancocomible() {
     .get()
     .then((snapshot) => {
       leoncoronadoblancocomible = snapshot.val();
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
@@ -4942,11 +5103,11 @@ async function leer_leoncoronadonegrocomible() {
     .get()
     .then((snapshot) => {
       leoncoronadonegrocomible = snapshot.val();
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
-
 
 async function leer_posicionleonblanco() {
   await getGameDbRef()
@@ -4954,7 +5115,8 @@ async function leer_posicionleonblanco() {
     .get()
     .then((snapshot) => {
       posicionleonblanco = snapshot.val();
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
@@ -4965,7 +5127,8 @@ async function leer_posicionleonnegro() {
     .get()
     .then((snapshot) => {
       posicionleonnegro = snapshot.val();
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
@@ -4991,8 +5154,9 @@ async function leer_act_numero_turno() {
     .get()
     .then((snapshot) => {
       numero_turno = snapshot.val();
-      document.getElementById('numero_turno').innerHTML = numero_turno;
-    }).catch((error) => {
+      document.getElementById("numero_turno").innerHTML = numero_turno;
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
@@ -5003,8 +5167,9 @@ async function leer_act_bloque() {
     .get()
     .then((snapshot) => {
       bloque = snapshot.val();
-      document.getElementById('bloque').innerHTML = bloque;
-    }).catch((error) => {
+      document.getElementById("bloque").innerHTML = bloque;
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
