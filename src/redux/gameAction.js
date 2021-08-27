@@ -133,8 +133,6 @@ export const updateGame = (lobbyItemId, data) => async (dispatch) => {
     .ref(`lobby/${lobbyItemId}`)
     .get();
 
-  console.log(data);
-
   if (lobbyItemRefSnap.exists()) {
     await firebase.database().ref(`lobby/${lobbyItemId}`).update(data);
   }

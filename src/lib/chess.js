@@ -177,7 +177,7 @@ export function setTimerFromCreatedAt() {
    */
   if (
     parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60) %
-      2 ==
+      10 ==
     0
   ) {
     if (!isTriggeredChangeTeam) {
@@ -187,9 +187,14 @@ export function setTimerFromCreatedAt() {
   } else {
     isTriggeredChangeTeam = false;
   }
+
+  document.getElementById("time_createdat").innerHTML =
+    getMinutesFromCreatedAt();
+  document.getElementById("time_play").innerHTML =
+    getMinutesromLastPieceJoueCreatedAt();
 }
 
-function getMinutesFromCreatedAt() {
+export function getMinutesFromCreatedAt() {
   const date1 = new Date(serverGameData?.createdAt);
   const date2 = Date.now();
   const diffTime = Math.abs(date2 - date1);
@@ -210,6 +215,12 @@ function getMillisecondsFromLastPieceJoueCreatedAt() {
   );
   const date2 = Date.now();
   return Math.abs(date2 - date1);
+}
+function getMinutesromLastPieceJoueCreatedAt() {
+  let seconds = (getMillisecondsFromLastPieceJoueCreatedAt() / 1000) % 60;
+  let minutes =
+    (getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60;
+  return `${Math.ceil(minutes)}:${Math.ceil(seconds)}`;
 }
 
 async function startGame() {

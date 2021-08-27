@@ -150,6 +150,12 @@ export function Game() {
                   Bloque: <span id="bloque"></span>
                 </h4>
                 <h4 style={{ color: "white" }}>
+                  Tiempo: <span id="time_createdat"></span>
+                </h4>
+                <h4 style={{ color: "white" }}>
+                  Jugada: <span id="time_play"></span>
+                </h4>
+                <h4 style={{ color: "white" }}>
                   Jugada: <span id="numero_turno"></span>
                 </h4>
               </div>
