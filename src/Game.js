@@ -284,12 +284,10 @@ export function Game() {
                 ></button>
               </div>
             </Col>
-            <Col xs={12} md={5} style={{ padding: 0 }}>
+            <Col style={{ padding: 0 }}>
               <canvas id="chessCanvas" width="600" height="600"></canvas>
 
-              <Row>
-
-
+              <Row style={{ maxWidth: "600px" }}>
                 <button
                   id="jugada1"
                   style={{
@@ -388,18 +386,6 @@ export function Game() {
                     border: "0",
                   }}
                 ></button>
-
-                <button
-                  id="jugada10"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
-                ></button>
-
               </Row>
             </Col>
           </Row>
@@ -451,8 +437,9 @@ export function Game() {
                       >
                         <span
                           key={key}
-                          className={`badge badge-info ${msgClass ? "is-success" : "is-info"
-                            }`}
+                          className={`badge badge-info ${
+                            msgClass ? "is-success" : "is-info"
+                          }`}
                         >
                           {element.msg}
                         </span>

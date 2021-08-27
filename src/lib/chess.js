@@ -240,45 +240,71 @@ async function startGame() {
     leer_posicionleonnegro();
     leer_act_numero_turno();
     leer_act_bloque();
-    if (numero_turno === 7) {
+
+    try {
+      serverGameData?.jugadasPorBloque?.forEach((element) => {
+        document.getElementById(
+          `jugada${element % 9 == 0 ? 9 : element}`
+        ).style.backgroundColor = "red";
+      });
+    } catch (error) {}
+
+    if (numero_turno === 9) {
       marca_bloque(2);
       document.getElementById("bloque1").style.backgroundColor = "red";
     }
-    if (numero_turno === 14) {
+    if (numero_turno === 18) {
       marca_bloque(3);
       document.getElementById("bloque2").style.backgroundColor = "red";
     }
-    if (numero_turno === 21) {
+    if (numero_turno === 27) {
       marca_bloque(4);
       document.getElementById("bloque3").style.backgroundColor = "red";
     }
-    if (numero_turno === 28) {
+    if (numero_turno === 36) {
       marca_bloque(5);
       document.getElementById("bloque4").style.backgroundColor = "red";
     }
-    if (numero_turno === 35) {
+    if (numero_turno === 45) {
       marca_bloque(6);
       document.getElementById("bloque5").style.backgroundColor = "red";
     }
-    if (numero_turno === 42) {
+    if (numero_turno === 54) {
       marca_bloque(7);
       document.getElementById("bloque6").style.backgroundColor = "red";
     }
-    if (numero_turno === 49) {
+    if (numero_turno === 63) {
       marca_bloque(8);
       document.getElementById("bloque7").style.backgroundColor = "red";
     }
-    if (numero_turno === 56) {
+    if (numero_turno === 72) {
       marca_bloque(9);
       document.getElementById("bloque8").style.backgroundColor = "red";
     }
-    if (numero_turno === 63) {
+    if (numero_turno === 81) {
       marca_bloque(10);
       document.getElementById("bloque9").style.backgroundColor = "red";
     }
-    if (numero_turno === 70) {
+    if (numero_turno === 90) {
       marca_bloque(10);
       document.getElementById("bloque10").style.backgroundColor = "red";
+    }
+
+    switch (numero_turno) {
+      case 10:
+      case 19:
+      case 28:
+      case 37:
+      case 46:
+      case 55:
+      case 64:
+      case 73:
+      case 82:
+      case 91:
+        reset_jugadas();
+        break;
+      default:
+        break;
     }
 
     repaintBoard();
@@ -357,7 +383,7 @@ async function onClick(event) {
   let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
   let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-  if (serverGameData?.numero_turno % 7 == 1) {
+  if (serverGameData?.numero_turno % 9 == 1) {
     if (
       serverGameData?.lastPiecejoue?.x == x &&
       serverGameData?.lastPiecejoue?.y == y
@@ -2281,11 +2307,15 @@ export async function changeCurrentTeam(skip = false) {
   if (serverGameData?.player2 == null) return;
   if (serverGameData?.player1 == null) return;
 
-  if (serverGameData?.numero_turno % 7 == 0) {
+  var newTurno = numero_turno + 1;
+
+  marca_jugada(numero_turno % 9);
+
+  if (serverGameData?.numero_turno % 9 == 0) {
     await getGameDbRef()
       .update({
         board,
-        numero_turno: numero_turno + 1,
+        numero_turno: newTurno,
       })
       .catch(console.error);
     return;
@@ -2297,7 +2327,7 @@ export async function changeCurrentTeam(skip = false) {
         board,
         whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
         side: serverGameData?.player2,
-        numero_turno: numero_turno + 1,
+        numero_turno: newTurno,
       })
       .catch(console.error);
   } else {
@@ -2306,7 +2336,7 @@ export async function changeCurrentTeam(skip = false) {
         board,
         blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
         side: serverGameData?.player1,
-        numero_turno: numero_turno + 1,
+        numero_turno: newTurno,
       })
       .catch(console.error);
   }
@@ -5184,4 +5214,47 @@ async function marca_bloque(val) {
       bloque: val,
     })
     .catch(console.error);
+}
+
+async function marca_jugada(val) {
+  try {
+    await getGameDbRef()
+      .update({
+        jugadasPorBloque: [
+          serverGameData?.jugadasPorBloque?.map((element) => element),
+          val,
+        ],
+      })
+      .catch(console.error);
+  } catch (error) {
+    await getGameDbRef()
+      .update({
+        jugadasPorBloque: [val],
+      })
+      .catch(console.error);
+  }
+}
+
+async function reset_jugadas(val) {
+  try {
+    serverGameData?.jugadasPorBloque?.forEach((element) => {
+      document.getElementById(
+        `jugada${element % 9 == 0 ? 9 : element}`
+      ).style.backgroundColor = "white";
+    });
+  } catch (error) {}
+
+  await getGameDbRef()
+    .update({
+      jugadasPorBloque: [],
+    })
+    .catch(console.error);
+}
+
+async function jugada_contains(jugada) {
+  try {
+    return serverGameData?.jugadasPorBloque?.contains(jugada);
+  } catch (error) {
+    return false;
+  }
 }

@@ -36,11 +36,11 @@ export const newGame = (uid) => async (dispatch) => {
     status: "waiting",
     comeralpaso: "-1,-1",
     leoncoronadoblancocomible: false,
-    posicionleonblanco:"-1,-1",
+    posicionleonblanco: "-1,-1",
     leoncoronadonegrocomible: false,
-    posicionleonnegro:"-1,-1",
-    bloque:1,
-    numero_turno:0,
+    posicionleonnegro: "-1,-1",
+    bloque: 1,
+    numero_turno: 0,
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));
@@ -61,16 +61,14 @@ export const joinGame = (lobbyItemId, uid) => async (dispatch) => {
 
     if (game?.player1 != null && game?.player2 != null) {
       if (game?.player1 !== uid && game?.player2 !== uid) {
-        ReactSwal.fire(
-          {
-            title: "Opps..",
-            text:  "Esta sala ya esta llena",
-            icon:  "warning",
-            preConfirm: () => {
-              window.location = '/';
-            }
-          }
-        );
+        ReactSwal.fire({
+          title: "Opps..",
+          text: "Esta sala ya esta llena",
+          icon: "warning",
+          preConfirm: () => {
+            window.location = "/";
+          },
+        });
         return;
       }
     }
@@ -134,6 +132,8 @@ export const updateGame = (lobbyItemId, data) => async (dispatch) => {
     .database()
     .ref(`lobby/${lobbyItemId}`)
     .get();
+
+  console.log(data);
 
   if (lobbyItemRefSnap.exists()) {
     await firebase.database().ref(`lobby/${lobbyItemId}`).update(data);
