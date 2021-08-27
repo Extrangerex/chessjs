@@ -170,122 +170,239 @@ export function Game() {
               ></img>
             </div>
           </Col>
-          <Col xs={12} md={1} style={{ padding: 0 }}>
-            <div align="right" style={{ marginTop: "20px" }}>
-              <button
-                id="bloque10"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque9"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque8"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque7"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque6"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque5"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque4"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque3"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque2"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-              <br></br>
-              <button
-                id="bloque1"
-                style={{
-                  margin: "20px",
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "8px",
-                  border: "0",
-                }}
-              ></button>
-            </div>
-          </Col>
-          <Col xs={12} md={5} style={{ padding: 0 }}>
-            <canvas id="chessCanvas" width="600" height="600"></canvas>
-          </Col>
+          <Row>
+            <Col xs={12} md={1} style={{ padding: 0 }}>
+              <div align="right" style={{ marginTop: "20px" }}>
+                <button
+                  id="bloque10"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque9"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque8"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque7"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque6"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque5"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque4"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque3"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque2"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+                <br></br>
+                <button
+                  id="bloque1"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+              </div>
+            </Col>
+            <Col xs={12} md={5} style={{ padding: 0 }}>
+              <canvas id="chessCanvas" width="600" height="600"></canvas>
+
+              <Row>
+
+
+                <button
+                  id="jugada1"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada2"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada3"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada4"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada5"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada6"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada7"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada8"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada9"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+                <button
+                  id="jugada10"
+                  style={{
+                    margin: "20px",
+                    width: "16px",
+                    height: "16px",
+                    borderRadius: "8px",
+                    border: "0",
+                  }}
+                ></button>
+
+              </Row>
+            </Col>
+          </Row>
           <Col xs={12} md={3}>
             <div id="extras">
               <div id="jugadas" align="center">
@@ -334,9 +451,8 @@ export function Game() {
                       >
                         <span
                           key={key}
-                          className={`badge badge-info ${
-                            msgClass ? "is-success" : "is-info"
-                          }`}
+                          className={`badge badge-info ${msgClass ? "is-success" : "is-info"
+                            }`}
                         >
                           {element.msg}
                         </span>

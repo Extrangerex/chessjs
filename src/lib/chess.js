@@ -168,6 +168,9 @@ function getGameDbRef() {
 
 let isTriggeredChangeTeam = false;
 
+/**
+ * Function called each second from Game Component
+ */
 export function setTimerFromCreatedAt() {
   /**
    * We change of current player's side every 10 minuts
@@ -2275,6 +2278,8 @@ function ganoleon() {
 
 export async function changeCurrentTeam(skip = false) {
   if (serverGameData == null) return;
+  if (serverGameData?.player2 == null) return;
+  if (serverGameData?.player1 == null) return;
 
   if (serverGameData?.numero_turno % 7 == 0) {
     await getGameDbRef()
