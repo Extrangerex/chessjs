@@ -35,6 +35,8 @@ export const newGame = (uid) => async (dispatch) => {
     player2: null,
     status: "waiting",
     comeralpaso: "-1,-1",
+    comeralpasoconejo: "-1,-1",
+    comeralpasoardilla: "-1,-1",
     leoncoronadoblancocomible: false,
     posicionleonblanco: "-1,-1",
     leoncoronadonegrocomible: false,

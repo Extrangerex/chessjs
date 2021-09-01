@@ -127,6 +127,9 @@ let posicionreynegro = "4,0";
 let posicionreyblanco = "4,9";
 
 let comeralpaso;
+let comeralpasoardilla;
+let comeralpasoconejo;
+
 let leoncoronadoblancocomible;
 let leoncoronadonegrocomible;
 let posicionleonblanco;
@@ -245,6 +248,10 @@ async function startGame() {
     board = new Board(snapshot?.toJSON()?.board);
     //leemos de firebase
     leer_comer_al_paso();
+    leer_comer_al_paso_conejo();
+    leer_comer_al_paso_ardilla();
+
+
     leer_leoncoronadoblancocomible();
     leer_leoncoronadonegrocomible();
     leer_posicionleonblanco();
@@ -1359,7 +1366,44 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         }
       }
     }
-
+    if (piece === CONEJO) {
+      //revisamos si acaba de comer al paso para capturar ficha
+      if ((x + "," + y) === comeralpasoconejo || x + "," + y === comeralpaso) {
+        //capturamos la ficha
+        board.tiles[y + 1][x].pieceType = EMPTY;
+        board.tiles[y + 1][x].team = EMPTY;
+      } else {
+        //revisamos si se lo pueden comer al paso
+        if (oldY - 2 === y) {
+          comeralpasoconejo = x + "," + (oldY - 1);
+          //guardamos en firebase
+          guardar_comer_al_paso_conejo(comeralpasoconejo);
+        } else {
+          comeralpasoconejo = "";
+          //guardamos en firebase
+          guardar_comer_al_paso_conejo(comeralpasoconejo);
+        }
+      }
+    }
+    if (piece === ARDILLA) {
+      //revisamos si acaba de comer al paso para capturar ficha
+      if (x + "," + y === comeralpasoardilla || x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
+        //capturamos la ficha
+        board.tiles[y + 1][x].pieceType = EMPTY;
+        board.tiles[y + 1][x].team = EMPTY;
+      } else {
+        //revisamos si se lo pueden comer al paso
+        if (oldY - 2 === y) {
+          comeralpasoardilla = x + "," + (oldY - 1);
+          //guardamos en firebase
+          guardar_comer_al_paso_ardilla(comeralpasoardilla);
+        } else {
+          comeralpasoardilla = "";
+          //guardamos en firebase
+          guardar_comer_al_paso_ardilla(comeralpasoardilla);
+        }
+      }
+    }
     if (piece === KING) {
       //vemos si es enroque con la torre2
       if (
@@ -1801,6 +1845,44 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
           comeralpaso = "";
           //guardamos en firebase
           guardar_comer_al_paso(comeralpaso);
+        }
+      }
+    }
+    if (piece === CONEJO) {
+      //revisamos si acaba de comer al paso
+      if (x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
+        //capturamos la ficha
+        board.tiles[y - 1][x].pieceType = EMPTY;
+        board.tiles[y - 1][x].team = EMPTY;
+      } else {
+        //revisamos si se lo pueden comer al paso
+        if (oldY + 2 === y) {
+          comeralpasoconejo = x + "," + (oldY + 1);
+          //guardamos en firebase
+          guardar_comer_al_paso_conejo(comeralpasoconejo);
+        } else {
+          comeralpasoconejo = "";
+          //guardamos en firebase
+          guardar_comer_al_paso_conejo(comeralpasoconejo);
+        }
+      }
+    }
+    if (piece === ARDILLA) {
+      //revisamos si acaba de comer al paso
+      if (x + "," + y === comeralpasoardilla || x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
+        //capturamos la ficha
+        board.tiles[y - 1][x].pieceType = EMPTY;
+        board.tiles[y - 1][x].team = EMPTY;
+      } else {
+        //revisamos si se lo pueden comer al paso
+        if (oldY + 2 === y) {
+          comeralpasoardilla = x + "," + (oldY + 1);
+          //guardamos en firebase
+          guardar_comer_al_paso_ardilla(comeralpasoardilla);
+        } else {
+          comeralpasoardilla = "";
+          //guardamos en firebase
+          guardar_comer_al_paso_ardilla(comeralpasoardilla);
         }
       }
     }
@@ -2461,14 +2543,14 @@ function drawPieces() {
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[0][j].pieceType;
     if (pieza === CONEJO) {
-      board.tiles[0][j].pieceType = KNIGHT;
+      board.tiles[0][j].pieceType = ROOK;
     }
   }
 
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[9][j].pieceType;
     if (pieza === CONEJO) {
-      board.tiles[9][j].pieceType = KNIGHT;
+      board.tiles[9][j].pieceType = ROOK;
     }
   }
 
@@ -5105,6 +5187,21 @@ async function guardar_comer_al_paso(coord) {
     })
     .catch(console.error);
 }
+async function guardar_comer_al_paso_conejo(coord) {
+  await getGameDbRef()
+    .update({
+      comeralpasoconejo: coord,
+    })
+    .catch(console.error);
+}
+async function guardar_comer_al_paso_ardilla(coord) {
+  await getGameDbRef()
+    .update({
+      comeralpasoardilla: coord,
+    })
+    .catch(console.error);
+}
+
 async function leer_comer_al_paso() {
   await getGameDbRef()
     .child("comeralpaso")
@@ -5113,6 +5210,26 @@ async function leer_comer_al_paso() {
       comeralpaso = snapshot.val();
     })
     .catch((error) => {
+      console.error(error);
+    });
+}
+async function leer_comer_al_paso_conejo() {
+  await getGameDbRef()
+    .child("comeralpasoconejo")
+    .get()
+    .then((snapshot) => {
+      comeralpasoconejo = snapshot.val();
+     }).catch((error) => {
+      console.error(error);
+    });
+}
+async function leer_comer_al_paso_ardilla() {
+  await getGameDbRef()
+    .child("comeralpasoardilla")
+    .get()
+    .then((snapshot) => {
+      comeralpasoardilla = snapshot.val();
+     }).catch((error) => {
       console.error(error);
     });
 }
