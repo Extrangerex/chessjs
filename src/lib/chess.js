@@ -269,10 +269,57 @@ async function startGame() {
         leer_act_bloque();
 
         try {
-            serverGameData?.jugadasPorBloque?.forEach((element) => {
-                document.getElementById(
-                    `jugada${element % 9 == 0 ? 9 : element}`
-                ).style.backgroundColor = "red";
+            Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
+                let element = parseInt(_element);
+                switch (element) {
+                    case 0:
+                        document.getElementById(
+                            "jugada1"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 1:
+                        document.getElementById(
+                            "jugada2"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 2:
+                        document.getElementById(
+                            "jugada3"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 3:
+                        document.getElementById(
+                            "jugada4"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 4:
+                        document.getElementById(
+                            "jugada5"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 5:
+                        document.getElementById(
+                            "jugada6"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 6:
+                        document.getElementById(
+                            "jugada7"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 7:
+                        document.getElementById(
+                            "jugada8"
+                        ).style.backgroundColor = "red";
+                        break;
+                    case 8:
+                        document.getElementById(
+                            "jugada9"
+                        ).style.backgroundColor = "red";
+                        break;
+                    default:
+                        console.log(element);
+                }
             });
         } catch (error) { }
 
@@ -320,9 +367,9 @@ async function startGame() {
         switch (numero_turno) {
             case 10:
             case 19:
-            case 28:
+            case 29:
             case 37:
-            case 46:
+            case 48:
             case 55:
             case 64:
             case 73:
@@ -5404,10 +5451,56 @@ async function marca_jugada(val) {
 
 async function reset_jugadas(val) {
     try {
-        serverGameData?.jugadasPorBloque?.forEach((element) => {
-            document.getElementById(
-                `jugada${element % 9 == 0 ? 9 : element}`
-            ).style.backgroundColor = "white";
+        Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {   
+            let element = parseInt(_element);
+                switch (element) {
+                    case 0:
+                        document.getElementById(
+                            "jugada1"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 1:
+                        document.getElementById(
+                            "jugada2"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 2:
+                        document.getElementById(
+                            "jugada3"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 3:
+                        document.getElementById(
+                            "jugada4"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 4:
+                        document.getElementById(
+                            "jugada5"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 5:
+                        document.getElementById(
+                            "jugada6"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 6:
+                        document.getElementById(
+                            "jugada7"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 7:
+                        document.getElementById(
+                            "jugada8"
+                        ).style.backgroundColor = "white";
+                        break;
+                    case 8:
+                        document.getElementById(
+                            "jugada9"
+                        ).style.backgroundColor = "white";
+                        break;
+                    default:
+                }
         });
     } catch (error) { }
 
@@ -5420,7 +5513,7 @@ async function reset_jugadas(val) {
 
 async function jugada_contains(jugada) {
     try {
-        return serverGameData?.jugadasPorBloque?.contains(jugada);
+        return Object.keys(serverGameData?.jugadasPorBloque)?.contains(jugada);
     } catch (error) {
         return false;
     }
