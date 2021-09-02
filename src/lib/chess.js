@@ -326,61 +326,53 @@ async function startGame() {
         if (numero_turno === 9) {
             marca_bloque(2);
             document.getElementById("bloque1").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 18) {
             marca_bloque(3);
             document.getElementById("bloque2").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 27) {
             marca_bloque(4);
             document.getElementById("bloque3").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 36) {
             marca_bloque(5);
             document.getElementById("bloque4").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 45) {
             marca_bloque(6);
             document.getElementById("bloque5").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 54) {
             marca_bloque(7);
             document.getElementById("bloque6").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 63) {
             marca_bloque(8);
             document.getElementById("bloque7").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 72) {
             marca_bloque(9);
             document.getElementById("bloque8").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 81) {
             marca_bloque(10);
             document.getElementById("bloque9").style.backgroundColor = "red";
+                reset_jugadas();
         }
         if (numero_turno === 90) {
             marca_bloque(10);
             document.getElementById("bloque10").style.backgroundColor = "red";
-        }
-
-        switch (numero_turno) {
-            case 10:
-            case 19:
-            case 29:
-            case 37:
-            case 48:
-            case 55:
-            case 64:
-            case 73:
-            case 82:
-            case 91:
                 reset_jugadas();
-                break;
-            default:
-                break;
         }
-
         repaintBoard();
 
         if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
