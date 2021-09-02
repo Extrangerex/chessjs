@@ -125,12 +125,6 @@ export function Game() {
                   Bloque: <span id="bloque"></span>
                 </h4>
                 <h4 style={{ color: "white" }}>
-                  Tiempo: <span id="time_createdat"></span>
-                </h4>
-                <h4 style={{ color: "white" }}>
-                  Jugada: <span id="time_play"></span>
-                </h4>
-                <h4 style={{ color: "white" }}>
                   Jugada: <span id="numero_turno"></span>
                 </h4>
               </div>
@@ -372,6 +366,14 @@ export function Game() {
           </Row>
           <Col xs={12} md={3}>
             <div id="extras">
+              <ul align="center">
+                <li>
+                  Jugada: <span id="time_play"></span>
+                </li>
+                <li>
+                  Tiempo: <span id="time_createdat"></span>
+                </li>
+              </ul>
               <div id="jugadas" align="center">
                 {Object.keys(jugadas).length > 0 ? (
                   Object.keys(jugadas).map((llave) => {
@@ -418,9 +420,8 @@ export function Game() {
                       >
                         <span
                           key={key}
-                          className={`badge badge-info ${
-                            msgClass ? "is-success" : "is-info"
-                          }`}
+                          className={`badge badge-info ${msgClass ? "is-success" : "is-info"
+                            }`}
                         >
                           {element.msg}
                         </span>

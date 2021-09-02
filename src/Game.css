@@ -9,6 +9,20 @@
     margin-bottom: 1vh;
     border-radius: .25rem;
 }
+#extras ul {
+    list-style:none;
+    padding:0;
+}
+#extras ul li {
+    display:inline-block;
+    padding:5px;
+    margin-top: 3px;
+    margin-right:5px;
+    margin-left:5px;
+    color: #1B232F;
+    background-color: white;
+    border-radius: 5px;
+}
 #chat_mensajes{
     height: 16vh;
     overflow: auto;
