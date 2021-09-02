@@ -174,7 +174,7 @@ let isTriggeredChangeTeam = false;
 /**
  * Function called each second from Game Component
  */
-export function setTimerFromCreatedAt() {
+export async function setTimerFromCreatedAt() {
   /**
    * We change of current player's side every 10 minuts
    */
@@ -189,6 +189,16 @@ export function setTimerFromCreatedAt() {
     }
   } else {
     isTriggeredChangeTeam = false;
+  }
+
+  if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) >= 90) {
+    if (serverGameData?.status != "tied") {
+      await getGameDbRef()
+        .update({
+          status: "tied",
+        })
+        .catch(console.error);
+    }
   }
 
   document.getElementById("time_createdat").innerHTML =
@@ -250,7 +260,6 @@ async function startGame() {
     leer_comer_al_paso();
     leer_comer_al_paso_conejo();
     leer_comer_al_paso_ardilla();
-
 
     leer_leoncoronadoblancocomible();
     leer_leoncoronadonegrocomible();
@@ -383,6 +392,14 @@ async function onClick(event) {
     Swal.fire({
       title: "Opps..",
       text: "Debes esperar que se una un jugador para empezar a jugar",
+    });
+    return;
+  }
+
+  if (serverGameData?.status == "tied") {
+    Swal.fire({
+      title: "Opps..",
+      text: "El juego se ha empatado",
     });
     return;
   }
@@ -1368,7 +1385,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
     if (piece === CONEJO) {
       //revisamos si acaba de comer al paso para capturar ficha
-      if ((x + "," + y) === comeralpasoconejo || x + "," + y === comeralpaso) {
+      if (x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
         //capturamos la ficha
         board.tiles[y + 1][x].pieceType = EMPTY;
         board.tiles[y + 1][x].team = EMPTY;
@@ -1387,7 +1404,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
     if (piece === ARDILLA) {
       //revisamos si acaba de comer al paso para capturar ficha
-      if (x + "," + y === comeralpasoardilla || x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
+      if (
+        x + "," + y === comeralpasoardilla ||
+        x + "," + y === comeralpasoconejo ||
+        x + "," + y === comeralpaso
+      ) {
         //capturamos la ficha
         board.tiles[y + 1][x].pieceType = EMPTY;
         board.tiles[y + 1][x].team = EMPTY;
@@ -1869,7 +1890,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
     if (piece === ARDILLA) {
       //revisamos si acaba de comer al paso
-      if (x + "," + y === comeralpasoardilla || x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
+      if (
+        x + "," + y === comeralpasoardilla ||
+        x + "," + y === comeralpasoconejo ||
+        x + "," + y === comeralpaso
+      ) {
         //capturamos la ficha
         board.tiles[y - 1][x].pieceType = EMPTY;
         board.tiles[y - 1][x].team = EMPTY;
@@ -2409,6 +2434,9 @@ export async function changeCurrentTeam(skip = false) {
       .update({
         board,
         numero_turno: newTurno,
+        lastPiecejoue: {
+          createdAt: Date.now(),
+        },
       })
       .catch(console.error);
     return;
@@ -5219,7 +5247,8 @@ async function leer_comer_al_paso_conejo() {
     .get()
     .then((snapshot) => {
       comeralpasoconejo = snapshot.val();
-     }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }
@@ -5229,7 +5258,8 @@ async function leer_comer_al_paso_ardilla() {
     .get()
     .then((snapshot) => {
       comeralpasoardilla = snapshot.val();
-     }).catch((error) => {
+    })
+    .catch((error) => {
       console.error(error);
     });
 }

@@ -25,31 +25,6 @@ export function Game() {
   const [jugadas, setJugadas] = useState({});
   const [serverData, setServerData] = useState({});
 
-  function getMillisecondsFromCreatedAt() {
-    const date1 = new Date(serverData?.createdAt);
-    const date2 = Date.now();
-    return Math.abs(date2 - date1);
-  }
-
-  function getMinutesFromCreatedAt() {
-    const date1 = new Date(serverData?.createdAt);
-    const date2 = Date.now();
-    const diffTime = Math.abs(date2 - date1);
-    let seconds = (diffTime / 1000) % 60;
-    let minutes = (diffTime / (1000 * 60)) % 60;
-    return parseInt(minutes);
-  }
-
-  function getRemainingFromCreatedAt() {
-    const date1 = new Date(serverData?.createdAt);
-    console.log(serverData?.createdAt);
-    const date2 = Date.now();
-    const diffTime = Math.abs(date2 - date1);
-    let seconds = (diffTime / 1000) % 60;
-    let minutes = (diffTime / (1000 * 60)) % 60;
-    return `${parseInt(minutes)}:${parseInt(seconds)}`;
-  }
-
   const timerInterval = setInterval(() => {
     if (serverData?.createdAt != null) {
       chess.setTimerFromCreatedAt();
