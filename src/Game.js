@@ -366,7 +366,7 @@ export function Game() {
           </Row>
           <Col xs={12} md={3}>
             <div id="extras">
-              <ul align="center">
+              <ul align="center" className="d-flex justify-content-between p-1">
                 <li>
                   Jugada: <span id="time_play"></span>
                 </li>
@@ -420,8 +420,9 @@ export function Game() {
                       >
                         <span
                           key={key}
-                          className={`badge badge-info ${msgClass ? "is-success" : "is-info"
-                            }`}
+                          className={`badge badge-info ${
+                            msgClass ? "is-success" : "is-info"
+                          }`}
                         >
                           {element.msg}
                         </span>
