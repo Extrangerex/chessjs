@@ -178,10 +178,11 @@ export async function setTimerFromCreatedAt() {
     /**
      * We change of current player's side every 10 minuts
      */
+    let minutesdFromLastPieceJoue = Math.ceil(parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60));
     if (
-        parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60) %
+        minutesdFromLastPieceJoue %
         10 ==
-        0
+        0 && minutesdFromLastPieceJoue != 0
     ) {
         if (!isTriggeredChangeTeam) {
             changeCurrentTeam(true);
@@ -326,52 +327,52 @@ async function startGame() {
         if (numero_turno === 9) {
             marca_bloque(2);
             document.getElementById("bloque1").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 18) {
             marca_bloque(3);
             document.getElementById("bloque2").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 27) {
             marca_bloque(4);
             document.getElementById("bloque3").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 36) {
             marca_bloque(5);
             document.getElementById("bloque4").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 45) {
             marca_bloque(6);
             document.getElementById("bloque5").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 54) {
             marca_bloque(7);
             document.getElementById("bloque6").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 63) {
             marca_bloque(8);
             document.getElementById("bloque7").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 72) {
             marca_bloque(9);
             document.getElementById("bloque8").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 81) {
             marca_bloque(10);
             document.getElementById("bloque9").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         if (numero_turno === 90) {
             marca_bloque(10);
             document.getElementById("bloque10").style.backgroundColor = "red";
-                reset_jugadas();
+            reset_jugadas();
         }
         repaintBoard();
 
@@ -2468,6 +2469,7 @@ function ganoleon() {
     }
 }
 
+
 export async function changeCurrentTeam(skip = false) {
     if (serverGameData == null) return;
     if (serverGameData?.player2 == null) return;
@@ -2477,7 +2479,7 @@ export async function changeCurrentTeam(skip = false) {
 
     marca_jugada(numero_turno % 9);
 
-    if (serverGameData?.numero_turno % 9 == 0) {
+    if (serverGameData?.numero_turno % 9 == 0 && serverGameData?.numero_turno != 0) {
         await getGameDbRef()
             .update({
                 board,
@@ -5443,56 +5445,56 @@ async function marca_jugada(val) {
 
 async function reset_jugadas(val) {
     try {
-        Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {   
+        Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
             let element = parseInt(_element);
-                switch (element) {
-                    case 0:
-                        document.getElementById(
-                            "jugada1"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 1:
-                        document.getElementById(
-                            "jugada2"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 2:
-                        document.getElementById(
-                            "jugada3"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 3:
-                        document.getElementById(
-                            "jugada4"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 4:
-                        document.getElementById(
-                            "jugada5"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 5:
-                        document.getElementById(
-                            "jugada6"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 6:
-                        document.getElementById(
-                            "jugada7"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 7:
-                        document.getElementById(
-                            "jugada8"
-                        ).style.backgroundColor = "white";
-                        break;
-                    case 8:
-                        document.getElementById(
-                            "jugada9"
-                        ).style.backgroundColor = "white";
-                        break;
-                    default:
-                }
+            switch (element) {
+                case 0:
+                    document.getElementById(
+                        "jugada1"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 1:
+                    document.getElementById(
+                        "jugada2"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 2:
+                    document.getElementById(
+                        "jugada3"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 3:
+                    document.getElementById(
+                        "jugada4"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 4:
+                    document.getElementById(
+                        "jugada5"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 5:
+                    document.getElementById(
+                        "jugada6"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 6:
+                    document.getElementById(
+                        "jugada7"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 7:
+                    document.getElementById(
+                        "jugada8"
+                    ).style.backgroundColor = "white";
+                    break;
+                case 8:
+                    document.getElementById(
+                        "jugada9"
+                    ).style.backgroundColor = "white";
+                    break;
+                default:
+            }
         });
     } catch (error) { }
 

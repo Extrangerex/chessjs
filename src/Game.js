@@ -80,7 +80,7 @@ export function Game() {
       chatRef.off("value");
       jugadasRef.off("value");
     };
-  }, [dispatch, auth, game, lobbyItemId, loading]);
+  }, [dispatch, auth, game, lobbyItemId, loading, timerInterval]);
 
   return (
     <section>
