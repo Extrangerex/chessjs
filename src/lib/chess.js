@@ -178,17 +178,17 @@ export async function setTimerFromCreatedAt() {
   /**
    * We change of current player's side every 10 minuts
    */
-  let minutesdFromLastPieceJoue = Math.abs(
-    parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60)
-  );
-  if (minutesdFromLastPieceJoue % 5 == 0 && minutesdFromLastPieceJoue != 0) {
-    if (!isTriggeredChangeTeam) {
-      changeCurrentTeam(true);
-      isTriggeredChangeTeam = true;
-    }
-  } else {
-    isTriggeredChangeTeam = false;
-  }
+//   let minutesdFromLastPieceJoue = Math.abs(
+//     parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60)
+//   );
+//   if (minutesdFromLastPieceJoue % 2 == 0 && minutesdFromLastPieceJoue != 0) {
+//     if (!isTriggeredChangeTeam) {
+//       changeCurrentTeam(true);
+//       isTriggeredChangeTeam = true;
+//     }
+//   } else {
+//     isTriggeredChangeTeam = false;
+//   }
 
   if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) >= 90) {
     if (serverGameData?.status != "tied") {
