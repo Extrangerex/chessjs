@@ -1,4 +1,4 @@
-import { Button, Modal } from "bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import firebase from 'firebase';
@@ -14,7 +14,7 @@ export function ForgotPassword() {
     const handleShow = () => setShow(true);
 
     const onSubmit = data => {
-        firebase.auth().sendPasswordResetEmail(data.emailAddress).then((user) => {
+        firebase.auth().sendPasswordResetEmail(data.emailAddress).then(() => {
             ReactSwal.fire({
                 title: "Atención!",
                 icon: "success",
@@ -35,9 +35,7 @@ export function ForgotPassword() {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Recuperar contraseña
-      </Button>
+            <Button variant="primary" onClick={handleShow}>Recuperar contraseña</Button>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -54,13 +52,11 @@ export function ForgotPassword() {
 
                         <Button variant="primary" type="submit" disabled={loading}>
                             Recuperar contraseña
-          </Button>
+                            </Button>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-          </Button>
+                    <Button variant="secondary" onClick={handleClose}>Close</Button>
                 </Modal.Footer>
             </Modal>
         </>
