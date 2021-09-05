@@ -37,6 +37,7 @@ export const newGame = (uid) => async (dispatch) => {
     comeralpaso: "-1,-1",
     comeralpasoconejo: "-1,-1",
     comeralpasoardilla: "-1,-1",
+    comeralpasoardillatres: "-1,-1",
     leoncoronadoblancocomible: false,
     posicionleonblanco: "-1,-1",
     leoncoronadonegrocomible: false,

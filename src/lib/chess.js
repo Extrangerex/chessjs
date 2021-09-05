@@ -128,6 +128,7 @@ let posicionreyblanco = "4,9";
 
 let comeralpaso;
 let comeralpasoardilla;
+let comeralpasoardillatres;
 let comeralpasoconejo;
 
 let leoncoronadoblancocomible;
@@ -178,17 +179,17 @@ export async function setTimerFromCreatedAt() {
   /**
    * We change of current player's side every 10 minuts
    */
-//   let minutesdFromLastPieceJoue = Math.abs(
-//     parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60)
-//   );
-//   if (minutesdFromLastPieceJoue % 2 == 0 && minutesdFromLastPieceJoue != 0) {
-//     if (!isTriggeredChangeTeam) {
-//       changeCurrentTeam(true);
-//       isTriggeredChangeTeam = true;
-//     }
-//   } else {
-//     isTriggeredChangeTeam = false;
-//   }
+  //   let minutesdFromLastPieceJoue = Math.abs(
+  //     parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60)
+  //   );
+  //   if (minutesdFromLastPieceJoue % 2 == 0 && minutesdFromLastPieceJoue != 0) {
+  //     if (!isTriggeredChangeTeam) {
+  //       changeCurrentTeam(true);
+  //       isTriggeredChangeTeam = true;
+  //     }
+  //   } else {
+  //     isTriggeredChangeTeam = false;
+  //   }
 
   if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) >= 90) {
     if (serverGameData?.status != "tied") {
@@ -259,6 +260,10 @@ async function startGame() {
     leer_comer_al_paso();
     leer_comer_al_paso_conejo();
     leer_comer_al_paso_ardilla();
+    leer_comer_al_paso_ardilla_tres();
+
+    leer_jaquereyblanco();
+    leer_jaquereynegro();
 
     leer_leoncoronadoblancocomible();
     leer_leoncoronadonegrocomible();
@@ -302,7 +307,7 @@ async function startGame() {
             console.log(element);
         }
       });
-    } catch (error) {}
+    } catch (error) { }
 
     if (numero_turno === 18) {
       marca_bloque(2);
@@ -541,6 +546,7 @@ async function onClick(event) {
       //ponemos en cero los jaques
       jaquereyblanco = "No";
       jaquereynegro = "No";
+
       casillasenpeligro = [];
       var cambio_de_turno = "Si";
 
@@ -629,6 +635,8 @@ async function onClick(event) {
       if (cambio_de_turno === "Si") {
         await getGameDbRef()
           .update({
+            jaquereyblanco: jaquereyblanco,
+            jaquereynegro: jaquereynegro,
             board,
             lastPiecejoue: { x, y, createdAt: Date.now() },
           })
@@ -982,6 +990,17 @@ function checkPossiblePlaysPerro(curX, curY) {
   ) {
     checkPossibleCapture(curX + 2, curY + 2 * direction);
   }
+
+  //movimiento hacia atras 1 casilla
+  // Lower move
+  if (curY - 1 * direction >= 0 && curY - 1 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMove(curX, curY - 1 * direction);
+  }
+  //movimiento hacia atras 2 casillas
+  if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMove(curX, curY - 2 * direction);
+  }
+
 }
 
 function checkPossiblePlaysKnight(curX, curY) {
@@ -1431,25 +1450,59 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
       }
     }
     if (piece === ARDILLA) {
-      //revisamos si acaba de comer al paso para capturar ficha
+      const combo_comeralpasoardilla = comeralpasoardilla.split(",");
+      const caaX = combo_comeralpasoardilla[0];
+      const caaY = combo_comeralpasoardilla[1];
+
+      const combo_comeralpasoardillatres = comeralpasoardillatres.split(",");
+      const caa3X = combo_comeralpasoardillatres[0];
+      const caa3Y = combo_comeralpasoardillatres[1];
+
+      const combo_comeralpasoconejo = comeralpasoconejo.split(",");
+      const cacX = combo_comeralpasoconejo[0];
+      const cacY = combo_comeralpasoconejo[1];
+
+      const combo_comeralpaso = comeralpaso.split(",");
+      const capX = combo_comeralpaso[0];
+      const capY = combo_comeralpaso[1];
+
+      //revisamos si acaba de comer al paso para capturar ficha solo si estan en el mismo eje y
       if (
-        x + "," + y === comeralpasoardilla ||
-        x + "," + y === comeralpasoconejo ||
-        x + "," + y === comeralpaso
+        x + "," + y === comeralpasoardillatres && oldY === (parseInt(caa3Y) + 1) ||
+        x + "," + y === comeralpasoardilla && oldY === (parseInt(caaY) + 1) ||
+        x + "," + y === comeralpasoconejo && oldY === (parseInt(cacY) + 1) ||
+        x + "," + y === comeralpaso && oldY === (parseInt(capY) + 1)
       ) {
         //capturamos la ficha
-        board.tiles[y + 1][x].pieceType = EMPTY;
-        board.tiles[y + 1][x].team = EMPTY;
+        //si esta vacia ir a la siguiente pq salto 3 cuadros
+        if (board.tiles[y + 1][x].pieceType !== EMPTY) {
+          board.tiles[y + 1][x].pieceType = EMPTY;
+          board.tiles[y + 1][x].team = EMPTY;
+        } else {
+          board.tiles[y + 2][x].pieceType = EMPTY;
+          board.tiles[y + 2][x].team = EMPTY;
+        }
+
+
       } else {
         //revisamos si se lo pueden comer al paso
-        if (oldY - 2 === y) {
+        if (oldY - 3 === y) {
+          comeralpasoardillatres = x + "," + (oldY - 2);
+          //guardamos en firebase
+          guardar_comer_al_paso_ardilla_tres(comeralpasoardillatres);
           comeralpasoardilla = x + "," + (oldY - 1);
           //guardamos en firebase
           guardar_comer_al_paso_ardilla(comeralpasoardilla);
         } else {
-          comeralpasoardilla = "";
-          //guardamos en firebase
-          guardar_comer_al_paso_ardilla(comeralpasoardilla);
+          if (oldY - 2 === y) {
+            comeralpasoardilla = x + "," + (oldY - 1);
+            //guardamos en firebase
+            guardar_comer_al_paso_ardilla(comeralpasoardilla);
+          } else {
+            comeralpasoardilla = "";
+            //guardamos en firebase
+            guardar_comer_al_paso_ardilla(comeralpasoardilla);
+          }
         }
       }
     }
@@ -1917,25 +1970,58 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
       }
     }
     if (piece === ARDILLA) {
-      //revisamos si acaba de comer al paso
+      const combo_comeralpasoardilla = comeralpasoardilla.split(",");
+      const caaX = combo_comeralpasoardilla[0];
+      const caaY = combo_comeralpasoardilla[1];
+
+      const combo_comeralpasoardillatres = comeralpasoardillatres.split(",");
+      const caa3X = combo_comeralpasoardillatres[0];
+      const caa3Y = combo_comeralpasoardillatres[1];
+
+      const combo_comeralpasoconejo = comeralpasoconejo.split(",");
+      const cacX = combo_comeralpasoconejo[0];
+      const cacY = combo_comeralpasoconejo[1];
+
+      const combo_comeralpaso = comeralpaso.split(",");
+      const capX = combo_comeralpaso[0];
+      const capY = combo_comeralpaso[1];
+
+      //revisamos si acaba de comer al paso para capturar ficha solo si estan en el mismo eje y
       if (
-        x + "," + y === comeralpasoardilla ||
-        x + "," + y === comeralpasoconejo ||
-        x + "," + y === comeralpaso
+        x + "," + y === comeralpasoardillatres && oldY === (parseInt(caa3Y) - 1) ||
+        x + "," + y === comeralpasoardilla && oldY === (parseInt(caaY) - 1) ||
+        x + "," + y === comeralpasoconejo && oldY === (parseInt(cacY) - 1) ||
+        x + "," + y === comeralpaso && oldY === (parseInt(capY) - 1)
       ) {
         //capturamos la ficha
-        board.tiles[y - 1][x].pieceType = EMPTY;
-        board.tiles[y - 1][x].team = EMPTY;
+        //si esta vacia ir a la siguiente pq salto 3 cuadros
+        if (board.tiles[y - 1][x].pieceType !== EMPTY) {
+          board.tiles[y - 1][x].pieceType = EMPTY;
+          board.tiles[y - 1][x].team = EMPTY;
+        } else {
+          board.tiles[y - 2][x].pieceType = EMPTY;
+          board.tiles[y - 2][x].team = EMPTY;
+        }
+
       } else {
         //revisamos si se lo pueden comer al paso
-        if (oldY + 2 === y) {
+        if (oldY + 3 === y) {
+          comeralpasoardillatres = x + "," + (oldY + 2);
+          //guardamos en firebase
+          guardar_comer_al_paso_ardilla_tres(comeralpasoardillatres);
           comeralpasoardilla = x + "," + (oldY + 1);
           //guardamos en firebase
           guardar_comer_al_paso_ardilla(comeralpasoardilla);
         } else {
-          comeralpasoardilla = "";
-          //guardamos en firebase
-          guardar_comer_al_paso_ardilla(comeralpasoardilla);
+          if (oldY + 2 === y) {
+            comeralpasoardilla = x + "," + (oldY + 1);
+            //guardamos en firebase
+            guardar_comer_al_paso_ardilla(comeralpasoardilla);
+          } else {
+            comeralpasoardilla = "";
+            //guardamos en firebase
+            guardar_comer_al_paso_ardilla(comeralpasoardilla);
+          }
         }
       }
     }
@@ -3054,7 +3140,7 @@ function updateCasualities(casualities, text) {
   }
 }
 
-function updateTotalVictories() {}
+function updateTotalVictories() { }
 
 function getOppositeTeam(team) {
   if (team === WHITE) return BLACK;
@@ -3380,6 +3466,16 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   ) {
     checkPossibleCaptureJUSTCHECK(curX + 2, curY + 2 * direction);
   }
+  //movimiento hacia atras 1 casilla
+  // Lower move
+  if (curY - 1 * direction >= 0 && curY - 1 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveJUSTCHECK(curX, curY - 1 * direction);
+  }
+  //movimiento hacia atras 2 casillas
+  if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveJUSTCHECK(curX, curY - 2 * direction);
+  }
+
 }
 
 function checkPossiblePlaysKnightJUSTCHECK(curX, curY) {
@@ -4284,6 +4380,16 @@ function checkPossiblePlaysPerroAGAINSTBLACK(curX, curY) {
   ) {
     checkPossibleCaptureAGAINSTBLACK(curX + 2, curY + 2 * direction);
   }
+
+  //movimiento hacia atras 1 casilla
+  // Lower move
+  if (curY - 1 * direction >= 0 && curY - 1 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveAGAINSTBLACK(curX, curY - 1 * direction);
+  }
+  //movimiento hacia atras 2 casillas
+  if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveAGAINSTBLACK(curX, curY - 2 * direction);
+  }
 }
 function checkPossiblePlaysKnightAGAINSTBLACK(curX, curY) {
   // Far left moves
@@ -4604,7 +4710,10 @@ function checkPossibleCaptureAGAINSTBLACK(x, y) {
   if (board.tiles[y][x].pieceType === KING) {
     jaquereynegro = "Si";
     posicionreynegro = x + "," + y;
-    alert("¡JAQUE!");
+    Swal.fire({
+      title: "Alerta..",
+      text: "JAQUE",
+    });
   }
   return true;
 }
@@ -4922,6 +5031,17 @@ function checkPossiblePlaysPerroAGAINSTWHITE(curX, curY) {
   ) {
     checkPossibleCaptureAGAINSTWHITE(curX + 2, curY + 2 * direction);
   }
+
+  //movimiento hacia atras 1 casilla
+  // Lower move
+  if (curY - 1 * direction >= 0 && curY - 1 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveAGAINSTWHITE(curX, curY - 1 * direction);
+  }
+  //movimiento hacia atras 2 casillas
+  if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveAGAINSTWHITE(curX, curY - 2 * direction);
+  }
+
 }
 function checkPossiblePlaysKnightAGAINSTWHITE(curX, curY) {
   // Far left moves
@@ -5240,7 +5360,10 @@ function checkPossibleCaptureAGAINSTWHITE(x, y) {
   if (board.tiles[y][x].pieceType === KING) {
     jaquereyblanco = "Si";
     posicionreyblanco = x + "," + y;
-    alert("¡JAQUE!");
+    Swal.fire({
+      title: "Alerta..",
+      text: "JAQUE",
+    });
   }
   return true;
 }
@@ -5262,6 +5385,13 @@ async function guardar_comer_al_paso_ardilla(coord) {
   await getGameDbRef()
     .update({
       comeralpasoardilla: coord,
+    })
+    .catch(console.error);
+}
+async function guardar_comer_al_paso_ardilla_tres(coord) {
+  await getGameDbRef()
+    .update({
+      comeralpasoardillatres: coord,
     })
     .catch(console.error);
 }
@@ -5299,6 +5429,18 @@ async function leer_comer_al_paso_ardilla() {
       console.error(error);
     });
 }
+async function leer_comer_al_paso_ardilla_tres() {
+  await getGameDbRef()
+    .child("comeralpasoardillatres")
+    .get()
+    .then((snapshot) => {
+      comeralpasoardillatres = snapshot.val();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
 
 async function marcaleonblanco(val) {
   await getGameDbRef()
@@ -5461,7 +5603,7 @@ async function reset_jugadas(val) {
         default:
       }
     });
-  } catch (error) {}
+  } catch (error) { }
 
   await getGameDbRef()
     .update({
@@ -5476,4 +5618,26 @@ async function jugada_contains(jugada) {
   } catch (error) {
     return false;
   }
+}
+async function leer_jaquereyblanco() {
+  await getGameDbRef()
+    .child("jaquereyblanco")
+    .get()
+    .then((snapshot) => {
+      jaquereyblanco = snapshot.val();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+async function leer_jaquereynegro() {
+  await getGameDbRef()
+    .child("jaquereynegro")
+    .get()
+    .then((snapshot) => {
+      jaquereynegro = snapshot.val();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
