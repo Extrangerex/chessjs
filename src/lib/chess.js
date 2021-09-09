@@ -2565,7 +2565,7 @@ export async function changeCurrentTeam(skip = false) {
   }
 
   if (
-    serverGameData?.numero_turno % 9 == 0 &&
+    serverGameData?.numero_turno % 18 == 0 &&
     serverGameData?.numero_turno != 0
   ) {
     await getGameDbRef()
