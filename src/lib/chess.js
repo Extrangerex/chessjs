@@ -469,7 +469,7 @@ async function onClick(event) {
   let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
   let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-  if (serverGameData?.numero_turno % 9 == 1) {
+  if (serverGameData?.numero_turno % 18 == 0) {
     if (
       serverGameData?.lastPiecejoue?.x == x &&
       serverGameData?.lastPiecejoue?.y == y
@@ -2565,16 +2565,13 @@ export async function changeCurrentTeam(skip = false) {
   }
 
   if (
-    serverGameData?.numero_turno % 18 == 0 &&
+    serverGameData?.numero_turno % 18 == 17 &&
     serverGameData?.numero_turno != 0
   ) {
     await getGameDbRef()
       .update({
         board,
         numero_turno: newTurno,
-        lastPiecejoue: {
-          createdAt: Date.now(),
-        },
       })
       .catch(console.error);
     return;
