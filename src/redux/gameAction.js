@@ -44,6 +44,7 @@ export const newGame = (uid) => async (dispatch) => {
     posicionleonnegro: "-1,-1",
     bloque: 1,
     numero_turno: 0,
+    isTriggeredChangeTeam: false,
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));

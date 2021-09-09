@@ -47,6 +47,8 @@ export function Game() {
     const jugadasRef = firebase.database().ref(`${game?.lobbyRef}/jugadas`);
     const gameRef = firebase.database().ref(`${game?.lobbyRef}`);
 
+    // firebase.database().ref("lobby").remove();
+
     gameRef.on("value", (snapshot) => {
       if (!snapshot.exists()) {
         return;
