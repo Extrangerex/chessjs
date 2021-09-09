@@ -206,7 +206,7 @@ export async function setTimerFromCreatedAt() {
   //     }
   //   }
 
-  if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) >= 90) {
+  if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) >= 180) {
     if (serverGameData?.status != "tied") {
       await getGameDbRef()
         .update({
@@ -447,7 +447,7 @@ async function onClick(event) {
     return;
   }
 
-  if (serverGameData?.numero_turno >= 90) {
+  if (serverGameData?.numero_turno >= 180) {
     await getGameDbRef()
       .update({
         status: "tied",
@@ -2557,11 +2557,8 @@ export async function changeCurrentTeam(skip = false) {
 
   var newTurno = numero_turno + 1;
 
-  if (
-    serverGameData?.numero_turno % 2 == 0 &&
-    serverGameData?.numero_turno != 0
-  ) {
-    marca_jugada(serverGameData?.numero_turno % 9);
+  if (numero_turno % 2 == 1 && numero_turno != 0) {
+    marca_jugada(numero_turno % 9);
   }
 
   if (
