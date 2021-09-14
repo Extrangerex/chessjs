@@ -653,6 +653,10 @@ async function onClick(event) {
       if (cambio_de_turno === "Si") {
         await getGameDbRef()
           .update({
+            comeralpaso: comeralpaso,
+            comeralpasoconejo: comeralpasoconejo,
+            comeralpasoardilla: comeralpasoardilla,
+            comeralpasoardillatres:comeralpasoardillatres,
             jaquereyblanco: jaquereyblanco,
             jaquereynegro: jaquereynegro,
             board,
@@ -1419,6 +1423,17 @@ function checkValidCapture(x, y) {
 }
 
 function moveSelectedPiece(x, y, piece, oldX, oldY) {
+  if (piece !== PAWN && piece !== CONEJO && piece !== ARDILLA){
+    comeralpaso = "";
+  }
+  if (piece !== CONEJO && piece !== ARDILLA){
+    comeralpasoconejo = "";
+  }
+  if (piece !== ARDILLA){  
+    comeralpasoardilla = "";
+    comeralpasoardillatres = "";
+  }  
+
   //revisamos si es el equipo de las blancas
   if (currentTeam === 0) {
     if (piece === PAWN) {
@@ -1438,12 +1453,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY - 2 === y) {
           comeralpaso = x + "," + (oldY - 1);
-          //guardamos en firebase
-          guardar_comer_al_paso(comeralpaso);
-        } else {
-          comeralpaso = "";
-          //guardamos en firebase
-          guardar_comer_al_paso(comeralpaso);
+        }else{
+          if (oldY - 1 === y) {
+            comeralpaso = "";
+          }  
         }
       }
     }
@@ -1454,15 +1467,15 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         board.tiles[y + 1][x].pieceType = EMPTY;
         board.tiles[y + 1][x].team = EMPTY;
       } else {
+        //no capturo entonces comer al paso peon a ceros
+        comeralpaso = "";
         //revisamos si se lo pueden comer al paso
         if (oldY - 2 === y) {
           comeralpasoconejo = x + "," + (oldY - 1);
-          //guardamos en firebase
-          guardar_comer_al_paso_conejo(comeralpasoconejo);
-        } else {
-          comeralpasoconejo = "";
-          //guardamos en firebase
-          guardar_comer_al_paso_conejo(comeralpasoconejo);
+        }else{
+          if (oldY - 1 === y) {
+            comeralpasoconejo = "";
+          }  
         }
       }
     }
@@ -1501,23 +1514,23 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
           board.tiles[y + 2][x].team = EMPTY;
         }
       } else {
+        //no capturo entonces comer al paso peon a ceros y conejo igual
+        comeralpaso = "";
+        comeralpasoconejo = "";
+
         //revisamos si se lo pueden comer al paso
         if (oldY - 3 === y) {
           comeralpasoardillatres = x + "," + (oldY - 2);
-          //guardamos en firebase
-          guardar_comer_al_paso_ardilla_tres(comeralpasoardillatres);
           comeralpasoardilla = x + "," + (oldY - 1);
-          //guardamos en firebase
-          guardar_comer_al_paso_ardilla(comeralpasoardilla);
         } else {
           if (oldY - 2 === y) {
             comeralpasoardilla = x + "," + (oldY - 1);
-            //guardamos en firebase
-            guardar_comer_al_paso_ardilla(comeralpasoardilla);
-          } else {
-            comeralpasoardilla = "";
-            //guardamos en firebase
-            guardar_comer_al_paso_ardilla(comeralpasoardilla);
+            comeralpasoardillatres = "";
+          }else{
+            if (oldY - 1 === y) {
+              comeralpasoardilla = "";
+              comeralpasoardillatres = "";
+            }  
           }
         }
       }
@@ -1957,12 +1970,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY + 2 === y) {
           comeralpaso = x + "," + (oldY + 1);
-          //guardamos en firebase
-          guardar_comer_al_paso(comeralpaso);
-        } else {
-          comeralpaso = "";
-          //guardamos en firebase
-          guardar_comer_al_paso(comeralpaso);
+        }else{
+          if (oldY + 1 === y) {
+            comeralpaso = "";
+          }  
         }
       }
     }
@@ -1973,15 +1984,15 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         board.tiles[y - 1][x].pieceType = EMPTY;
         board.tiles[y - 1][x].team = EMPTY;
       } else {
+        //no comio al paso entonces comer al paso peon a cero
+        comeralpaso = "";
         //revisamos si se lo pueden comer al paso
         if (oldY + 2 === y) {
           comeralpasoconejo = x + "," + (oldY + 1);
-          //guardamos en firebase
-          guardar_comer_al_paso_conejo(comeralpasoconejo);
-        } else {
-          comeralpasoconejo = "";
-          //guardamos en firebase
-          guardar_comer_al_paso_conejo(comeralpasoconejo);
+        }else{
+          if (oldY + 1 === y) {
+            comeralpasoconejo = "";
+          }  
         }
       }
     }
@@ -2020,23 +2031,23 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
           board.tiles[y - 2][x].team = EMPTY;
         }
       } else {
+        //no capturo entonces comer al paso peon a ceros y conejo igual
+        comeralpaso = "";
+        comeralpasoconejo = "";
+
         //revisamos si se lo pueden comer al paso
         if (oldY + 3 === y) {
           comeralpasoardillatres = x + "," + (oldY + 2);
-          //guardamos en firebase
-          guardar_comer_al_paso_ardilla_tres(comeralpasoardillatres);
           comeralpasoardilla = x + "," + (oldY + 1);
-          //guardamos en firebase
-          guardar_comer_al_paso_ardilla(comeralpasoardilla);
         } else {
           if (oldY + 2 === y) {
             comeralpasoardilla = x + "," + (oldY + 1);
-            //guardamos en firebase
-            guardar_comer_al_paso_ardilla(comeralpasoardilla);
-          } else {
-            comeralpasoardilla = "";
-            //guardamos en firebase
-            guardar_comer_al_paso_ardilla(comeralpasoardilla);
+            comeralpasoardillatres = "";
+          }else{
+            if (oldY + 1 === y) {
+              comeralpasoardilla = "";
+              comeralpasoardillatres = "";
+            }  
           }
         }
       }
@@ -2581,6 +2592,16 @@ export async function changeCurrentTeam(skip = false) {
         whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
         side: serverGameData?.player2,
         numero_turno: newTurno,
+      }, (error) => {
+        if (error) {
+          // The write failed...
+          Swal.fire({
+            title: "Alerta..",
+            text: "No se guardo el último movimiento",
+          });
+        } else {
+          // Data saved successfully!
+        }
       })
       .catch(console.error);
   } else {
@@ -2590,7 +2611,18 @@ export async function changeCurrentTeam(skip = false) {
         blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
         side: serverGameData?.player1,
         numero_turno: newTurno,
-      })
+      }, (error) => {
+        if (error) {
+          // The write failed...
+          Swal.fire({
+            title: "Alerta..",
+            text: "No se guardo el último movimiento",
+          });
+        } else {
+          // Data saved successfully!
+        }
+      }
+      )
       .catch(console.error);
   }
   if (!skip) {
@@ -5374,34 +5406,6 @@ function checkPossibleCaptureAGAINSTWHITE(x, y) {
     });
   }
   return true;
-}
-async function guardar_comer_al_paso(coord) {
-  await getGameDbRef()
-    .update({
-      comeralpaso: coord,
-    })
-    .catch(console.error);
-}
-async function guardar_comer_al_paso_conejo(coord) {
-  await getGameDbRef()
-    .update({
-      comeralpasoconejo: coord,
-    })
-    .catch(console.error);
-}
-async function guardar_comer_al_paso_ardilla(coord) {
-  await getGameDbRef()
-    .update({
-      comeralpasoardilla: coord,
-    })
-    .catch(console.error);
-}
-async function guardar_comer_al_paso_ardilla_tres(coord) {
-  await getGameDbRef()
-    .update({
-      comeralpasoardillatres: coord,
-    })
-    .catch(console.error);
 }
 
 async function leer_comer_al_paso() {
