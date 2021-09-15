@@ -143,7 +143,7 @@ let lobbyItemKey;
 
 let serverGameData = {};
 
-let ejeX = ["a", "b", "c","d","e","f","g","h"];
+let ejeX = ["a", "b", "c","d","e","f","g","h","i"];
 let ejeY = ["10", "9", "8","7","6","5","4","3", "2", "1"];
 
 export function onLoad(_lobbyItemKey) {
