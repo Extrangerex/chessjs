@@ -143,8 +143,8 @@ let lobbyItemKey;
 
 let serverGameData = {};
 
-let ejeX = ["a", "b", "c","d","e","f","g","h","i"];
-let ejeY = ["10", "9", "8","7","6","5","4","3", "2", "1"];
+let ejeX = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
+let ejeY = ["10", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
 
 export function onLoad(_lobbyItemKey) {
   chessCanvas = document.getElementById("chessCanvas");
@@ -316,7 +316,7 @@ async function startGame() {
           default:
         }
       });
-    } catch (error) {}
+    } catch (error) { }
 
     if (numero_turno === 18) {
       marca_bloque(2);
@@ -373,24 +373,25 @@ async function startGame() {
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
       document.getElementById("turno").innerHTML = "Turno de tu oponente";
     } else {
-      if(serverGameData?.side === serverGameData?.player1 && jaquereyblanco === 'Si'){
+      if (serverGameData?.side === serverGameData?.player1 && jaquereyblanco === 'Si') {
         Swal.fire({
           title: "Alerta..",
           text: "JAQUE",
         });
       }
-      if(serverGameData?.side === serverGameData?.player2 && jaquereynegro === 'Si'){
+      if (serverGameData?.side === serverGameData?.player2 && jaquereynegro === 'Si') {
         Swal.fire({
           title: "Alerta..",
           text: "JAQUE",
         });
       }
 
-      const combo_ultimomovimiento = ultimomovimiento.split("/");
-      const combo_oldxy = combo_ultimomovimiento[1].split(",");
-      const combo_newxy = combo_ultimomovimiento[2].split(",");
-      marcar_ultimo_movimiento(parseInt(combo_newxy[0]), parseInt(combo_newxy[1]), parseInt(combo_oldxy[0]), parseInt(combo_oldxy[1]));
-
+      if (ultimomovimiento !== null && ultimomovimiento !== undefined) {
+        const combo_ultimomovimiento = ultimomovimiento.split("/");
+        const combo_oldxy = combo_ultimomovimiento[1].split(",");
+        const combo_newxy = combo_ultimomovimiento[2].split(",");
+        marcar_ultimo_movimiento(parseInt(combo_newxy[0]), parseInt(combo_newxy[1]), parseInt(combo_oldxy[0]), parseInt(combo_oldxy[1]));
+      }
 
       document.getElementById("turno").innerHTML = "Tu turno";
     }
@@ -416,12 +417,12 @@ async function startGame() {
       jugador2b.style.padding = "0";
     }
 
-    
+
   });
 
   curX = -1;
   curY = -1;
-    
+
   contadorleonnegro = 0;
   contadorleonblanco = 0;
 
@@ -495,7 +496,7 @@ async function onClick(event) {
 
     if (checkValidCapture(x, y) === true) {
       if (board.tiles[y][x].pieceType === KING) {
-        
+
         startGame();
       }
 
@@ -661,10 +662,10 @@ async function onClick(event) {
             comeralpaso: comeralpaso,
             comeralpasoconejo: comeralpasoconejo,
             comeralpasoardilla: comeralpasoardilla,
-            comeralpasoardillatres:comeralpasoardillatres,
+            comeralpasoardillatres: comeralpasoardillatres,
             jaquereyblanco: jaquereyblanco,
             jaquereynegro: jaquereynegro,
-            ultimo_movimiento:ultimomovimiento,
+            ultimo_movimiento: ultimomovimiento,
             board,
             lastPiecejoue: { x, y, createdAt: Date.now() },
           })
@@ -1429,16 +1430,16 @@ function checkValidCapture(x, y) {
 }
 
 function moveSelectedPiece(x, y, piece, oldX, oldY) {
-  if (piece !== PAWN && piece !== CONEJO && piece !== ARDILLA){
+  if (piece !== PAWN && piece !== CONEJO && piece !== ARDILLA) {
     comeralpaso = "";
   }
-  if (piece !== CONEJO && piece !== ARDILLA){
+  if (piece !== CONEJO && piece !== ARDILLA) {
     comeralpasoconejo = "";
   }
-  if (piece !== ARDILLA){  
+  if (piece !== ARDILLA) {
     comeralpasoardilla = "";
     comeralpasoardillatres = "";
-  }  
+  }
 
   //revisamos si es el equipo de las blancas
   if (currentTeam === 0) {
@@ -1459,10 +1460,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY - 2 === y) {
           comeralpaso = x + "," + (oldY - 1);
-        }else{
+        } else {
           if (oldY - 1 === y) {
             comeralpaso = "";
-          }  
+          }
         }
       }
     }
@@ -1478,10 +1479,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY - 2 === y) {
           comeralpasoconejo = x + "," + (oldY - 1);
-        }else{
+        } else {
           if (oldY - 1 === y) {
             comeralpasoconejo = "";
-          }  
+          }
         }
       }
     }
@@ -1532,11 +1533,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
           if (oldY - 2 === y) {
             comeralpasoardilla = x + "," + (oldY - 1);
             comeralpasoardillatres = "";
-          }else{
+          } else {
             if (oldY - 1 === y) {
               comeralpasoardilla = "";
               comeralpasoardillatres = "";
-            }  
+            }
           }
         }
       }
@@ -1976,10 +1977,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY + 2 === y) {
           comeralpaso = x + "," + (oldY + 1);
-        }else{
+        } else {
           if (oldY + 1 === y) {
             comeralpaso = "";
-          }  
+          }
         }
       }
     }
@@ -1995,10 +1996,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY + 2 === y) {
           comeralpasoconejo = x + "," + (oldY + 1);
-        }else{
+        } else {
           if (oldY + 1 === y) {
             comeralpasoconejo = "";
-          }  
+          }
         }
       }
     }
@@ -2049,11 +2050,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
           if (oldY + 2 === y) {
             comeralpasoardilla = x + "," + (oldY + 1);
             comeralpasoardillatres = "";
-          }else{
+          } else {
             if (oldY + 1 === y) {
               comeralpasoardilla = "";
               comeralpasoardillatres = "";
-            }  
+            }
           }
         }
       }
@@ -2201,8 +2202,8 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
             "/" +
             oldX +
             "," +
-            lugar_saltado2; 
-            ultimotipodemovimiento = "Captura";
+            lugar_saltado2;
+          ultimotipodemovimiento = "Captura";
           updateWhiteCasualities();
           //capturamos la ficha
           board.tiles[lugar_saltado2][oldX].pieceType = EMPTY;
@@ -2533,9 +2534,9 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
   }
 
   //guardamos el ultimo movimiento
-  ultimomovimiento = piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/"+ currentTeam;
+  ultimomovimiento = piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam;
 
-  nomenclatura = 
+  nomenclatura =
     piecesCharacters[piece] + " " + ejeX[oldX] + "-" + ejeY[oldY] + "," + ejeX[x] + "-" + ejeY[y];
 }
 function ganoleon() {
@@ -2547,7 +2548,7 @@ function ganoleon() {
         contadorleonnegro = contadorleonnegro + 1;
       }
       if (contadorleonnegro === 3) {
-        
+
         startGame();
       }
     }
@@ -2561,7 +2562,7 @@ function ganoleon() {
         contadorleonblanco = contadorleonblanco + 1;
       }
       if (contadorleonblanco === 3) {
-       
+
         startGame();
       }
     }
@@ -3183,13 +3184,15 @@ function updateCasualities(casualities, text) {
     if (casualities[i] === 0) continue;
 
     if (none) {
+      text.textContent = casualities[i] + " " + piecesCharacters[i];
       none = false;
     } else {
+      text.textContent += " - " + casualities[i] + " " + piecesCharacters[i];
     }
   }
+  if (none) text.textContent = "Ninguna";
 }
 
-function updateTotalVictories() {}
 
 function getOppositeTeam(team) {
   if (team === WHITE) return BLACK;
@@ -5621,7 +5624,7 @@ async function reset_jugadas(val) {
         default:
       }
     });
-  } catch (error) {}
+  } catch (error) { }
 
   await getGameDbRef()
     .update({
@@ -5663,7 +5666,7 @@ async function leer_ultimo_movimiento() {
       console.error(error);
     });
 }
-function marcar_ultimo_movimiento(movnewX,movnewY,movoldX,movoldY){
-  drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);  
-  drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);  
+function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
+  drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);
+  drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);
 }

@@ -45,7 +45,7 @@ export const newGame = (uid) => async (dispatch) => {
     bloque: 1,
     numero_turno: 0,
     isTriggeredChangeTeam: false,
-    ultimo_movimiento: "",
+    ultimomovimiento: "",
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));
