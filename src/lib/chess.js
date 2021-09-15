@@ -85,10 +85,9 @@ const piecesCharacters = {
 
 let chessCanvas;
 let chessCtx;
-let currentTeamText;
+
 let whiteCasualitiesText;
 let blackCasualitiesText;
-let totalVictoriesText;
 
 let board;
 let currentTeam;
@@ -100,13 +99,6 @@ let curY;
 let whiteCasualities;
 let blackCasualities;
 
-let whiteVictories;
-let blackVictories;
-
-let njblancas;
-let njnegras;
-
-let tmpjuego;
 let contadorleonnegro;
 let contadorleonblanco;
 
@@ -146,20 +138,18 @@ let ultimotipodemovimiento; //captura o movimiento
 let ultimomovimiento;
 let nomenclatura;
 
-let tablero = [];
 
 let lobbyItemKey;
 
 let serverGameData = {};
 
+let ejeX = ["a", "b", "c","d","e","f","g","h"];
+let ejeY = ["10", "9", "8","7","6","5","4","3", "2", "1"];
+
 export function onLoad(_lobbyItemKey) {
   chessCanvas = document.getElementById("chessCanvas");
   chessCtx = chessCanvas.getContext("2d");
   chessCanvas.addEventListener("click", onClick);
-
-  tmpjuego = 0;
-  whiteVictories = 0;
-  blackVictories = 0;
 
   lobbyItemKey = _lobbyItemKey;
 
@@ -209,7 +199,7 @@ export async function setTimerFromCreatedAt() {
   //   }
 
   if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) >= 180) {
-    if (serverGameData?.status != "tied") {
+    if (serverGameData?.status !== "tied") {
       await getGameDbRef()
         .update({
           status: "tied",
@@ -292,6 +282,7 @@ async function startGame() {
     leer_posicionleonnegro();
     leer_act_numero_turno();
     leer_act_bloque();
+    leer_ultimo_movimiento();
 
     try {
       Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
@@ -384,6 +375,25 @@ async function startGame() {
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
       document.getElementById("turno").innerHTML = "Turno de tu oponente";
     } else {
+      if(serverGameData?.side === serverGameData?.player1 && jaquereyblanco === 'Si'){
+        Swal.fire({
+          title: "Alerta..",
+          text: "JAQUE",
+        });
+      }
+      if(serverGameData?.side === serverGameData?.player2 && jaquereynegro === 'Si'){
+        Swal.fire({
+          title: "Alerta..",
+          text: "JAQUE",
+        });
+      }
+
+      const combo_ultimomovimiento = ultimomovimiento.split("/");
+      const combo_oldxy = combo_ultimomovimiento[1].split(",");
+      const combo_newxy = combo_ultimomovimiento[2].split(",");
+      marcar_ultimo_movimiento(parseInt(combo_newxy[0]), parseInt(combo_newxy[1]), parseInt(combo_oldxy[0]), parseInt(combo_oldxy[1]));
+
+
       document.getElementById("turno").innerHTML = "Tu turno";
     }
     if (currentTeam === BLACK) {
@@ -408,16 +418,12 @@ async function startGame() {
       jugador2b.style.padding = "0";
     }
 
-    // updateWhiteCasualities();
-    // updateBlackCasualities();
-    // updateTotalVictories();
+    
   });
 
   curX = -1;
   curY = -1;
-  njblancas = 0;
-  njnegras = 0;
-  tmpjuego = 0;
+    
   contadorleonnegro = 0;
   contadorleonblanco = 0;
 
@@ -441,7 +447,7 @@ async function onClick(event) {
     return;
   }
 
-  if (serverGameData?.status == "tied") {
+  if (serverGameData?.status === "tied") {
     Swal.fire({
       title: "Opps..",
       text: "El juego se ha empatado",
@@ -471,10 +477,10 @@ async function onClick(event) {
   let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
   let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-  if (serverGameData?.numero_turno % 18 == 0) {
+  if (serverGameData?.numero_turno % 18 === 0) {
     if (
-      serverGameData?.lastPiecejoue?.x == x &&
-      serverGameData?.lastPiecejoue?.y == y
+      serverGameData?.lastPiecejoue?.x === x &&
+      serverGameData?.lastPiecejoue?.y === y
     ) {
       Swal.fire({
         title: "Opps..",
@@ -491,8 +497,7 @@ async function onClick(event) {
 
     if (checkValidCapture(x, y) === true) {
       if (board.tiles[y][x].pieceType === KING) {
-        if (currentTeam === WHITE) whiteVictories++;
-        else blackVictories++;
+        
         startGame();
       }
 
@@ -661,6 +666,7 @@ async function onClick(event) {
             comeralpasoardillatres: comeralpasoardillatres,
             jaquereyblanco: jaquereyblanco,
             jaquereynegro: jaquereynegro,
+            ultimo_movimiento:ultimomovimiento,
             board,
             lastPiecejoue: { x, y, createdAt: Date.now() },
           })
@@ -1483,19 +1489,19 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
     if (piece === ARDILLA) {
       const combo_comeralpasoardilla = comeralpasoardilla.split(",");
-      const caaX = combo_comeralpasoardilla[0];
+      //const caaX = combo_comeralpasoardilla[0];
       const caaY = combo_comeralpasoardilla[1];
 
       const combo_comeralpasoardillatres = comeralpasoardillatres.split(",");
-      const caa3X = combo_comeralpasoardillatres[0];
+      //const caa3X = combo_comeralpasoardillatres[0];
       const caa3Y = combo_comeralpasoardillatres[1];
 
       const combo_comeralpasoconejo = comeralpasoconejo.split(",");
-      const cacX = combo_comeralpasoconejo[0];
+      //const cacX = combo_comeralpasoconejo[0];
       const cacY = combo_comeralpasoconejo[1];
 
       const combo_comeralpaso = comeralpaso.split(",");
-      const capX = combo_comeralpaso[0];
+      //const capX = combo_comeralpaso[0];
       const capY = combo_comeralpaso[1];
 
       //revisamos si acaba de comer al paso para capturar ficha solo si estan en el mismo eje y
@@ -2000,19 +2006,19 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
     if (piece === ARDILLA) {
       const combo_comeralpasoardilla = comeralpasoardilla.split(",");
-      const caaX = combo_comeralpasoardilla[0];
+      //const caaX = combo_comeralpasoardilla[0];
       const caaY = combo_comeralpasoardilla[1];
 
       const combo_comeralpasoardillatres = comeralpasoardillatres.split(",");
-      const caa3X = combo_comeralpasoardillatres[0];
+      //const caa3X = combo_comeralpasoardillatres[0];
       const caa3Y = combo_comeralpasoardillatres[1];
 
       const combo_comeralpasoconejo = comeralpasoconejo.split(",");
-      const cacX = combo_comeralpasoconejo[0];
+      //const cacX = combo_comeralpasoconejo[0];
       const cacY = combo_comeralpasoconejo[1];
 
       const combo_comeralpaso = comeralpaso.split(",");
-      const capX = combo_comeralpaso[0];
+      //const capX = combo_comeralpaso[0];
       const capY = combo_comeralpaso[1];
 
       //revisamos si acaba de comer al paso para capturar ficha solo si estan en el mismo eje y
@@ -2197,8 +2203,8 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
             "/" +
             oldX +
             "," +
-            lugar_saltado2; //chessjs-2dcfc.web.app/game
-          https: ultimotipodemovimiento = "Captura";
+            lugar_saltado2; 
+            ultimotipodemovimiento = "Captura";
           updateWhiteCasualities();
           //capturamos la ficha
           board.tiles[lugar_saltado2][oldX].pieceType = EMPTY;
@@ -2529,9 +2535,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
   }
 
   //guardamos el ultimo movimiento
-  ultimomovimiento = piece + "/" + oldX + "," + oldY + "/" + x + "," + y;
-  nomenclatura =
-    piecesCharacters[piece] + "/" + oldX + "," + oldY + "/" + x + "," + y;
+  ultimomovimiento = piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/"+ currentTeam;
+
+  nomenclatura = 
+    piecesCharacters[piece] + " " + ejeX[oldX] + "-" + ejeY[oldY] + "," + ejeX[x] + "-" + ejeY[y];
 }
 function ganoleon() {
   for (let j = 0; j < BOARD_WIDTH; j++) {
@@ -2542,7 +2549,7 @@ function ganoleon() {
         contadorleonnegro = contadorleonnegro + 1;
       }
       if (contadorleonnegro === 3) {
-        if (currentTeam === BLACK) blackVictories++;
+        
         startGame();
       }
     }
@@ -2556,7 +2563,7 @@ function ganoleon() {
         contadorleonblanco = contadorleonblanco + 1;
       }
       if (contadorleonblanco === 3) {
-        if (currentTeam === WHITE) whiteVictories++;
+       
         startGame();
       }
     }
@@ -2570,13 +2577,13 @@ export async function changeCurrentTeam(skip = false) {
 
   var newTurno = numero_turno + 1;
 
-  if (numero_turno % 2 == 1 && numero_turno != 0) {
+  if (numero_turno % 2 === 1 && numero_turno !== 0) {
     marca_jugada(numero_turno % 9);
   }
 
   if (
-    serverGameData?.numero_turno % 18 == 17 &&
-    serverGameData?.numero_turno != 0
+    serverGameData?.numero_turno % 18 === 17 &&
+    serverGameData?.numero_turno !== 0
   ) {
     await getGameDbRef()
       .update({
@@ -5630,13 +5637,6 @@ async function reset_jugadas(val) {
     .catch(console.error);
 }
 
-async function jugada_contains(jugada) {
-  try {
-    return Object.keys(serverGameData?.jugadasPorBloque)?.contains(jugada);
-  } catch (error) {
-    return false;
-  }
-}
 async function leer_jaquereyblanco() {
   await getGameDbRef()
     .child("jaquereyblanco")
@@ -5658,4 +5658,19 @@ async function leer_jaquereynegro() {
     .catch((error) => {
       console.error(error);
     });
+}
+async function leer_ultimo_movimiento() {
+  await getGameDbRef()
+    .child("ultimo_movimiento")
+    .get()
+    .then((snapshot) => {
+      ultimomovimiento = snapshot.val();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+function marcar_ultimo_movimiento(movnewX,movnewY,movoldX,movoldY){
+  drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);  
+  drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);  
 }
