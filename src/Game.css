@@ -12,6 +12,7 @@
 #extras ul {
     list-style:none;
     padding:0;
+    margin-bottom: 5px !important;
 }
 #extras ul li {
     display:inline-block;
@@ -39,7 +40,6 @@
 }
 #chessCanvas{
     margin-top: 1vh;
-    margin-bottom: 1vh;
 }
 #jugadas{
     height: 45vh;
@@ -53,4 +53,13 @@
     background-color: darkgray;
     padding-left: 5vw;
     padding-right: 5vw;
+}
+.btnturno{
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    border: 0;
 }

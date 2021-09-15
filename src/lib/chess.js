@@ -145,6 +145,9 @@ let serverGameData = {};
 let ejeX = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
 let ejeY = ["10", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
 
+whiteCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+blackCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
 export function onLoad(_lobbyItemKey) {
   chessCanvas = document.getElementById("chessCanvas");
   chessCtx = chessCanvas.getContext("2d");
@@ -280,6 +283,8 @@ async function startGame() {
     leer_act_numero_turno();
     leer_act_bloque();
     leer_ultimo_movimiento();
+    leer_whiteCasualitiesText();
+    leer_blackCasualitiesText();
 
     try {
       Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
@@ -315,7 +320,7 @@ async function startGame() {
           default:
         }
       });
-    } catch (error) {}
+    } catch (error) { }
 
     if (numero_turno === 18) {
       marca_bloque(2);
@@ -393,14 +398,17 @@ async function startGame() {
 
       if (ultimomovimiento !== null && ultimomovimiento !== undefined) {
         const combo_ultimomovimiento = ultimomovimiento.split("/");
-        const combo_oldxy = combo_ultimomovimiento[1].split(",");
-        const combo_newxy = combo_ultimomovimiento[2].split(",");
-        marcar_ultimo_movimiento(
-          parseInt(combo_newxy[0]),
-          parseInt(combo_newxy[1]),
-          parseInt(combo_oldxy[0]),
-          parseInt(combo_oldxy[1])
-        );
+        if (combo_ultimomovimiento[1] !== null && combo_ultimomovimiento[1] !== undefined && combo_ultimomovimiento[2] !== null && combo_ultimomovimiento[2] !== undefined) {
+          const combo_oldxy = combo_ultimomovimiento[1].split(",");
+          const combo_newxy = combo_ultimomovimiento[2].split(",");
+
+          marcar_ultimo_movimiento(
+            parseInt(combo_newxy[0]),
+            parseInt(combo_newxy[1]),
+            parseInt(combo_oldxy[0]),
+            parseInt(combo_oldxy[1])
+          );
+        }
       }
 
       document.getElementById("turno").innerHTML = "Tu turno";
@@ -426,6 +434,13 @@ async function startGame() {
       jugador2b.style.borderRadius = "0";
       jugador2b.style.padding = "0";
     }
+    if (whiteCasualitiesText !== undefined) {
+      document.getElementById("blancas_comidas").innerHTML = whiteCasualitiesText;
+    }
+    if (blackCasualitiesText !== undefined) {
+      document.getElementById("negras_comidas").innerHTML = blackCasualitiesText;
+    }
+
   });
 
   curX = -1;
@@ -440,9 +455,7 @@ async function startGame() {
   contadortorre1negro = 0;
   contadortorre2blanco = 0;
   contadortorre2negro = 0;
-
-  whiteCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  blackCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  
 }
 
 async function onClick(event) {
@@ -673,6 +686,8 @@ async function onClick(event) {
             jaquereyblanco: jaquereyblanco,
             jaquereynegro: jaquereynegro,
             ultimo_movimiento: ultimomovimiento,
+            whiteCasualitiesText:whiteCasualitiesText,
+            blackCasualitiesText:blackCasualitiesText,
             board,
             lastPiecejoue: { x, y, createdAt: Date.now() },
           })
@@ -2612,7 +2627,6 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
       .update(
         {
           board,
-          whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
           side: serverGameData?.player2,
           numero_turno: newTurno,
         },
@@ -2634,7 +2648,6 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
       .update(
         {
           board,
-          blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
           side: serverGameData?.player1,
           numero_turno: newTurno,
         },
@@ -3200,35 +3213,49 @@ function drawPieces() {
 }
 
 function updateWhiteCasualities() {
-  updateCasualities(whiteCasualities, whiteCasualitiesText);
+  updateCasualities(whiteCasualities, WHITE);
 }
 
 function updateBlackCasualities() {
-  updateCasualities(blackCasualities, blackCasualitiesText);
+  updateCasualities(blackCasualities, BLACK);
 }
 
-function updateCasualities(casualities, text) {
+function updateCasualities(casualities, equipo) {
   let none = true;
 
   for (let i = LEON; i >= PAWN; i--) {
     if (casualities[i] === 0) continue;
 
     if (none) {
-      text.textContent = casualities[i] + " " + piecesCharacters[i];
+      if (equipo === WHITE) {
+        whiteCasualitiesText = casualities[i] + "" + piecesCharacters[i];
+      } else {
+        blackCasualitiesText = casualities[i] + "" + piecesCharacters[i];
+      }
       none = false;
     } else {
-      text.textContent += " - " + casualities[i] + " " + piecesCharacters[i];
+      if (equipo === WHITE) {
+        whiteCasualitiesText += " - " + casualities[i] + "" + piecesCharacters[i];
+      } else {
+        blackCasualitiesText += " - " + casualities[i] + "" + piecesCharacters[i];
+      }
     }
   }
-  if (none) text.textContent = "Ninguna";
+  /*
+  if (none) {
+    if (equipo === WHITE) {
+      whiteCasualitiesText = "Ninguna";
+    } else {
+      blackCasualitiesText = "Ninguna";
+    }
+  }
+  */
 }
-
 function getOppositeTeam(team) {
   if (team === WHITE) return BLACK;
   else if (team === BLACK) return WHITE;
   else return EMPTY;
 }
-
 function checkTileUnderAttack(x, y) {
   //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
   for (let xx = 0; xx <= 8; xx++) {
@@ -5653,7 +5680,7 @@ async function reset_jugadas(val) {
         default:
       }
     });
-  } catch (error) {}
+  } catch (error) { }
 
   await getGameDbRef()
     .update({
@@ -5690,6 +5717,28 @@ async function leer_ultimo_movimiento() {
     .get()
     .then((snapshot) => {
       ultimomovimiento = snapshot.val();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+async function leer_whiteCasualitiesText() {
+  await getGameDbRef()
+    .child("whiteCasualitiesText")
+    .get()
+    .then((snapshot) => {
+      whiteCasualitiesText = snapshot.val();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+async function leer_blackCasualitiesText() {
+  await getGameDbRef()
+    .child("blackCasualitiesText")
+    .get()
+    .then((snapshot) => {
+      blackCasualitiesText = snapshot.val();
     })
     .catch((error) => {
       console.error(error);

@@ -120,16 +120,11 @@ export function Game() {
                 alt=""
                 style={{ width: "100px", height: "100px", marginTop: "12vh" }}
               ></img>
+              <br></br>
+              <p style={{color:"white",fontSize: ".75rem",margin:0}} id = "negras_comidas"></p>
             </div>
             <div align="center" style={{ height: "10vh" }}>
-              <div style={{ marginTop: "0", marginBottom: "0" }}>
-                <h4 style={{ color: "white" }}>
-                  Bloque: <span id="bloque"></span>
-                </h4>
-                <h4 style={{ color: "white" }}>
-                  Jugada: <span id="numero_turno"></span>
-                </h4>
-              </div>
+              
             </div>
             <div align="center" style={{ height: "45vh" }}>
               <img
@@ -145,6 +140,8 @@ export function Game() {
                   marginTop: "10vh",
                 }}
               ></img>
+              <br></br>
+              <p style={{color:"white",fontSize: ".75rem",margin:0}} id = "blancas_comidas"></p>
             </div>
           </Col>
           <Row>
@@ -265,103 +262,41 @@ export function Game() {
               <canvas id="chessCanvas" width="600" height="600"></canvas>
 
               <Row style={{ maxWidth: "600px" }}>
-                <button
+                <button className="btnturno"
                   id="jugada1"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada2"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada3"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada4"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada5"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada6"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada7"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
+                  
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada8"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
 
-                <button
+                <button className="btnturno"
                   id="jugada9"
-                  style={{
-                    margin: "20px",
-                    width: "16px",
-                    height: "16px",
-                    borderRadius: "8px",
-                    border: "0",
-                  }}
                 ></button>
               </Row>
             </Col>
@@ -370,12 +305,20 @@ export function Game() {
             <div id="extras">
               <ul align="center" className="d-flex justify-content-between p-1">
                 <li>
-                  Jugada: <span id="time_play"></span>
+                <i className="fa fa-clock" style={{color:"#657696"}}></i> Jugada: <span id="time_play"></span>
                 </li>
                 <li>
-                  Tiempo: <span id="time_createdat"></span>
+                  <i className="fa fa-clock" style={{color:"#657696"}}></i> <span id="time_createdat"></span>
                 </li>
               </ul>
+              <ul align="center" className="d-flex justify-content-between p-1">
+                <li>
+                  Turno: <span id="numero_turno"></span>
+                </li>
+                <li>
+                  Bloque: <span id="bloque"></span>
+                </li>
+              </ul>    
               <div id="jugadas" align="center">
                 {Object.keys(jugadas).length > 0 ? (
                   Object.keys(jugadas).map((llave) => {

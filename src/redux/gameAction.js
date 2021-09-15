@@ -31,6 +31,8 @@ export const newGame = (uid) => async (dispatch) => {
     side: uid,
     whiteCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     blackCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    whiteCasualitiesText:"",
+    blackCasualitiesText:"",
     player1: uid,
     player2: null,
     status: "waiting",
@@ -45,7 +47,7 @@ export const newGame = (uid) => async (dispatch) => {
     bloque: 1,
     numero_turno: 0,
     isTriggeredChangeTeam: false,
-    ultimomovimiento: "",
+    ultimo_movimiento: "",
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));
