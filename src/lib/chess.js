@@ -138,7 +138,6 @@ let ultimotipodemovimiento; //captura o movimiento
 let ultimomovimiento;
 let nomenclatura;
 
-
 let lobbyItemKey;
 
 let serverGameData = {};
@@ -176,7 +175,7 @@ setInterval(() => {
   );
 
   if (array.includes(val)) {
-    changeCurrentTeam(true);
+    changeCurrentTeam(true, true);
   }
 }, 1000);
 
@@ -316,7 +315,7 @@ async function startGame() {
           default:
         }
       });
-    } catch (error) { }
+    } catch (error) {}
 
     if (numero_turno === 18) {
       marca_bloque(2);
@@ -373,13 +372,19 @@ async function startGame() {
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
       document.getElementById("turno").innerHTML = "Turno de tu oponente";
     } else {
-      if (serverGameData?.side === serverGameData?.player1 && jaquereyblanco === 'Si') {
+      if (
+        serverGameData?.side === serverGameData?.player1 &&
+        jaquereyblanco === "Si"
+      ) {
         Swal.fire({
           title: "Alerta..",
           text: "JAQUE",
         });
       }
-      if (serverGameData?.side === serverGameData?.player2 && jaquereynegro === 'Si') {
+      if (
+        serverGameData?.side === serverGameData?.player2 &&
+        jaquereynegro === "Si"
+      ) {
         Swal.fire({
           title: "Alerta..",
           text: "JAQUE",
@@ -390,7 +395,12 @@ async function startGame() {
         const combo_ultimomovimiento = ultimomovimiento.split("/");
         const combo_oldxy = combo_ultimomovimiento[1].split(",");
         const combo_newxy = combo_ultimomovimiento[2].split(",");
-        marcar_ultimo_movimiento(parseInt(combo_newxy[0]), parseInt(combo_newxy[1]), parseInt(combo_oldxy[0]), parseInt(combo_oldxy[1]));
+        marcar_ultimo_movimiento(
+          parseInt(combo_newxy[0]),
+          parseInt(combo_newxy[1]),
+          parseInt(combo_oldxy[0]),
+          parseInt(combo_oldxy[1])
+        );
       }
 
       document.getElementById("turno").innerHTML = "Tu turno";
@@ -416,8 +426,6 @@ async function startGame() {
       jugador2b.style.borderRadius = "0";
       jugador2b.style.padding = "0";
     }
-
-
   });
 
   curX = -1;
@@ -496,7 +504,6 @@ async function onClick(event) {
 
     if (checkValidCapture(x, y) === true) {
       if (board.tiles[y][x].pieceType === KING) {
-
         startGame();
       }
 
@@ -2534,10 +2541,19 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
   }
 
   //guardamos el ultimo movimiento
-  ultimomovimiento = piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam;
+  ultimomovimiento =
+    piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam;
 
   nomenclatura =
-    piecesCharacters[piece] + " " + ejeX[oldX] + "-" + ejeY[oldY] + "," + ejeX[x] + "-" + ejeY[y];
+    piecesCharacters[piece] +
+    " " +
+    ejeX[oldX] +
+    "-" +
+    ejeY[oldY] +
+    "," +
+    ejeX[x] +
+    "-" +
+    ejeY[y];
 }
 function ganoleon() {
   for (let j = 0; j < BOARD_WIDTH; j++) {
@@ -2548,7 +2564,6 @@ function ganoleon() {
         contadorleonnegro = contadorleonnegro + 1;
       }
       if (contadorleonnegro === 3) {
-
         startGame();
       }
     }
@@ -2562,14 +2577,13 @@ function ganoleon() {
         contadorleonblanco = contadorleonblanco + 1;
       }
       if (contadorleonblanco === 3) {
-
         startGame();
       }
     }
   }
 }
 
-export async function changeCurrentTeam(skip = false) {
+export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
   if (serverGameData == null) return;
   if (serverGameData?.player2 == null) return;
   if (serverGameData?.player1 == null) return;
@@ -2595,41 +2609,46 @@ export async function changeCurrentTeam(skip = false) {
 
   if (currentTeam === WHITE) {
     await getGameDbRef()
-      .update({
-        board,
-        whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-        side: serverGameData?.player2,
-        numero_turno: newTurno,
-      }, (error) => {
-        if (error) {
-          // The write failed...
-          Swal.fire({
-            title: "Alerta..",
-            text: "No se guardo el último movimiento",
-          });
-        } else {
-          // Data saved successfully!
+      .update(
+        {
+          board,
+          whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+          side: serverGameData?.player2,
+          numero_turno: newTurno,
+        },
+        (error) => {
+          if (error) {
+            // The write failed...
+            Swal.fire({
+              title: "Alerta..",
+              text: "No se guardo el último movimiento",
+            });
+          } else {
+            // Data saved successfully!
+          }
         }
-      })
+      )
       .catch(console.error);
   } else {
     await getGameDbRef()
-      .update({
-        board,
-        blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
-        side: serverGameData?.player1,
-        numero_turno: newTurno,
-      }, (error) => {
-        if (error) {
-          // The write failed...
-          Swal.fire({
-            title: "Alerta..",
-            text: "No se guardo el último movimiento",
-          });
-        } else {
-          // Data saved successfully!
+      .update(
+        {
+          board,
+          blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
+          side: serverGameData?.player1,
+          numero_turno: newTurno,
+        },
+        (error) => {
+          if (error) {
+            // The write failed...
+            Swal.fire({
+              title: "Alerta..",
+              text: "No se guardo el último movimiento",
+            });
+          } else {
+            // Data saved successfully!
+          }
         }
-      }
       )
       .catch(console.error);
   }
@@ -2640,6 +2659,17 @@ export async function changeCurrentTeam(skip = false) {
         uid: firebase.auth().currentUser?.uid,
         movimiento: nomenclatura,
         createdAt: Date.now(),
+      })
+      .catch(console.error);
+  }
+
+  if (resetPlayTime) {
+    await getGameDbRef()
+      .update({
+        board,
+        lastPiecejoue: {
+          createdAt: Date.now(),
+        },
       })
       .catch(console.error);
   }
@@ -3192,7 +3222,6 @@ function updateCasualities(casualities, text) {
   }
   if (none) text.textContent = "Ninguna";
 }
-
 
 function getOppositeTeam(team) {
   if (team === WHITE) return BLACK;
@@ -5624,7 +5653,7 @@ async function reset_jugadas(val) {
         default:
       }
     });
-  } catch (error) { }
+  } catch (error) {}
 
   await getGameDbRef()
     .update({
