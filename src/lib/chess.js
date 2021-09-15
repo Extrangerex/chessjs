@@ -179,14 +179,16 @@ async function setIsTriggeredChangeTeam(value) {
 }
 
 setInterval(() => {
-  let val = getMinutesromLastPieceJoueCreatedAt();
+  if (serverGameData?.player1 == firebase.auth().currentUser?.uid) {
+    let val = getMinutesromLastPieceJoueCreatedAt();
 
-  const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
-    (value) => `${value * 5}:0`
-  );
+    const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+      (value) => `${value * 1}:0`
+    );
 
-  if (array.includes(val)) {
-    changeCurrentTeam(true);
+    if (array.includes(val)) {
+      changeCurrentTeam(true);
+    }
   }
 }, 1000);
 
@@ -656,7 +658,7 @@ async function onClick(event) {
             comeralpaso: comeralpaso,
             comeralpasoconejo: comeralpasoconejo,
             comeralpasoardilla: comeralpasoardilla,
-            comeralpasoardillatres:comeralpasoardillatres,
+            comeralpasoardillatres: comeralpasoardillatres,
             jaquereyblanco: jaquereyblanco,
             jaquereynegro: jaquereynegro,
             board,
@@ -1423,16 +1425,16 @@ function checkValidCapture(x, y) {
 }
 
 function moveSelectedPiece(x, y, piece, oldX, oldY) {
-  if (piece !== PAWN && piece !== CONEJO && piece !== ARDILLA){
+  if (piece !== PAWN && piece !== CONEJO && piece !== ARDILLA) {
     comeralpaso = "";
   }
-  if (piece !== CONEJO && piece !== ARDILLA){
+  if (piece !== CONEJO && piece !== ARDILLA) {
     comeralpasoconejo = "";
   }
-  if (piece !== ARDILLA){  
+  if (piece !== ARDILLA) {
     comeralpasoardilla = "";
     comeralpasoardillatres = "";
-  }  
+  }
 
   //revisamos si es el equipo de las blancas
   if (currentTeam === 0) {
@@ -1453,10 +1455,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY - 2 === y) {
           comeralpaso = x + "," + (oldY - 1);
-        }else{
+        } else {
           if (oldY - 1 === y) {
             comeralpaso = "";
-          }  
+          }
         }
       }
     }
@@ -1472,10 +1474,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY - 2 === y) {
           comeralpasoconejo = x + "," + (oldY - 1);
-        }else{
+        } else {
           if (oldY - 1 === y) {
             comeralpasoconejo = "";
-          }  
+          }
         }
       }
     }
@@ -1526,11 +1528,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
           if (oldY - 2 === y) {
             comeralpasoardilla = x + "," + (oldY - 1);
             comeralpasoardillatres = "";
-          }else{
+          } else {
             if (oldY - 1 === y) {
               comeralpasoardilla = "";
               comeralpasoardillatres = "";
-            }  
+            }
           }
         }
       }
@@ -1970,10 +1972,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY + 2 === y) {
           comeralpaso = x + "," + (oldY + 1);
-        }else{
+        } else {
           if (oldY + 1 === y) {
             comeralpaso = "";
-          }  
+          }
         }
       }
     }
@@ -1989,10 +1991,10 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //revisamos si se lo pueden comer al paso
         if (oldY + 2 === y) {
           comeralpasoconejo = x + "," + (oldY + 1);
-        }else{
+        } else {
           if (oldY + 1 === y) {
             comeralpasoconejo = "";
-          }  
+          }
         }
       }
     }
@@ -2043,11 +2045,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
           if (oldY + 2 === y) {
             comeralpasoardilla = x + "," + (oldY + 1);
             comeralpasoardillatres = "";
-          }else{
+          } else {
             if (oldY + 1 === y) {
               comeralpasoardilla = "";
               comeralpasoardillatres = "";
-            }  
+            }
           }
         }
       }
@@ -2587,41 +2589,46 @@ export async function changeCurrentTeam(skip = false) {
 
   if (currentTeam === WHITE) {
     await getGameDbRef()
-      .update({
-        board,
-        whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-        side: serverGameData?.player2,
-        numero_turno: newTurno,
-      }, (error) => {
-        if (error) {
-          // The write failed...
-          Swal.fire({
-            title: "Alerta..",
-            text: "No se guardo el último movimiento",
-          });
-        } else {
-          // Data saved successfully!
+      .update(
+        {
+          board,
+          whiteCasualities: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+          side: serverGameData?.player2,
+          numero_turno: newTurno,
+        },
+        (error) => {
+          if (error) {
+            // The write failed...
+            Swal.fire({
+              title: "Alerta..",
+              text: "No se guardo el último movimiento",
+            });
+          } else {
+            // Data saved successfully!
+          }
         }
-      })
+      )
       .catch(console.error);
   } else {
     await getGameDbRef()
-      .update({
-        board,
-        blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
-        side: serverGameData?.player1,
-        numero_turno: newTurno,
-      }, (error) => {
-        if (error) {
-          // The write failed...
-          Swal.fire({
-            title: "Alerta..",
-            text: "No se guardo el último movimiento",
-          });
-        } else {
-          // Data saved successfully!
+      .update(
+        {
+          board,
+          blackCasualities: [2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0],
+          side: serverGameData?.player1,
+          numero_turno: newTurno,
+        },
+        (error) => {
+          if (error) {
+            // The write failed...
+            Swal.fire({
+              title: "Alerta..",
+              text: "No se guardo el último movimiento",
+            });
+          } else {
+            // Data saved successfully!
+          }
         }
-      }
       )
       .catch(console.error);
   }
