@@ -2705,8 +2705,7 @@ function drawBoard() {
 	chessCtx.fillRect(0, 0, BOARD_WIDTH*TILE_SIZE, BOARD_HEIGHT*TILE_SIZE);
 	var numero = 10;
 	var letra = 0;
-	var combo_letras = ["a","b","c","d","e","f","g","h","i"];
-	for (let i = 0; i < BOARD_HEIGHT; i++) {
+  for (let i = 0; i < BOARD_HEIGHT; i++) {
 
 		if(i > 2 && i < 7){
 			for (let j = 0; j < BOARD_WIDTH; j++) {
@@ -2718,7 +2717,7 @@ function drawBoard() {
 					numero--;
 				}
 				if(i===9){
-					drawLetter(j, i, "black", combo_letras[letra],.80);
+					drawLetter(j, i, "black", ejeX[letra],.80);
 					letra++;
 				}
 			}  
@@ -2733,7 +2732,7 @@ function drawBoard() {
 					numero--;
 				}
 				if(i===9){
-					drawLetter(j, i, "black", combo_letras[letra],.80);
+					drawLetter(j, i, "black", ejeX[letra],.80);
 					letra++;
 				}
 			}
@@ -2761,6 +2760,7 @@ function drawCircle(x, y, fillStyle) {
 
 function drawLetter(x, y, color,letter,pos){
 	chessCtx.fillStyle = color;
+  chessCtx.font = '10px Arial';
 	var xx = x+.05;
 	var yy = y+pos;
 	chessCtx.fillText(letter,TILE_SIZE*(xx),TILE_SIZE*(yy));
@@ -5774,4 +5774,20 @@ async function leer_blackCasualitiesText() {
 function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
   drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);
   drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);
+  console.log("x:"+movoldX);
+  if(movoldX === 0){
+    var letter = 10-movoldY;
+    drawLetter(movoldX, movoldY, "black", letter, .25);
+  }
+  if(movnewX === 0){
+    var letter = 10-movnewY;
+    drawLetter(movnewX, movnewY, "black", letter, .25);
+  }
+
+  if(movoldY === 9){
+    drawLetter(movoldX, movoldY, "black", ejeX[movoldX], .80);
+  }
+  if(movnewY === 9){
+    drawLetter(movnewX, movnewY, "black", ejeX[movnewX], .80);
+  }
 }
