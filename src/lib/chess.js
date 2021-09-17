@@ -2701,24 +2701,44 @@ async function repaintBoard() {
 }
 
 function drawBoard() {
-  chessCtx.fillStyle = WHITE_TILE_COLOR;
-  chessCtx.fillRect(0, 0, BOARD_WIDTH * TILE_SIZE, BOARD_HEIGHT * TILE_SIZE);
+	chessCtx.fillStyle = WHITE_TILE_COLOR;
+	chessCtx.fillRect(0, 0, BOARD_WIDTH*TILE_SIZE, BOARD_HEIGHT*TILE_SIZE);
+	var numero = 10;
+	var letra = 0;
+	var combo_letras = ["a","b","c","d","e","f","g","h","i"];
+	for (let i = 0; i < BOARD_HEIGHT; i++) {
 
-  for (let i = 0; i < BOARD_HEIGHT; i++) {
-    if (i > 2 && i < 7) {
-      for (let j = 0; j < BOARD_WIDTH; j++) {
-        if ((i + j) % 2 === 1) {
-          drawTile(j, i, MIDDEL_TILE_COLOR);
-        }
-      }
-    } else {
-      for (let j = 0; j < BOARD_WIDTH; j++) {
-        if ((i + j) % 2 === 1) {
-          drawTile(j, i, BLACK_TILE_COLOR);
-        }
-      }
-    }
-  }
+		if(i > 2 && i < 7){
+			for (let j = 0; j < BOARD_WIDTH; j++) {
+				if ((i+j)%2 === 1) {
+					drawTile(j, i, MIDDEL_TILE_COLOR);
+				}
+				if(j===0){
+					drawLetter(j, i, "black", numero, .25);
+					numero--;
+				}
+				if(i===9){
+					drawLetter(j, i, "black", combo_letras[letra],.80);
+					letra++;
+				}
+			}  
+		}else{
+			for (let j = 0; j < BOARD_WIDTH; j++) {
+				if ((i+j)%2 === 1) {
+					drawTile(j, i, BLACK_TILE_COLOR);
+
+				}
+				if(j===0){
+					drawLetter(j, i, "black", numero,.25);
+					numero--;
+				}
+				if(i===9){
+					drawLetter(j, i, "black", combo_letras[letra],.80);
+					letra++;
+				}
+			}
+		}
+	}
 }
 
 function drawTile(x, y, fillStyle) {
@@ -2737,6 +2757,13 @@ function drawCircle(x, y, fillStyle) {
     2 * Math.PI
   );
   chessCtx.fill();
+}
+
+function drawLetter(x, y, color,letter,pos){
+	chessCtx.fillStyle = color;
+	var xx = x+.05;
+	var yy = y+pos;
+	chessCtx.fillText(letter,TILE_SIZE*(xx),TILE_SIZE*(yy));
 }
 
 function drawCorners(x, y, fillStyle) {
