@@ -2639,6 +2639,7 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
   if (serverGameData?.player1 == null) return;
 
   var newTurno = numero_turno + 1;
+  var equipo_opuesto = getOppositeTeam(currentTeam);
 
   if (numero_turno % 2 === 1 && numero_turno !== 0) {
     marca_jugada(numero_turno % 9);
@@ -2652,6 +2653,15 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
       .update({
         board,
         numero_turno: newTurno,
+      })
+      .catch(console.error);
+    await getGameDbRef()
+      .child("jugadas")
+      .push({
+        uid: firebase.auth().currentUser?.uid,
+        movimiento: nomenclatura,
+        createdAt: Date.now(),
+        player: equipo_opuesto,
       })
       .catch(console.error);
     return;
@@ -2707,6 +2717,7 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
         uid: firebase.auth().currentUser?.uid,
         movimiento: nomenclatura,
         createdAt: Date.now(),
+        player: currentTeam,
       })
       .catch(console.error);
   }

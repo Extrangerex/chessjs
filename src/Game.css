@@ -44,8 +44,8 @@
 #jugadas{
     height: 38vh;
     overflow: auto;
-    margin-left: 10px;
-    margin-right: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 #turno{
     color:white;

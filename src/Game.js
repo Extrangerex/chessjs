@@ -323,9 +323,10 @@ export function Game() {
                 {Object.keys(jugadas).length > 0 ? (
                   Object.keys(jugadas).map((llave) => {
                     const element = jugadas[llave];
+                    if(element.player === 0){
                     return (
-                      <p
-                        align="left"
+                        <p
+                        align="right"
                         style={{
                           marginBottom: "0",
                           overflowWrap: "normal",
@@ -337,6 +338,22 @@ export function Game() {
                         </span>
                       </p>
                     );
+                      }else{
+                        return (
+                          <p
+                          align="left"
+                          style={{
+                            marginBottom: "0",
+                            overflowWrap: "normal",
+                            fontSize: ".75rem",
+                          }}
+                        >
+                          <span style={{ color: "white" }} key={llave.createdAt}>
+                            {element.movimiento}
+                          </span>
+                        </p>
+                      );  
+                      }
                   })
                 ) : (
                   <p align="center" style={{ margin: "5px" }}>
