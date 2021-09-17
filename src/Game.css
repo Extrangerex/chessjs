@@ -44,6 +44,8 @@
 #jugadas{
     height: 38vh;
     overflow: auto;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 #turno{
     color:white;
@@ -62,4 +64,20 @@
     height: 16px;
     border-radius: 8px;
     border: 0;
+}
+#blancas_comidas{
+    color:white;
+    font-size:.75rem;
+    margin:0;
+    padding-left:10px;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+#negras_comidas{
+    color:white;
+    font-size:.75rem;
+    margin:0;
+    padding-left:10px;
+    padding-right: 10px;
+    padding-top: 10px;
 }

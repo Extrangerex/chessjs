@@ -455,7 +455,7 @@ async function startGame() {
   contadortorre1negro = 0;
   contadortorre2blanco = 0;
   contadortorre2negro = 0;
-  
+
 }
 
 async function onClick(event) {
@@ -686,8 +686,8 @@ async function onClick(event) {
             jaquereyblanco: jaquereyblanco,
             jaquereynegro: jaquereynegro,
             ultimo_movimiento: ultimomovimiento,
-            whiteCasualitiesText:whiteCasualitiesText,
-            blackCasualitiesText:blackCasualitiesText,
+            whiteCasualitiesText: whiteCasualitiesText,
+            blackCasualitiesText: blackCasualitiesText,
             board,
             lastPiecejoue: { x, y, createdAt: Date.now() },
           })
@@ -1469,12 +1469,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
       //revisamos si acaba de comer al paso
       if (x + "," + y === comeralpaso) {
         //actualizamos score y tablero
-
-        //blackCasualities[board.tiles[y + 1][x].pieceType]++;
-        //ultimapiezacapturadanegra =
-        //board.tiles[y + 1][x].pieceType + "/" + x + "," + (y + 1);
-        //ultimotipodemovimiento = "Captura";
-        //updateBlackCasualities();
+        blackCasualities[board.tiles[y + 1][x].pieceType]++;
+        ultimapiezacapturadanegra =
+          board.tiles[y + 1][x].pieceType + "/" + x + "," + (y + 1);
+        ultimotipodemovimiento = "Captura";
+        updateBlackCasualities();
         //capturamos la ficha
         board.tiles[y + 1][x].pieceType = EMPTY;
         board.tiles[y + 1][x].team = EMPTY;
@@ -1492,6 +1491,12 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     if (piece === CONEJO) {
       //revisamos si acaba de comer al paso para capturar ficha
       if (x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
+        //actualizamos score y tablero
+        blackCasualities[board.tiles[y + 1][x].pieceType]++;
+        ultimapiezacapturadanegra =
+          board.tiles[y + 1][x].pieceType + "/" + x + "," + (y + 1);
+        ultimotipodemovimiento = "Captura";
+        updateBlackCasualities();
         //capturamos la ficha
         board.tiles[y + 1][x].pieceType = EMPTY;
         board.tiles[y + 1][x].team = EMPTY;
@@ -1536,9 +1541,21 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //capturamos la ficha
         //si esta vacia ir a la siguiente pq salto 3 cuadros
         if (board.tiles[y + 1][x].pieceType !== EMPTY) {
+          //actualizamos score y tablero
+          blackCasualities[board.tiles[y + 1][x].pieceType]++;
+          ultimapiezacapturadanegra =
+            board.tiles[y + 1][x].pieceType + "/" + x + "," + (y + 1);
+          ultimotipodemovimiento = "Captura";
+          updateBlackCasualities();
           board.tiles[y + 1][x].pieceType = EMPTY;
           board.tiles[y + 1][x].team = EMPTY;
         } else {
+          //actualizamos score y tablero
+          blackCasualities[board.tiles[y + 2][x].pieceType]++;
+          ultimapiezacapturadanegra =
+            board.tiles[y + 2][x].pieceType + "/" + x + "," + (y + 2);
+          ultimotipodemovimiento = "Captura";
+          updateBlackCasualities();
           board.tiles[y + 2][x].pieceType = EMPTY;
           board.tiles[y + 2][x].team = EMPTY;
         }
@@ -1987,11 +2004,11 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
       //revisamos si acaba de comer al paso
       if (x + "," + y === comeralpaso) {
         //actualizamos score y tablero
-        //whiteCasualities[board.tiles[y - 1][x].pieceType]++;
-        //ultimapiezacapturadablanca =
-        //board.tiles[y - 1][x].pieceType + "/" + x + "," + (y - 1);
-        //ultimotipodemovimiento = "Captura";
-        //updateWhiteCasualities();
+        whiteCasualities[board.tiles[y - 1][x].pieceType]++;
+        ultimapiezacapturadablanca =
+          board.tiles[y - 1][x].pieceType + "/" + x + "," + (y - 1);
+        ultimotipodemovimiento = "Captura";
+        updateWhiteCasualities();
         //capturamos la ficha
         board.tiles[y - 1][x].pieceType = EMPTY;
         board.tiles[y - 1][x].team = EMPTY;
@@ -2009,6 +2026,12 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     if (piece === CONEJO) {
       //revisamos si acaba de comer al paso
       if (x + "," + y === comeralpasoconejo || x + "," + y === comeralpaso) {
+        //actualizamos score y tablero
+        whiteCasualities[board.tiles[y - 1][x].pieceType]++;
+        ultimapiezacapturadablanca =
+          board.tiles[y - 1][x].pieceType + "/" + x + "," + (y - 1);
+        ultimotipodemovimiento = "Captura";
+        updateWhiteCasualities();
         //capturamos la ficha
         board.tiles[y - 1][x].pieceType = EMPTY;
         board.tiles[y - 1][x].team = EMPTY;
@@ -2053,9 +2076,21 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
         //capturamos la ficha
         //si esta vacia ir a la siguiente pq salto 3 cuadros
         if (board.tiles[y - 1][x].pieceType !== EMPTY) {
+          //actualizamos score y tablero
+          whiteCasualities[board.tiles[y - 1][x].pieceType]++;
+          ultimapiezacapturadablanca =
+            board.tiles[y - 1][x].pieceType + "/" + x + "," + (y - 1);
+          ultimotipodemovimiento = "Captura";
+          updateWhiteCasualities();
           board.tiles[y - 1][x].pieceType = EMPTY;
           board.tiles[y - 1][x].team = EMPTY;
         } else {
+          //actualizamos score y tablero
+          whiteCasualities[board.tiles[y - 2][x].pieceType]++;
+          ultimapiezacapturadablanca =
+            board.tiles[y - 2][x].pieceType + "/" + x + "," + (y - 2);
+          ultimotipodemovimiento = "Captura";
+          updateWhiteCasualities();
           board.tiles[y - 2][x].pieceType = EMPTY;
           board.tiles[y - 2][x].team = EMPTY;
         }
@@ -2701,43 +2736,43 @@ async function repaintBoard() {
 }
 
 function drawBoard() {
-	chessCtx.fillStyle = WHITE_TILE_COLOR;
-	chessCtx.fillRect(0, 0, BOARD_WIDTH*TILE_SIZE, BOARD_HEIGHT*TILE_SIZE);
-	var numero = 10;
-	var letra = 0;
+  chessCtx.fillStyle = WHITE_TILE_COLOR;
+  chessCtx.fillRect(0, 0, BOARD_WIDTH * TILE_SIZE, BOARD_HEIGHT * TILE_SIZE);
+  var numero = 10;
+  var letra = 0;
   for (let i = 0; i < BOARD_HEIGHT; i++) {
 
-		if(i > 2 && i < 7){
-			for (let j = 0; j < BOARD_WIDTH; j++) {
-				if ((i+j)%2 === 1) {
-					drawTile(j, i, MIDDEL_TILE_COLOR);
-				}
-				if(j===0){
-					drawLetter(j, i, "black", numero, .25);
-					numero--;
-				}
-				if(i===9){
-					drawLetter(j, i, "black", ejeX[letra],.80);
-					letra++;
-				}
-			}  
-		}else{
-			for (let j = 0; j < BOARD_WIDTH; j++) {
-				if ((i+j)%2 === 1) {
-					drawTile(j, i, BLACK_TILE_COLOR);
+    if (i > 2 && i < 7) {
+      for (let j = 0; j < BOARD_WIDTH; j++) {
+        if ((i + j) % 2 === 1) {
+          drawTile(j, i, MIDDEL_TILE_COLOR);
+        }
+        if (j === 0) {
+          drawLetter(j, i, "black", numero, .25);
+          numero--;
+        }
+        if (i === 9) {
+          drawLetter(j, i, "black", ejeX[letra], .80);
+          letra++;
+        }
+      }
+    } else {
+      for (let j = 0; j < BOARD_WIDTH; j++) {
+        if ((i + j) % 2 === 1) {
+          drawTile(j, i, BLACK_TILE_COLOR);
 
-				}
-				if(j===0){
-					drawLetter(j, i, "black", numero,.25);
-					numero--;
-				}
-				if(i===9){
-					drawLetter(j, i, "black", ejeX[letra],.80);
-					letra++;
-				}
-			}
-		}
-	}
+        }
+        if (j === 0) {
+          drawLetter(j, i, "black", numero, .25);
+          numero--;
+        }
+        if (i === 9) {
+          drawLetter(j, i, "black", ejeX[letra], .80);
+          letra++;
+        }
+      }
+    }
+  }
 }
 
 function drawTile(x, y, fillStyle) {
@@ -2758,12 +2793,12 @@ function drawCircle(x, y, fillStyle) {
   chessCtx.fill();
 }
 
-function drawLetter(x, y, color,letter,pos){
-	chessCtx.fillStyle = color;
+function drawLetter(x, y, color, letter, pos) {
+  chessCtx.fillStyle = color;
   chessCtx.font = '10px Arial';
-	var xx = x+.05;
-	var yy = y+pos;
-	chessCtx.fillText(letter,TILE_SIZE*(xx),TILE_SIZE*(yy));
+  var xx = x + .05;
+  var yy = y + pos;
+  chessCtx.fillText(letter, TILE_SIZE * (xx), TILE_SIZE * (yy));
 }
 
 function drawCorners(x, y, fillStyle) {
@@ -3262,9 +3297,9 @@ function updateCasualities(casualities, equipo) {
       none = false;
     } else {
       if (equipo === WHITE) {
-        whiteCasualitiesText += " - " + casualities[i] + "" + piecesCharacters[i];
+        whiteCasualitiesText += " " + casualities[i] + "" + piecesCharacters[i];
       } else {
-        blackCasualitiesText += " - " + casualities[i] + "" + piecesCharacters[i];
+        blackCasualitiesText += " " + casualities[i] + "" + piecesCharacters[i];
       }
     }
   }
@@ -5774,20 +5809,20 @@ async function leer_blackCasualitiesText() {
 function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
   drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);
   drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);
-  console.log("x:"+movoldX);
-  if(movoldX === 0){
-    var letter = 10-movoldY;
-    drawLetter(movoldX, movoldY, "black", letter, .25);
+  console.log("x:" + movoldX);
+  if (movoldX === 0) {
+    var letterold = 10 - movoldY;
+    drawLetter(movoldX, movoldY, "black", letterold, .25);
   }
-  if(movnewX === 0){
-    var letter = 10-movnewY;
-    drawLetter(movnewX, movnewY, "black", letter, .25);
+  if (movnewX === 0) {
+    var letternew = 10 - movnewY;
+    drawLetter(movnewX, movnewY, "black", letternew, .25);
   }
 
-  if(movoldY === 9){
+  if (movoldY === 9) {
     drawLetter(movoldX, movoldY, "black", ejeX[movoldX], .80);
   }
-  if(movnewY === 9){
+  if (movnewY === 9) {
     drawLetter(movnewX, movnewY, "black", ejeX[movnewX], .80);
   }
 }

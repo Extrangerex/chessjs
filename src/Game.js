@@ -121,7 +121,7 @@ export function Game() {
                 style={{ width: "100px", height: "100px", marginTop: "12vh" }}
               ></img>
               <br></br>
-              <p style={{color:"white",fontSize: ".75rem",margin:0}} id = "negras_comidas"></p>
+              <p id = "negras_comidas"></p>
             </div>
             <div align="center" style={{ height: "10vh" }}>
               
@@ -141,7 +141,7 @@ export function Game() {
                 }}
               ></img>
               <br></br>
-              <p style={{color:"white",fontSize: ".75rem",margin:0}} id = "blancas_comidas"></p>
+              <p id = "blancas_comidas"></p>
             </div>
           </Col>
           <Row>
