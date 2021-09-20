@@ -178,7 +178,7 @@ setInterval(() => {
   );
 
   if (array.includes(val)) {
-    changeCurrentTeam(true, true);
+    //changeCurrentTeam(true, true); //cambio de turno despues de 5 min.
   }
 }, 1000);
 
