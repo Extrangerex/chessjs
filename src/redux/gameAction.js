@@ -45,7 +45,7 @@ export const newGame = (uid) => async (dispatch) => {
     leoncoronadonegrocomible: false,
     posicionleonnegro: "-1,-1",
     bloque: 1,
-    numero_turno: 0,
+    numero_turno: 1,
     isTriggeredChangeTeam: false,
     ultimo_movimiento: "",
   });

@@ -137,6 +137,8 @@ let ultimotipodemovimiento; //captura o movimiento
 
 let ultimomovimiento;
 let nomenclatura;
+let aviso_doble_turno = false;
+let aviso_inicio = true;
 
 let lobbyItemKey;
 
@@ -257,6 +259,23 @@ async function startGame() {
         title: "Opps..",
         text: "Debes esperar que se una un jugador para empezar a jugar",
       });
+    } else {
+      if (serverGameData?.side === firebase?.auth()?.currentUser?.uid && serverGameData?.numero_turno === 1 && aviso_inicio === true) {
+        Swal.fire({
+          title: "Alerta",
+          text: "Comenzemos, ya llego tu oponente",
+        });
+        aviso_inicio = "false";
+        await getGameDbRef()
+          .update({
+            board,
+            lastPiecejoue: {
+              createdAt: Date.now(),
+            },
+            createdAt: Date.now(),
+          })
+          .catch(console.error);
+      }
     }
 
     if (serverGameData?.isTriggeredChangeTeam) {
@@ -322,47 +341,47 @@ async function startGame() {
       });
     } catch (error) { }
 
-    if (numero_turno === 18) {
+    if (numero_turno === 19) {
       marca_bloque(2);
       document.getElementById("bloque1").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 36) {
+    if (numero_turno === 37) {
       marca_bloque(3);
       document.getElementById("bloque2").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 54) {
+    if (numero_turno === 55) {
       marca_bloque(4);
       document.getElementById("bloque3").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 72) {
+    if (numero_turno === 73) {
       marca_bloque(5);
       document.getElementById("bloque4").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 90) {
+    if (numero_turno === 91) {
       marca_bloque(6);
       document.getElementById("bloque5").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 108) {
+    if (numero_turno === 109) {
       marca_bloque(7);
       document.getElementById("bloque6").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 126) {
+    if (numero_turno === 127) {
       marca_bloque(8);
       document.getElementById("bloque7").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 144) {
+    if (numero_turno === 145) {
       marca_bloque(9);
       document.getElementById("bloque8").style.backgroundColor = "red";
       reset_jugadas();
     }
-    if (numero_turno === 162) {
+    if (numero_turno === 163) {
       marca_bloque(10);
       document.getElementById("bloque9").style.backgroundColor = "red";
       reset_jugadas();
@@ -376,6 +395,17 @@ async function startGame() {
 
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
       document.getElementById("turno").innerHTML = "Turno de tu oponente";
+
+      if (
+        serverGameData?.numero_turno % 18 === 1 && serverGameData?.numero_turno !== 1 && aviso_doble_turno === false
+      ) {
+        aviso_doble_turno = true;
+        Swal.fire({
+          title: "Alerta..",
+          text: "Doble turno de tu oponente",
+        });
+      }
+
     } else {
       if (
         serverGameData?.side === serverGameData?.player1 &&
@@ -395,24 +425,26 @@ async function startGame() {
           text: "JAQUE",
         });
       }
-
-      if (ultimomovimiento !== null && ultimomovimiento !== undefined) {
-        const combo_ultimomovimiento = ultimomovimiento.split("/");
-        if (combo_ultimomovimiento[1] !== null && combo_ultimomovimiento[1] !== undefined && combo_ultimomovimiento[2] !== null && combo_ultimomovimiento[2] !== undefined) {
-          const combo_oldxy = combo_ultimomovimiento[1].split(",");
-          const combo_newxy = combo_ultimomovimiento[2].split(",");
-
-          marcar_ultimo_movimiento(
-            parseInt(combo_newxy[0]),
-            parseInt(combo_newxy[1]),
-            parseInt(combo_oldxy[0]),
-            parseInt(combo_oldxy[1])
-          );
-        }
-      }
-
       document.getElementById("turno").innerHTML = "Tu turno";
     }
+
+    if (ultimomovimiento !== null && ultimomovimiento !== undefined) {
+      const combo_ultimomovimiento = ultimomovimiento.split("/");
+      if (combo_ultimomovimiento[1] !== null && combo_ultimomovimiento[1] !== undefined && combo_ultimomovimiento[2] !== null && combo_ultimomovimiento[2] !== undefined) {
+        const combo_oldxy = combo_ultimomovimiento[1].split(",");
+        const combo_newxy = combo_ultimomovimiento[2].split(",");
+
+        marcar_ultimo_movimiento(
+          parseInt(combo_newxy[0]),
+          parseInt(combo_newxy[1]),
+          parseInt(combo_oldxy[0]),
+          parseInt(combo_oldxy[1])
+        );
+      }
+    }
+
+
+
     if (currentTeam === BLACK) {
       var jugador1a = document.getElementById("jugador2");
       jugador1a.style.border = "1px solid white";
@@ -497,7 +529,7 @@ async function onClick(event) {
   let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
   let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-  if (serverGameData?.numero_turno % 18 === 0) {
+  if (serverGameData?.numero_turno % 18 === 1) {
     if (
       serverGameData?.lastPiecejoue?.x === x &&
       serverGameData?.lastPiecejoue?.y === y
@@ -2641,14 +2673,19 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
   var newTurno = numero_turno + 1;
   var equipo_opuesto = getOppositeTeam(currentTeam);
 
-  if (numero_turno % 2 === 1 && numero_turno !== 0) {
+  if (numero_turno % 2 !== 1 && numero_turno !== 0) {
     marca_jugada(numero_turno % 9);
   }
 
   if (
-    serverGameData?.numero_turno % 18 === 17 &&
+    serverGameData?.numero_turno % 18 === 0 &&
     serverGameData?.numero_turno !== 0
   ) {
+    Swal.fire({
+      title: "Alerta..",
+      text: "Te toca doble turno",
+    });
+    aviso_doble_turno = false;
     await getGameDbRef()
       .update({
         board,
