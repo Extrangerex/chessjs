@@ -433,13 +433,15 @@ async function startGame() {
       if (combo_ultimomovimiento[1] !== null && combo_ultimomovimiento[1] !== undefined && combo_ultimomovimiento[2] !== null && combo_ultimomovimiento[2] !== undefined) {
         const combo_oldxy = combo_ultimomovimiento[1].split(",");
         const combo_newxy = combo_ultimomovimiento[2].split(",");
-
-        marcar_ultimo_movimiento(
-          parseInt(combo_newxy[0]),
-          parseInt(combo_newxy[1]),
-          parseInt(combo_oldxy[0]),
-          parseInt(combo_oldxy[1])
-        );
+        
+        if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
+          marcar_ultimo_movimiento(
+            parseInt(combo_newxy[0]),
+            parseInt(combo_newxy[1]),
+            parseInt(combo_oldxy[0]),
+            parseInt(combo_oldxy[1])
+          );
+        }
       }
     }
 
