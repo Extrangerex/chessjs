@@ -44,6 +44,8 @@ export const newGame = (uid) => async (dispatch) => {
     posicionleonblanco: "-1,-1",
     leoncoronadonegrocomible: false,
     posicionleonnegro: "-1,-1",
+    posicionreynegro:"4,0",
+    posicionreyblanco:"4,9",
     bloque: 1,
     numero_turno: 1,
     isTriggeredChangeTeam: false,

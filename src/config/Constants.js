@@ -22,9 +22,9 @@ export const GameConst = {
   boardWidth: 9,
   boardHeight: 10,
   colors: {
-    whiteTileColor: "#FFF7DE",
-    blackTileColor: "#444F80",
-    middleTileColor: "#657696",
-    highLightTileColor: "#6F83E0",
+    whiteTileColor: "#B8E37B",
+    blackTileColor: "#4A8129",
+    middleTileColor: "#90C485",
+    highLightTileColor: "#103B08",
   },
 };
