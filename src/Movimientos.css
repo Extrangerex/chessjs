@@ -1,0 +1,21 @@
+.table th, .table td{
+    padding: 4px;
+}
+.pieza{
+ height: 40vh;
+}
+table thead tr{
+    background: #60757e;color: rgb(255,255,255);border-color: rgba(255,255,255,0);
+}
+table thead tr td{
+    text-align: center;padding: 10px;border-width: 0px;background: #84a6b4;
+}
+table tbody{
+    background: rgba(255,255,255,0.94);
+}
+table tbody tr{
+    height: 34px;
+}
+table tbody tr td{
+    height: 34px;padding: 6px;background: #ced8dc;text-align: left;font-size: 14px;padding-left: 25px;
+}
