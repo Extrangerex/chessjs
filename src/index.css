@@ -11,3 +11,57 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.banner{
+  height: 80px;
+  background-color: #20a2d2;
+}
+.banner_content{
+  margin-bottom: 0px;
+  padding-top: 20px;
+  text-align: center;
+  color: rgb(255,255,255);
+  line-height: 34px;
+}
+.post .img-thumbnail{
+  border: none; 
+  padding: 0px;
+}
+
+.post h2{
+  color: rgb(55,153,189);
+}
+
+.newsletter {
+  background: #ced8dc;
+}
+.newsletter .banner{
+  background: #ced8dc;
+  height: 250px;
+}
+
+.newsletter .banner h2{
+  color: #34393e;
+  margin-top: 60px;
+  font-size: 24px;
+}
+
+.newsletter .banner .btn-newsletter{
+  margin-bottom: 0px;
+  background: #3799bd;
+  font-size: 14px;
+  color: rgb(255,255,255)
+}
+.newsletter .banner .intro {
+  font-size: 16px;
+  padding-left: 20vw;
+  padding-right: 20vw;
+  height: 50px;
+}
+.newsletter .banner #email{
+    width: 450px;
+    background: rgb(255,255,255);
+    font-size: 16px;
+} 
+.newsletter .banner .form-inline {
+  margin-top:40px;
+}

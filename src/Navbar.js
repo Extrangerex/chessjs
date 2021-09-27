@@ -1,4 +1,5 @@
-import { Navbar, Container, Nav, NavDropdown, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Navbar, Container, Nav, NavDropdown, Button, Modal } from "react-bootstrap";
 import logo from "./images/logo-megachess.png";
 import { useOnlineState } from "./hooks/useOnlineState";
 import firebase from 'firebase';
@@ -11,6 +12,9 @@ export function MyNavbar() {
         window.location = "/game";
         return;
     };
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
 
     return (<Navbar bg="light" expand="md">
         <Container>
@@ -31,7 +35,21 @@ export function MyNavbar() {
                         <Nav.Link href="/blog">Blog</Nav.Link>
                         <Nav.Link href="/comprar">Comprar</Nav.Link>
 
-                        <Button onClick={createGame}>Crear Sala</Button>
+                        <Button onClick={handleShow}>Crear Sala</Button>
+                        <Modal show={show}>
+                            <Modal.Header closeButton onClick={handleClose}>
+                                <Modal.Title>Seleccione el tipo de partida</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <div align="center">
+                                    <button className="btn btn-success" style={{margin:"5px"}}>Privada</button>
+                                    <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                     <div className="flex-grow-1"></div>
                     {isOnline ? (<Nav.Link onClick={() => { firebase.auth().signOut(); window.location = "/lobby" }}>Cerrar sesion</Nav.Link>) : (<Nav.Link href="/login">Iniciar sesion</Nav.Link>)}
