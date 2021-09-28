@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Container, Row, Col, Navbar, NavDropdown, Nav } from 'react-bootstrap';
 
@@ -43,7 +44,12 @@ import mov_peon from "./images/tableros/mov-peon.png";
 
 
 export function Movimientos() {
-
+        
+    const imagenes = [rey,dama,elefante,pantera,torre,leon,alfil,perro,caballo,ardilla,conejo,peon];
+    const tableros = [mov_rey,mov_dama,mov_elefante,mov_pantera,mov_torre,mov_leon,mov_alfil,mov_perro,mov_caballo,mov_ardilla,mov_conejo,mov_peon];
+    
+    const [numeroimagen, setNumeroImagen] = useState(0);
+    
     return (
         <section>
             <Navbar bg="light" expand="md">
@@ -85,9 +91,9 @@ export function Movimientos() {
                     <Row>
                         <Col xs={12} md={6} style={{ padding: 0 }}>
                             <div align="center">
-                                <img src={mov_rey} className="img-fluid" alt=""></img>
+                                <img src={tableros[numeroimagen]} className="img-fluid" alt=""></img>
                                 <br></br><br></br>
-                                <img src={rey} className="img-fluid pieza" alt=""></img>
+                                <img src={imagenes[numeroimagen]} className="img-fluid pieza" alt=""></img>
                             </div>
                         </Col>
                         <Col xs={12} md={6} style={{ padding: 0 }}>
@@ -103,73 +109,73 @@ export function Movimientos() {
                                 <tbody>
                                     <tr>
                                         <td>1</td>
-                                        <td><button  className="btn btn-info">REY</button></td>
+                                        <td><button onClick={() => setNumeroImagen(0)}  className="btn btn-info">REY</button></td>
                                         <td>♔</td>
                                         <td>10 pts</td>
                                     </tr>
                                     <tr>
                                         <td>2</td>
-                                        <td><button className="btn btn-info">DAMA</button></td>
+                                        <td><button onClick={() => setNumeroImagen(1)} className="btn btn-info">DAMA</button></td>
                                         <td>♕</td>
                                         <td>9 pts</td>
                                     </tr>
                                     <tr>
                                         <td>3</td>
-                                        <td><button className="btn btn-info">ELEFANTE</button></td>
+                                        <td><button onClick={() => setNumeroImagen(2)} className="btn btn-info">ELEFANTE</button></td>
                                         <td>El</td>
                                         <td>7 pts</td>
                                     </tr>
                                     <tr>
                                         <td>4</td>
-                                        <td><button className="btn btn-info">PANTERA</button></td>
+                                        <td><button onClick={() => setNumeroImagen(3)} className="btn btn-info">PANTERA</button></td>
                                         <td>Pa</td>
                                         <td>7 pts</td>
                                     </tr>
                                     <tr>
                                         <td>5</td>
-                                        <td><button className="btn btn-info">TORRE</button></td>
+                                        <td><button onClick={() => setNumeroImagen(4)} className="btn btn-info">TORRE</button></td>
                                         <td>♖</td>
                                         <td>7 pts</td>
                                     </tr>
                                     <tr>
                                         <td>6</td>
-                                        <td><button className="btn btn-info">LEÓN</button></td>
+                                        <td><button onClick={() => setNumeroImagen(5)} className="btn btn-info">LEÓN</button></td>
                                         <td>Le</td>
                                         <td>8 pts</td>
                                     </tr>
                                     <tr>
                                         <td>7</td>
-                                        <td><button className="btn btn-info">ALFIL</button></td>
+                                        <td><button onClick={() => setNumeroImagen(6)} className="btn btn-info">ALFIL</button></td>
                                         <td>♗</td>
                                         <td>6 pts</td>
                                     </tr>
                                     <tr>
                                         <td>8</td>
-                                        <td><button className="btn btn-info">PERRO</button></td>
+                                        <td><button onClick={() => setNumeroImagen(7)} className="btn btn-info">PERRO</button></td>
                                         <td>Pe</td>
                                         <td>4 pts</td>
                                     </tr>
                                     <tr>
                                         <td>9</td>
-                                        <td><button className="btn btn-info">CABALLO</button></td>
+                                        <td><button onClick={() => setNumeroImagen(8)} className="btn btn-info">CABALLO</button></td>
                                         <td>♘</td>
                                         <td>5 pts</td>
                                     </tr>
                                     <tr>
                                         <td>10</td>
-                                        <td><button className="btn btn-info">ARDILLA</button></td>
+                                        <td><button onClick={() => setNumeroImagen(9)} className="btn btn-info">ARDILLA</button></td>
                                         <td>Ar</td>
                                         <td>3 pts</td>
                                     </tr>
                                     <tr>
                                         <td>11</td>
-                                        <td><button className="btn btn-info">CONEJO</button></td>
+                                        <td><button onClick={() => setNumeroImagen(10)} className="btn btn-info">CONEJO</button></td>
                                         <td>Co</td>
                                         <td>2 pts</td>
                                     </tr>
                                     <tr>
                                         <td>12</td>
-                                        <td><button className="btn btn-info">PEONES</button></td>
+                                        <td><button onClick={() => setNumeroImagen(11)} className="btn btn-info">PEONES</button></td>
                                         <td>♙</td>
                                         <td>1 pts</td>
                                     </tr>
