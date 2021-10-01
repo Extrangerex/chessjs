@@ -1,3 +1,5 @@
+import { useState } from "react";
+import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.css";
 import { Container, Row, Col, Navbar, NavDropdown, Nav } from 'react-bootstrap';
 
@@ -18,6 +20,18 @@ import logo_footer from "./images/logo-megachess-bco.svg";
 
 export function Blog() {
 
+    const [publicaciones, setPublicaciones] = useState({});
+
+    axios.get('apis/blog.php?opcion=1', {
+        headers: {
+            'Idusuario': 123456789,
+            'Clientid': 1
+        },
+    })
+        .then(res => {
+            //console.log(JSON.stringify(res.data[0]['id']));
+            setPublicaciones(res.data);
+        })
     return (
         <section>
             <Navbar bg="light" expand="md">
@@ -54,24 +68,42 @@ export function Blog() {
                     </Container>
                 </header>
             </section>
+
+            <ul style={{listStyle:"none"}}>
+                {Object.keys(publicaciones).length > 0 ? (
+                    Object.keys(publicaciones).map((llave) => {
+                        const element = publicaciones[llave];
+                        return (
+                            <li key={element.id}>
+                                {element.titulo}
+                            </li>
+                        );
+                    })
+                ) : (
+                    <li></li>
+                )}
+            </ul>
+
+
             <footer className="footer-dark">
                 <Container>
                     <Row>
                         <Col xs={12} lg={1} style={{ padding: 0 }}>
-                        <p id="logo_footer"><img src={logo_footer} alt="" /></p>
-                        </Col>    
+                            <p id="logo_footer"><img src={logo_footer} alt="" /></p>
+                        </Col>
                         <Col xs={12} lg={5} style={{ padding: 0 }}>
                             <p id="marca_footer"> Mega Chess ® 2021 Todos los derechos reservados.</p>
-                        </Col>    
+                        </Col>
                         <Col xs={12} lg={3} style={{ padding: 0 }}>
                             <p style={{ textAlign: "center" }}>Diseñado por Agencia NUBA</p>
                         </Col>
                         <Col xs={12} lg={3} style={{ padding: 0 }}>
                             <div className="item social"><a href="#!"><i className="icon ion-social-facebook"></i></a><a href="#!"><i className="la la-twitter"></i></a><a href="#!"><i className="icon ion-social-youtube-outline"></i></a><a href="#!"><i className="fab fa-instagram"></i></a></div>
-                        </Col>    
+                        </Col>
                     </Row>
                 </Container>
             </footer>
         </section>
     );
+
 }

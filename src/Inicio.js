@@ -150,7 +150,7 @@ export function Inicio() {
 
             <section>
                 <div className="banner">
-                    <h4 className="banner_content">Un juego con 16 piezas es un reto pero con 24...es una ¡experiencia insuperable!</h4>
+                    <h4 className="banner_content">Un juego con 16 piezas es un reto pero con 27...es una ¡experiencia insuperable!</h4>
                 </div>
             </section>
 

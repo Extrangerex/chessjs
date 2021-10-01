@@ -416,10 +416,8 @@ async function startGame() {
       }
 
     } else {
-      if (
-        serverGameData?.side === serverGameData?.player1 &&
-        jaquereyblanco === "Si"
-      ) {
+      if (serverGameData?.side === serverGameData?.player1) {
+      if (jaquereyblanco === "Si") {
         if (serverGameData?.status === "black wins") {
           Swal.fire({
             title: "Opps....",
@@ -432,10 +430,11 @@ async function startGame() {
           });
         }
       }
-      if (
-        serverGameData?.side === serverGameData?.player2 &&
-        jaquereynegro === "Si"
-      ) {
+      
+    }
+
+    if (serverGameData?.side === serverGameData?.player2) {
+      if (jaquereynegro === "Si") {
         if (serverGameData?.status === "white wins") {
           Swal.fire({
             title: "Opps....",
@@ -448,7 +447,20 @@ async function startGame() {
           });
         }
       }
-      document.getElementById("turno").innerHTML = "Tu turno";
+    }
+    if (serverGameData?.status === "white lion wins") {
+      Swal.fire({
+        title: "Opps....",
+        text: "HAN GANADO LAS BLANCAS",
+      });
+    }
+    if (serverGameData?.status === "black lion wins") {
+      Swal.fire({
+        title: "Opps....",
+        text: "HAN GANADO LAS NEGRAS",
+      });
+    }
+    document.getElementById("turno").innerHTML = "Tu turno";
     }
 
     if (ultimomovimiento !== null && ultimomovimiento !== undefined) {
@@ -545,6 +557,21 @@ async function onClick(event) {
     });
     return;
   }
+  
+  if (serverGameData?.status === "white lion wins") {
+    Swal.fire({
+      title: "Opps..",
+      text: "HAN GANADO LAS BLANCAS",
+    });
+    return;
+  }
+  if (serverGameData?.status === "black lion wins") {
+    Swal.fire({
+      title: "Opps..",
+      text: "HAN GANADO LAS NEGRAS",
+    });
+    return;
+  }
 
   if (serverGameData?.numero_turno >= 180) {
     await getGameDbRef()
@@ -626,15 +653,12 @@ async function onClick(event) {
           leoncoronadoblancocomible === true &&
           board.tiles[WposY][WposX].pieceType === FAKEKING
         ) {
-          Swal.fire({
-            title: "Ganaron las Blancas",
-            icon: "warning",
-            type: "success",
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-          }).then(function () {
-            window.location = "/lobby";
-          });
+          getGameDbRef()
+            .update({
+              status: "white lion wins",
+              board,
+            })
+            .catch(console.error);
         }
       } else {
         var CLEANposicionleonnegro = posicionleonnegro.replace('"', "");
@@ -645,15 +669,12 @@ async function onClick(event) {
           leoncoronadonegrocomible === true &&
           board.tiles[BposY][BposX].pieceType === FAKEKING
         ) {
-          Swal.fire({
-            title: "Ganaron las Negras",
-            icon: "warning",
-            type: "success",
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-          }).then(function () {
-            window.location = "/lobby";
-          });
+          getGameDbRef()
+          .update({
+            status: "black lion wins",
+            board,
+          })
+          .catch(console.error);
         }
       }
 
@@ -945,15 +966,15 @@ function checkPossiblePlaysArdilla(curX, curY) {
     curY + 2 * direction >= 0 &&
     curY + 2 * direction <= BOARD_HEIGHT - 1
   ) {
-    if (board.tiles[curY + 1 * direction][curX].team !== currentTeam) {
-      if (
-        board.tiles[curY + 1 * direction][curX].pieceType === 0 ||
-        board.tiles[curY + 1 * direction][curX].pieceType === CONEJO ||
-        board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
-      ) {
-        checkPossibleMove(curX, curY + 2 * direction);
-      }
+
+    if (
+      board.tiles[curY + 1 * direction][curX].pieceType === 0 ||
+      board.tiles[curY + 1 * direction][curX].pieceType === CONEJO ||
+      board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
+    ) {
+      checkPossibleMove(curX, curY + 2 * direction);
     }
+
   }
 
   // Advance three tile
@@ -966,33 +987,30 @@ function checkPossiblePlaysArdilla(curX, curY) {
     curY + 3 * direction >= 0 &&
     curY + 3 * direction <= BOARD_HEIGHT - 1
   ) {
+
     if (
-      board.tiles[curY + 1 * direction][curX].team !== currentTeam &&
-      board.tiles[curY + 2 * direction][curX].team !== currentTeam
+      (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
+        board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
+        board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
+        board.tiles[curY + 2 * direction][curX].pieceType === CONEJO) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
+        board.tiles[curY + 2 * direction][curX].pieceType === CONEJO) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
+        board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
+        board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
+        board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
+        board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
+      (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
+        board.tiles[curY + 2 * direction][curX].pieceType === CONEJO)
     ) {
-      if (
-        (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
-          board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
-          board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
-          board.tiles[curY + 2 * direction][curX].pieceType === CONEJO) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
-          board.tiles[curY + 2 * direction][curX].pieceType === CONEJO) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
-          board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
-          board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
-          board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
-          board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
-        (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
-          board.tiles[curY + 2 * direction][curX].pieceType === CONEJO)
-      ) {
-        checkPossibleMove(curX, curY + 3 * direction);
-      }
+      checkPossibleMove(curX, curY + 3 * direction);
     }
+
   }
 
   // Advance Horizontal tile
@@ -1437,9 +1455,13 @@ function checkPossiblePlaysKing(curX, curY) {
           checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam)) === false &&
           checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam)) === false
         ) {
-          //marcamos las casillas para que se pueda enrocar
-          checkPossiblePlay(curX + 2, curY);
-          checkPossiblePlay(curX + 3, curY);
+          if (board.tiles[curY][(curX + 1)].team === EMPTY &&
+            board.tiles[curY][(curX + 2)].team === EMPTY &&
+            board.tiles[curY][(curX + 3)].team === EMPTY) {
+            //marcamos las casillas para que se pueda enrocar
+            checkPossiblePlay(curX + 2, curY);
+            checkPossiblePlay(curX + 3, curY);
+          }
         }
       }
       //torre1
@@ -1450,9 +1472,13 @@ function checkPossiblePlaysKing(curX, curY) {
           checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam)) === false &&
           checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam)) === false
         ) {
-          //marcamos las casillas para que se pueda enrocar
-          checkPossiblePlay(curX - 2, curY);
-          checkPossiblePlay(curX - 3, curY);
+          if (board.tiles[curY][(curX - 1)].team === EMPTY &&
+            board.tiles[curY][(curX - 2)].team === EMPTY &&
+            board.tiles[curY][(curX - 3)].team === EMPTY) {
+            //marcamos las casillas para que se pueda enrocar
+            checkPossiblePlay(curX - 2, curY);
+            checkPossiblePlay(curX - 3, curY);
+          }
         }
       }
     }
@@ -1468,9 +1494,13 @@ function checkPossiblePlaysKing(curX, curY) {
           checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam)) === false &&
           checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam)) === false
         ) {
-          //marcamos las casillas para que se pueda enrocar
-          checkPossiblePlay(curX + 2, curY);
-          checkPossiblePlay(curX + 3, curY);
+          if (board.tiles[curY][(curX + 1)].team === EMPTY &&
+            board.tiles[curY][(curX + 2)].team === EMPTY &&
+            board.tiles[curY][(curX + 3)].team === EMPTY) {
+            //marcamos las casillas para que se pueda enrocar
+            checkPossiblePlay(curX + 2, curY);
+            checkPossiblePlay(curX + 3, curY);
+          }
         }
       }
       //torre1
@@ -1481,9 +1511,13 @@ function checkPossiblePlaysKing(curX, curY) {
           checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam)) === false &&
           checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam)) === false
         ) {
-          //marcamos las casillas para que se pueda enrocar
-          checkPossiblePlay(curX - 2, curY);
-          checkPossiblePlay(curX - 3, curY);
+          if (board.tiles[curY][(curX - 1)].team === EMPTY &&
+            board.tiles[curY][(curX - 2)].team === EMPTY &&
+            board.tiles[curY][(curX - 3)].team === EMPTY) {
+            //marcamos las casillas para que se pueda enrocar
+            checkPossiblePlay(curX - 2, curY);
+            checkPossiblePlay(curX - 3, curY);
+          }
         }
       }
     }
@@ -2953,11 +2987,11 @@ function drawPieces() {
     if (pieza === LEON) {
       board.tiles[0][j].pieceType = FAKEKING;
       if (currentTeam === WHITE) {
-        marcaleonnegro(true);
-        marcarposicionleonnegro("0," + j);
-      } else {
         marcaleonblanco(true);
         marcarposicionleonblanco("0," + j);
+      } else {
+        marcaleonnegro(true);
+        marcarposicionleonnegro("0," + j);
       }
     }
   }
@@ -3025,10 +3059,10 @@ function drawPieces() {
           img3.onload = () => {
             chessCtx.drawImage(
               img3,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
+              TILE_SIZE * (j + 1 / 8),
+              TILE_SIZE * (i + 1 / 8),
+              45,
+              45
             );
           };
         } else {
@@ -3037,10 +3071,10 @@ function drawPieces() {
           img4.onload = () => {
             chessCtx.drawImage(
               img4,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
+              TILE_SIZE * (j + 1 / 8),
+              TILE_SIZE * (i + 1 / 8),
+              45,
+              45
             );
           };
         }
@@ -3428,9 +3462,9 @@ function checkTileUnderAttack(x, y, equipo) {
         const combo_newxy = combo_ultimomovimiento[2].split(",");
         const lastWX = combo_newxy[0];
         const lastWY = combo_newxy[1];
-        
-        if (moverelreyblanco(parseInt(x), parseInt(y)) === false && 
-        checkTileUnderAttack(lastWX, lastWY, WHITE) === false
+
+        if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
+          checkTileUnderAttack(lastWX, lastWY, WHITE) === false
         ) {
           getGameDbRef()
             .update({
@@ -3456,9 +3490,9 @@ function checkTileUnderAttack(x, y, equipo) {
         const combo_newxy = combo_ultimomovimiento[2].split(",");
         const lastBX = combo_newxy[0];
         const lastBY = combo_newxy[1];
-        
-        if (moverelreynegro(parseInt(x), parseInt(y)) === false  && 
-        checkTileUnderAttack(lastBX, lastBY, BLACK) === false) {
+
+        if (moverelreynegro(parseInt(x), parseInt(y)) === false &&
+          checkTileUnderAttack(lastBX, lastBY, BLACK) === false) {
           getGameDbRef()
             .update({
               status: "white wins",
