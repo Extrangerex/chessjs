@@ -78,7 +78,7 @@ export function Blog() {
                                 <Row className="justify-content-center align-items-center minh-100">
                                     <Col sm={12} lg={6} className="order-lg-1">
                                         <div className="p-5">
-                                            <img className="img-thumbnail img-fluid" src={"https://www.agencianuba.com/megachess_panel/assets/images/"+element.imagen} alt=""></img>
+                                            <img className="img-thumbnail img-fluid" src={element.imagen64} alt=""></img>
                                         </div>
                                     </Col>
                                     <Col sm={12} lg={6} className="order-lg-2">

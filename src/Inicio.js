@@ -22,9 +22,7 @@ import "./inicio.css";
 
 import logo from "./images/logo-megachess.png";
 import logo_footer from "./images/logo-megachess-bco.svg";
-import post_one from "./images/post_one.jpg";
-import post_two from "./images/post_two.jpg";
-import post_three from "./images/post_three.jpg";
+
 import popup from "./images/pop-up.jpg";
 
 
@@ -81,6 +79,7 @@ export function Inicio() {
         .then(res => {
             //console.log(JSON.stringify(res.data[0]['id']));
             setPublicaciones(res.data);
+            
         })
 
 
@@ -181,7 +180,7 @@ export function Inicio() {
                                         <Row className="justify-content-center align-items-center minh-100">
                                             <Col sm={12} lg={6} className="order-lg-1">
                                                 <div className="p-5">
-                                                    <img className="img-thumbnail img-fluid" src={"https://www.agencianuba.com/megachess_panel/assets/images/" + element.imagen} alt=""></img>
+                                                    <img className="img-thumbnail img-fluid" src={element.imagen64} alt=""></img>
                                                 </div>
                                             </Col>
                                             <Col sm={12} lg={6} className="order-lg-2">
