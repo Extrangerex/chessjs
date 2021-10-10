@@ -31,4 +31,8 @@ box-sizing: content-box;
     padding-top: 10px;
     padding-bottom: 10px;
 }
-
+@media only screen and (max-width: 767px) {
+    .post .p-5{
+        padding: 5px !important;
+    }
+}

@@ -22,7 +22,7 @@ export function Blog() {
 
     const [publicaciones, setPublicaciones] = useState({});
 
-    axios.get('apis/blog.php?opcion=1', {
+    axios.get('apis/blog.php?opcion=3', {
         headers: {
             'Idusuario': 123456789,
             'Clientid': 1
@@ -69,13 +69,27 @@ export function Blog() {
                 </header>
             </section>
 
-            <ul style={{listStyle:"none"}}>
+            <ul style={{ listStyle: "none" }}>
                 {Object.keys(publicaciones).length > 0 ? (
                     Object.keys(publicaciones).map((llave) => {
                         const element = publicaciones[llave];
                         return (
                             <li key={element.id}>
-                                {element.titulo}
+                                <Row className="justify-content-center align-items-center minh-100">
+                                    <Col sm={12} lg={6} className="order-lg-1">
+                                        <div className="p-5">
+                                            <img className="img-thumbnail img-fluid" src={"https://www.agencianuba.com/megachess_panel/assets/images/"+element.imagen} alt=""></img>
+                                        </div>
+                                    </Col>
+                                    <Col sm={12} lg={6} className="order-lg-2">
+                                        <div className="p-5">
+                                            <h2>
+                                                <strong>{element.titulo}</strong>
+                                            </h2>
+                                            <p>{element.body}</p>
+                                        </div>
+                                    </Col>
+                                </Row>
                             </li>
                         );
                     })

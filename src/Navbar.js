@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Navbar, Container, Nav, NavDropdown, Button, Modal } from "react-bootstrap";
+
 import logo from "./images/logo-megachess.png";
 import { useOnlineState } from "./hooks/useOnlineState";
 import firebase from 'firebase';
@@ -23,8 +24,8 @@ export function MyNavbar() {
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto d-flex">
-                    <div className="d-flex flex-fill">
+                <Nav className="mr-auto">
+                    
                         <Nav.Link href="/">Inicio</Nav.Link>
                         <NavDropdown title="Aprender" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/videos">Videos</NavDropdown.Item>
@@ -50,8 +51,8 @@ export function MyNavbar() {
                                 <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
                             </Modal.Footer>
                         </Modal>
-                    </div>
-                    <div className="flex-grow-1"></div>
+                    
+                    
                     {isOnline ? (<Nav.Link onClick={() => { firebase.auth().signOut(); window.location = "/lobby" }}>Cerrar sesion</Nav.Link>) : (<Nav.Link href="/login">Iniciar sesion</Nav.Link>)}
 
                 </Nav>

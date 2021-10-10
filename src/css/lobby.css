@@ -16,6 +16,13 @@ table #code {
 		border:0px;
 	}
 
+	#no-more-tables{
+		margin-bottom: 85px;
+	}
+	#no-more-tables td{
+		min-height: 50px;
+	} 
+
 	#no-more-tables table, 
 	#no-more-tables thead, 
 	#no-more-tables tbody, 

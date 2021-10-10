@@ -3,6 +3,7 @@ import { useOnlineState } from "./hooks/useOnlineState"
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ReactSwal } from "./utils/SwalUtils";
+import axios from 'axios';
 import firebase from 'firebase';
 import "bootstrap/dist/css/bootstrap.css";
 import { Container, Row, Col, Navbar, NavDropdown, Nav, Modal } from 'react-bootstrap';
@@ -67,6 +68,21 @@ export function Inicio() {
             window.location = "/lobby";
         }
     }, [isOnline])
+
+
+    const [publicaciones, setPublicaciones] = useState({});
+
+    axios.get('apis/blog.php?opcion=1', {
+        headers: {
+            'Idusuario': 123456789,
+            'Clientid': 1
+        },
+    })
+        .then(res => {
+            //console.log(JSON.stringify(res.data[0]['id']));
+            setPublicaciones(res.data);
+        })
+
 
     return (
         <section>
@@ -156,51 +172,34 @@ export function Inicio() {
 
             <section className="post">
                 <Container>
-                    <Row className="justify-content-center align-items-center minh-100">
-                        <Col sm={12} lg={6} className="order-lg-2">
-                            <div className="p-5">
-                                <img className="img-thumbnail img-fluid" src={post_one} alt=""></img>
-                            </div>
-                        </Col>
-                        <Col sm={12} lg={6} className="order-lg-1">
-                            <div className="p-5">
-                                <h2 className="display-4" >
-                                    <strong>Aprende a jugar</strong>
-                                    <br></br>
-                                    <strong>Mega Chess</strong>
-                                </h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
-                            </div>
-                        </Col>
-                    </Row>
-
-                    <Row className="justify-content-center align-items-center minh-100">
-                        <Col sm={12} lg={6} className="order-lg-1">
-                            <div className="p-5">
-                                <img className="img-thumbnail img-fluid" src={post_two} alt=""></img>
-                            </div>
-                        </Col>
-                        <Col sm={12} lg={6} className="order-lg-2">
-                            <div className="p-5">
-                                <h2 className="display-4" ><strong>¿Eres un romántico clásico? Prueba el juego físico.</strong></h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
-                            </div>
-                        </Col>
-                    </Row>
-
-                    <Row className="justify-content-center align-items-center minh-100">
-                        <Col sm={12} lg={6} className="order-lg-2">
-                            <div className="p-5">
-                                <img className="img-thumbnail img-fluid" src={post_three} alt=""></img>
-                            </div>
-                        </Col>
-                        <Col sm={12} lg={6} className="order-lg-1">
-                            <div className="p-5">
-                                <h2 className="display-4" ><strong>Sé un master, aprende tips y jugadas.</strong></h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
-                            </div>
-                        </Col>
-                    </Row>
+                    <ul style={{ listStyle: "none" }}>
+                        {Object.keys(publicaciones).length > 0 ? (
+                            Object.keys(publicaciones).map((llave) => {
+                                const element = publicaciones[llave];
+                                return (
+                                    <li key={element.id}>
+                                        <Row className="justify-content-center align-items-center minh-100">
+                                            <Col sm={12} lg={6} className="order-lg-1">
+                                                <div className="p-5">
+                                                    <img className="img-thumbnail img-fluid" src={"https://www.agencianuba.com/megachess_panel/assets/images/" + element.imagen} alt=""></img>
+                                                </div>
+                                            </Col>
+                                            <Col sm={12} lg={6} className="order-lg-2">
+                                                <div className="p-5">
+                                                    <h2>
+                                                        <strong>{element.titulo}</strong>
+                                                    </h2>
+                                                    <p>{element.body}</p>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </li>
+                                );
+                            })
+                        ) : (
+                            <li></li>
+                        )}
+                    </ul>
                 </Container>
             </section>
 
@@ -245,7 +244,7 @@ export function Inicio() {
                 </Container>
             </footer>
 
-            <Modal size="lg" show={show}>
+            <Modal id="popup" show={show}>
                 <Modal.Header closeButton onClick={handleClose}>
                     <Modal.Title style={{ color: "#135eae" }}>Aprende a jugar MegaChess70</Modal.Title>
                 </Modal.Header>
@@ -273,7 +272,7 @@ export function Inicio() {
                                 </form>
                             </Col>
                             <Col xs={12} md={6}>
-                                <img className="img-fluid" src={popup} alt=""></img>
+                                <img className="img-fluid" style={{ padding: "10px" }} src={popup} alt=""></img>
                             </Col>
                         </Row>
                     </Container>

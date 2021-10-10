@@ -65,3 +65,38 @@ code {
 .newsletter .banner .form-inline {
   margin-top:40px;
 }
+#popup{
+  margin: auto;
+  width: 70vw;  
+  max-width: 70vw;
+}
+
+@media only screen and (max-width: 767px) {
+  #popup{
+    margin: 0;
+    width: 100vw;
+    max-width:100vw;
+  }
+  .masthead h1 {
+    font-size: 1.8rem;
+  }
+  .newsletter .banner .intro {
+    font-size: 16px;
+    padding-left: 0;
+    padding-right: 0;
+    height: auto;
+  } 
+  .newsletter .banner .form-inline {
+    margin-top:0;
+  }  
+  .newsletter .banner #email {
+    width:80vw;
+  }  
+  .newsletter .banner .btn-newsletter {
+    margin-top: 5px;
+  }  
+  .banner{
+    height: 150px;
+  }
+
+}

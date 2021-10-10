@@ -112,7 +112,7 @@ export function Game() {
 
       <Container fluid id="fondo_juego">
         <Row>
-          <Col xs={12} md={2} style={{ padding: 0 }}>
+          <Col xs={{span:4, order: 3 }} md={{span:2, order:1}} style={{ padding: 0 }}    >
             <div align="center" style={{ height: "40vh" }}>
               <img
                 id="jugador2"
@@ -144,8 +144,8 @@ export function Game() {
               <p id = "blancas_comidas"></p>
             </div>
           </Col>
-          <Row>
-            <Col xs={12} md={1} style={{ padding: 0 }}>
+          
+            <Col xs={{span:1, order: 1 }} md={{span:1, order:2}} style={{ padding: 0 }}>
               <div align="right" style={{ marginTop: "20px" }}>
                 <button
                   id="bloque10"
@@ -258,7 +258,7 @@ export function Game() {
                 ></button>
               </div>
             </Col>
-            <Col style={{ padding: 0 }}>
+            <Col xs={{span:10, order: 2 }} md={{span:5, order:3}} style={{ padding: 0 }}>
               <canvas id="chessCanvas" width="600" height="600"></canvas>
 
               <Row style={{ maxWidth: "600px" }}>
@@ -300,8 +300,8 @@ export function Game() {
                 ></button>
               </Row>
             </Col>
-          </Row>
-          <Col xs={12} md={3}>
+          
+          <Col xs={{span:8, order: 4 }} md={{span:3, order:4}}>
             <div id="extras">
               <ul align="center" className="d-flex justify-content-between p-1">
                 <li>
@@ -441,7 +441,7 @@ export function Game() {
               </form>
             </div>
           </Col>
-          <Col xs={12} md={1} style={{ padding: 0 }}></Col>
+          <Col xs={{span:12, order: 5 }} md={{span:1, order:5}} style={{ padding: 0 }}></Col>
         </Row>
       </Container>
       <footer className="footer-dark">
