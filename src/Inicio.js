@@ -70,12 +70,7 @@ export function Inicio() {
 
     const [publicaciones, setPublicaciones] = useState({});
 
-    axios.get('apis/blog.php?opcion=1', {
-        headers: {
-            'Idusuario': 123456789,
-            'Clientid': 1
-        },
-    })
+    axios.get('https://www.agencianuba.com/megachess_panel/apis/blog.php?opcion=1&Idusuario=123456789&Clientid=1')
         .then(res => {
             //console.log(JSON.stringify(res.data[0]['id']));
             setPublicaciones(res.data);
