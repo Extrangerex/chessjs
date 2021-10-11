@@ -86,7 +86,7 @@ export function Movimientos() {
                     </Container>
                 </header>
             </section>
-            <section>
+            <section className="movimientos">
                 <Container>
                     <Row>
                         <Col xs={12} md={6} style={{ padding: 0 }}>

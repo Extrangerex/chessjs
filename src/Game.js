@@ -112,7 +112,8 @@ export function Game() {
 
       <Container fluid id="fondo_juego">
         <Row>
-          <Col xs={{span:4, order: 3 }} md={{span:2, order:1}} style={{ padding: 0 }}    >
+          <Col xs={{span:4, order: 3 }} md={{span:2, order:1}} style={{ padding: 0 }}>
+            <div align="center" id="clave"></div>
             <div align="center" style={{ height: "40vh" }}>
               <img
                 id="jugador2"

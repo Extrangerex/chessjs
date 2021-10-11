@@ -137,6 +137,7 @@ let ultimomovimiento;
 let nomenclatura;
 let aviso_doble_turno = false;
 let aviso_inicio = true;
+let clave_privada;
 
 let lobbyItemKey;
 
@@ -313,6 +314,7 @@ async function startGame() {
     leer_ultimo_movimiento();
     leer_whiteCasualitiesText();
     leer_blackCasualitiesText();
+    
 
     try {
       Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
@@ -417,50 +419,56 @@ async function startGame() {
 
     } else {
       if (serverGameData?.side === serverGameData?.player1) {
-      if (jaquereyblanco === "Si") {
-        if (serverGameData?.status === "black wins") {
-          Swal.fire({
-            title: "Opps....",
-            text: "JAQUE MATE HAN GANADO LAS NEGRAS",
-          });
-        } else {
-          Swal.fire({
-            title: "Alerta..",
-            text: "JAQUE",
-          });
+        if (jaquereyblanco === "Si") {
+          if (serverGameData?.status === "black wins") {
+            Swal.fire({
+              title: "Opps....",
+              text: "JAQUE MATE HAN GANADO LAS NEGRAS",
+            });
+          } else {
+            Swal.fire({
+              title: "Alerta..",
+              text: "JAQUE",
+            });
+          }
         }
-      }
-      
-    }
 
-    if (serverGameData?.side === serverGameData?.player2) {
-      if (jaquereynegro === "Si") {
-        if (serverGameData?.status === "white wins") {
-          Swal.fire({
-            title: "Opps....",
-            text: "JAQUE MATE HAN GANADO LAS BLANCAS",
-          });
-        } else {
-          Swal.fire({
-            title: "Alerta..",
-            text: "JAQUE",
-          });
+      }
+
+      if (serverGameData?.side === serverGameData?.player2) {
+        if (jaquereynegro === "Si") {
+          if (serverGameData?.status === "white wins") {
+            Swal.fire({
+              title: "Opps....",
+              text: "JAQUE MATE HAN GANADO LAS BLANCAS",
+            });
+          } else {
+            Swal.fire({
+              title: "Alerta..",
+              text: "JAQUE",
+            });
+          }
         }
       }
-    }
-    if (serverGameData?.status === "white lion wins") {
-      Swal.fire({
-        title: "Opps....",
-        text: "HAN GANADO LAS BLANCAS",
-      });
-    }
-    if (serverGameData?.status === "black lion wins") {
-      Swal.fire({
-        title: "Opps....",
-        text: "HAN GANADO LAS NEGRAS",
-      });
-    }
-    document.getElementById("turno").innerHTML = "Tu turno";
+      if (serverGameData?.status === "white lion wins") {
+        Swal.fire({
+          title: "Opps....",
+          text: "HAN GANADO LAS BLANCAS",
+        });
+      }
+      if (serverGameData?.status === "black lion wins") {
+        Swal.fire({
+          title: "Opps....",
+          text: "HAN GANADO LAS NEGRAS",
+        });
+      }
+      document.getElementById("turno").innerHTML = "Tu turno";
+      
+      clave_privada = localStorage.getItem("clave_privada");
+      if (clave_privada !== '') {
+        document.getElementById("clave").innerHTML = "Clave: " + clave_privada;
+      }
+
     }
 
     if (ultimomovimiento !== null && ultimomovimiento !== undefined) {
@@ -557,7 +565,7 @@ async function onClick(event) {
     });
     return;
   }
-  
+
   if (serverGameData?.status === "white lion wins") {
     Swal.fire({
       title: "Opps..",
@@ -670,11 +678,11 @@ async function onClick(event) {
           board.tiles[BposY][BposX].pieceType === FAKEKING
         ) {
           getGameDbRef()
-          .update({
-            status: "black lion wins",
-            board,
-          })
-          .catch(console.error);
+            .update({
+              status: "black lion wins",
+              board,
+            })
+            .catch(console.error);
         }
       }
 

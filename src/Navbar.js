@@ -11,8 +11,26 @@ export function MyNavbar() {
 
     const createGame = () => {
         window.location = "/game";
+        localStorage.setItem('clave_privada', '');
         return;
     };
+
+    const createPrivateGame = () => {
+        window.location = "/game";
+
+        const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1= '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for ( let i = 0; i < num; i++ ) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        return;
+    };
+
     const [show, setShow] = useState(false);
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
@@ -43,7 +61,7 @@ export function MyNavbar() {
                             </Modal.Header>
                             <Modal.Body>
                                 <div align="center">
-                                    <button className="btn btn-success" style={{margin:"5px"}}>Privada</button>
+                                    <button onClick={createPrivateGame} className="btn btn-success" style={{margin:"5px"}}>Privada</button>
                                     <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
                                 </div>
                             </Modal.Body>

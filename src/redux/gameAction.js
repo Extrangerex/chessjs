@@ -9,6 +9,7 @@ export const newGame = (uid) => async (dispatch) => {
   dispatch(startLoading());
 
   const itemRef = await firebase.database().ref("lobby").push();
+  const clave = localStorage.getItem("clave_privada");
 
   await itemRef.set({
     board: new Board(),
@@ -50,6 +51,7 @@ export const newGame = (uid) => async (dispatch) => {
     numero_turno: 1,
     isTriggeredChangeTeam: false,
     ultimo_movimiento: "",
+    clave_privada: clave,
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));
