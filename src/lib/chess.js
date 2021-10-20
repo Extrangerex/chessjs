@@ -32,6 +32,9 @@ import torre from "../assets/svg/torre.svg";
 import torrebco from "../assets/svg/torrebco.svg";
 import fakeking from "../assets/svg/rey.svg";
 import fakekingbco from "../assets/svg/reybco.svg";
+import vacio from "../assets/svg/vacio.svg";
+
+
 //import { ReactSwal } from "../utils/SwalUtils";
 import Swal from "sweetalert2";
 
@@ -150,9 +153,9 @@ whiteCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 blackCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 export function onLoad(_lobbyItemKey) {
-  chessCanvas = document.getElementById("chessCanvas");
-  chessCtx = chessCanvas.getContext("2d");
-  chessCanvas.addEventListener("click", onClick);
+  //chessCanvas = document.getElementById("chessCanvas");
+  //chessCtx = chessCanvas.getContext("2d");
+  //chessCanvas.addEventListener("click", onClick);
 
   lobbyItemKey = _lobbyItemKey;
 
@@ -314,7 +317,7 @@ async function startGame() {
     leer_ultimo_movimiento();
     leer_whiteCasualitiesText();
     leer_blackCasualitiesText();
-    
+
 
     try {
       Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
@@ -463,7 +466,7 @@ async function startGame() {
         });
       }
       document.getElementById("turno").innerHTML = "Tu turno";
-      
+
       clave_privada = localStorage.getItem("clave_privada");
       if (clave_privada !== '') {
         document.getElementById("clave").innerHTML = "Clave: " + clave_privada;
@@ -535,7 +538,7 @@ async function startGame() {
 
 }
 
-async function onClick(event) {
+export async function onClick(Y, X) {
   if (serverGameData?.player2 == null) {
     Swal.fire({
       title: "Opps..",
@@ -597,16 +600,16 @@ async function onClick(event) {
     return;
   }
 
-  let chessCanvasX = chessCanvas.getBoundingClientRect().left;
-  let chessCanvasY = chessCanvas.getBoundingClientRect().top;
+  //let chessCanvasX = chessCanvas.getBoundingClientRect().left;
+  //let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
-  let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
-  let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
+  //let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
+  //let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
   if (serverGameData?.numero_turno % 18 === 1) {
     if (
-      serverGameData?.lastPiecejoue?.x === x &&
-      serverGameData?.lastPiecejoue?.y === y
+      serverGameData?.lastPiecejoue?.x === X &&
+      serverGameData?.lastPiecejoue?.y === Y
     ) {
       Swal.fire({
         title: "Opps..",
@@ -618,24 +621,24 @@ async function onClick(event) {
 
   ganoleon();
 
-  if (checkValidMovement(x, y) === true) {
+  if (checkValidMovement(X, Y) === true) {
     ultimotipodemovimiento = "Movimiento";
 
-    if (checkValidCapture(x, y) === true) {
-      if (board.tiles[y][x].pieceType === KING) {
+    if (checkValidCapture(X, Y) === true) {
+      if (board.tiles[Y][X].pieceType === KING) {
         startGame();
       }
 
       if (currentTeam === WHITE) {
-        blackCasualities[board.tiles[y][x].pieceType]++;
+        blackCasualities[board.tiles[Y][X].pieceType]++;
         ultimapiezacapturadanegra =
-          board.tiles[y][x].pieceType + "/" + x + "," + y;
+          board.tiles[Y][X].pieceType + "/" + X + "," + Y;
         ultimotipodemovimiento = "Captura";
         updateBlackCasualities();
       } else {
-        whiteCasualities[board.tiles[y][x].pieceType]++;
+        whiteCasualities[board.tiles[Y][X].pieceType]++;
         ultimapiezacapturadablanca =
-          board.tiles[y][x].pieceType + "/" + x + "," + y;
+          board.tiles[Y][X].pieceType + "/" + X + "," + Y;
         ultimotipodemovimiento = "Captura";
         updateWhiteCasualities();
       }
@@ -643,7 +646,7 @@ async function onClick(event) {
 
     if (curY !== -1 && curX !== -1) {
       let tile = board.tiles[curY][curX];
-      moveSelectedPiece(x, y, tile.pieceType, curX, curY);
+      moveSelectedPiece(X, Y, tile.pieceType, curX, curY);
 
       //vemos si despues de que movio gano el leon coronado
       if (currentTeam === BLACK) {
@@ -797,7 +800,7 @@ async function onClick(event) {
             whiteCasualitiesText: whiteCasualitiesText,
             blackCasualitiesText: blackCasualitiesText,
             board,
-            lastPiecejoue: { x, y, createdAt: Date.now() },
+            lastPiecejoue: { X, Y, createdAt: Date.now() },
           })
           .catch(console.error);
 
@@ -809,12 +812,12 @@ async function onClick(event) {
     }
   } else {
     //si da click en celda vacia reset curx cury
-    if (board.tiles[y][x].pieceType === EMPTY) {
+    if (board.tiles[Y][X].pieceType === EMPTY) {
       curX = -1;
       curY = -1;
     } else {
-      curX = x;
-      curY = y;
+      curX = X;
+      curY = Y;
     }
   }
 
@@ -827,7 +830,10 @@ function checkPossiblePlays() {
   let tile = board.tiles[curY][curX];
   if (tile.team === EMPTY || tile.team !== currentTeam) return;
 
-  drawTile(curX, curY, HIGHLIGHT_COLOR);
+  //drawTile(curX, curY, HIGHLIGHT_COLOR);
+  var coordenada = "celda_y" + curY + "x" + curX;
+  var celda = document.getElementById(coordenada);
+  celda.style.backgroundColor = HIGHLIGHT_COLOR;
 
   board.resetValidMoves();
 
@@ -2839,51 +2845,65 @@ async function repaintBoard() {
 }
 
 function drawBoard() {
-  chessCtx.fillStyle = WHITE_TILE_COLOR;
-  chessCtx.fillRect(0, 0, BOARD_WIDTH * TILE_SIZE, BOARD_HEIGHT * TILE_SIZE);
-  var numero = 10;
-  var letra = 0;
   for (let i = 0; i < BOARD_HEIGHT; i++) {
+    for (let j = 0; j < BOARD_WIDTH; j++) {
 
-    if (i > 2 && i < 7) {
-      for (let j = 0; j < BOARD_WIDTH; j++) {
-        if ((i + j) % 2 === 1) {
-          drawTile(j, i, MIDDEL_TILE_COLOR);
-        }
-        if (j === 0) {
-          drawLetter(j, i, "black", numero, .25);
-          numero--;
-        }
-        if (i === 9) {
-          drawLetter(j, i, "black", ejeX[letra], .80);
-          letra++;
-        }
-      }
-    } else {
-      for (let j = 0; j < BOARD_WIDTH; j++) {
-        if ((i + j) % 2 === 1) {
-          drawTile(j, i, BLACK_TILE_COLOR);
+      var coordenada_celda = "celda_y" + i + "x" + j;
+      var celda = document.getElementById(coordenada_celda);
+      celda.style.backgroundColor = '';
+    }
+  }
 
+  /*
+    chessCtx.fillStyle = WHITE_TILE_COLOR;
+    chessCtx.fillRect(0, 0, BOARD_WIDTH * TILE_SIZE, BOARD_HEIGHT * TILE_SIZE);
+    var numero = 10;
+    var letra = 0;
+    for (let i = 0; i < BOARD_HEIGHT; i++) {
+  
+      if (i > 2 && i < 7) {
+        for (let j = 0; j < BOARD_WIDTH; j++) {
+          if ((i + j) % 2 === 1) {
+            drawTile(j, i, MIDDEL_TILE_COLOR);
+          }
+          if (j === 0) {
+            drawLetter(j, i, "black", numero, .25);
+            numero--;
+          }
+          if (i === 9) {
+            drawLetter(j, i, "black", ejeX[letra], .80);
+            letra++;
+          }
         }
-        if (j === 0) {
-          drawLetter(j, i, "black", numero, .25);
-          numero--;
-        }
-        if (i === 9) {
-          drawLetter(j, i, "black", ejeX[letra], .80);
-          letra++;
+      } else {
+        for (let j = 0; j < BOARD_WIDTH; j++) {
+          if ((i + j) % 2 === 1) {
+            drawTile(j, i, BLACK_TILE_COLOR);
+  
+          }
+          if (j === 0) {
+            drawLetter(j, i, "black", numero, .25);
+            numero--;
+          }
+          if (i === 9) {
+            drawLetter(j, i, "black", ejeX[letra], .80);
+            letra++;
+          }
         }
       }
     }
-  }
+    */
 }
 
 function drawTile(x, y, fillStyle) {
+  /*
   chessCtx.fillStyle = fillStyle;
   chessCtx.fillRect(TILE_SIZE * x, TILE_SIZE * y, TILE_SIZE, TILE_SIZE);
+  */
 }
 
 function drawCircle(x, y, fillStyle) {
+  /*
   chessCtx.fillStyle = fillStyle;
   chessCtx.beginPath();
   chessCtx.arc(
@@ -2894,17 +2914,29 @@ function drawCircle(x, y, fillStyle) {
     2 * Math.PI
   );
   chessCtx.fill();
+  */
+  var coordenada = "celda_y" + y + "x" + x;
+  var celda = document.getElementById(coordenada);
+  celda.style.backgroundColor = "#90C485";
 }
 
 function drawLetter(x, y, color, letter, pos) {
+  /*
   chessCtx.fillStyle = color;
   chessCtx.font = '10px Arial';
   var xx = x + .05;
   var yy = y + pos;
   chessCtx.fillText(letter, TILE_SIZE * (xx), TILE_SIZE * (yy));
+  */
 }
 
 function drawCorners(x, y, fillStyle) {
+  var coordenada = "celda_y" + y + "x" + x;
+  var celda = document.getElementById(coordenada);
+  celda.style.backgroundColor = 'red';
+  
+
+  /*
   chessCtx.fillStyle = fillStyle;
 
   chessCtx.beginPath();
@@ -2930,6 +2962,7 @@ function drawCorners(x, y, fillStyle) {
   chessCtx.lineTo(TILE_SIZE * (x + 1) - 15, TILE_SIZE * (y + 1));
   chessCtx.lineTo(TILE_SIZE * (x + 1), TILE_SIZE * (y + 1) - 15);
   chessCtx.fill();
+  */
 }
 
 function drawPieces() {
@@ -3021,356 +3054,108 @@ function drawPieces() {
 
   for (let i = 0; i < BOARD_HEIGHT; i++) {
     for (let j = 0; j < BOARD_WIDTH; j++) {
-      if (board.tiles[i][j].team === EMPTY) continue;
-
-      if (board.tiles[i][j].team === WHITE) {
-        chessCtx.fillStyle = "#FF0000";
-      } else {
-        chessCtx.fillStyle = "#0000FF";
-      }
-
-      chessCtx.font = "38px Arial";
 
       let pieceType = board.tiles[i][j].pieceType;
       let equipo = board.tiles[i][j].team;
+      let coordenada = "y" + i + "x" + j;
+      let elemento = document.getElementById(coordenada);
 
+      if (board.tiles[i][j].team === EMPTY) {
+        elemento.src = vacio;
+        continue;
+      }
+      /*
+            if (board.tiles[i][j].team === WHITE) {
+              chessCtx.fillStyle = "#FF0000";
+            } else {
+              chessCtx.fillStyle = "#0000FF";
+            }
+      
+            chessCtx.font = "38px Arial";
+      
+            
+      */
       if (pieceType === 6) {
         if (equipo === WHITE) {
-          var img1 = new Image();
-          img1.src = ardillabco;
-          img1.onload = () => {
-            chessCtx.drawImage(
-              img1,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = ardillabco;
         } else {
-          var img2 = new Image();
-          img2.src = ardilla;
-          img2.onload = () => {
-            chessCtx.drawImage(
-              img2,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = ardilla;
         }
       } else if (pieceType === 0) {
         if (equipo === WHITE) {
-          var img3 = new Image();
-          img3.src = peonbco;
-          img3.onload = () => {
-            chessCtx.drawImage(
-              img3,
-              TILE_SIZE * (j + 1 / 8),
-              TILE_SIZE * (i + 1 / 8),
-              45,
-              45
-            );
-          };
+          elemento.src = peonbco;
         } else {
-          var img4 = new Image();
-          img4.src = peon;
-          img4.onload = () => {
-            chessCtx.drawImage(
-              img4,
-              TILE_SIZE * (j + 1 / 8),
-              TILE_SIZE * (i + 1 / 8),
-              45,
-              45
-            );
-          };
+          elemento.src = peon;
         }
-      } else if (pieceType === 1) {
+      }
+      else if (pieceType === 1) {
         if (equipo === WHITE) {
-          var img5 = new Image();
-          img5.src = caballobco;
-          img5.onload = () => {
-            chessCtx.drawImage(
-              img5,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = caballobco;
         } else {
-          var img6 = new Image();
-          img6.src = caballo;
-          img6.onload = () => {
-            chessCtx.drawImage(
-              img6,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = caballo;
         }
-      } else if (pieceType === 2) {
+      }
+      else if (pieceType === 2) {
         if (equipo === WHITE) {
-          var img7 = new Image();
-          img7.src = alfilbco;
-          img7.onload = () => {
-            chessCtx.drawImage(
-              img7,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = alfilbco;
         } else {
-          var img8 = new Image();
-          img8.src = alfil;
-          img8.onload = () => {
-            chessCtx.drawImage(
-              img8,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = alfil;
         }
-      } else if (pieceType === 3) {
+
+      }
+      else if (pieceType === 3) {
         if (equipo === WHITE) {
-          var img9 = new Image();
-          img9.src = torrebco;
-          img9.onload = () => {
-            chessCtx.drawImage(
-              img9,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = torrebco;
         } else {
-          var img10 = new Image();
-          img10.src = torre;
-          img10.onload = () => {
-            chessCtx.drawImage(
-              img10,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = torre;
         }
-      } else if (pieceType === 4) {
+      }
+      else if (pieceType === 4) {
         if (equipo === WHITE) {
-          var img11 = new Image();
-          img11.src = reinabco;
-          img11.onload = () => {
-            chessCtx.drawImage(
-              img11,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = reinabco;
         } else {
-          var img12 = new Image();
-          img12.src = reina;
-          img12.onload = () => {
-            chessCtx.drawImage(
-              img12,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = reina;
         }
-      } else if (pieceType === 5) {
+      }
+      else if (pieceType === 5) {
         if (equipo === WHITE) {
-          var img13 = new Image();
-          img13.src = reybco;
-          img13.onload = () => {
-            chessCtx.drawImage(
-              img13,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = reybco;
         } else {
-          var img14 = new Image();
-          img14.src = rey;
-          img14.onload = () => {
-            chessCtx.drawImage(
-              img14,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = rey;
         }
+
       } else if (pieceType === 7) {
         if (equipo === WHITE) {
-          var img15 = new Image();
-          img15.src = conejobco;
-          img15.onload = () => {
-            chessCtx.drawImage(
-              img15,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = conejobco;
         } else {
-          var img16 = new Image();
-          img16.src = conejo;
-          img16.onload = () => {
-            chessCtx.drawImage(
-              img16,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = conejo;
         }
+
       } else if (pieceType === 8) {
         if (equipo === WHITE) {
-          var img17 = new Image();
-          img17.src = perrobco;
-          img17.onload = () => {
-            chessCtx.drawImage(
-              img17,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = perrobco;
         } else {
-          var img18 = new Image();
-          img18.src = perro;
-          img18.onload = () => {
-            chessCtx.drawImage(
-              img18,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = perro;
         }
+
       } else if (pieceType === 9) {
         if (equipo === WHITE) {
-          var img19 = new Image();
-          img19.src = panterabco;
-          img19.onload = () => {
-            chessCtx.drawImage(
-              img19,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = panterabco;
         } else {
-          var img20 = new Image();
-          img20.src = pantera;
-          img20.onload = () => {
-            chessCtx.drawImage(
-              img20,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = pantera;
         }
+
       } else if (pieceType === 10) {
         if (equipo === WHITE) {
-          var img21 = new Image();
-          img21.src = elefantebco;
-          img21.onload = () => {
-            chessCtx.drawImage(
-              img21,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = elefantebco;
         } else {
-          var img22 = new Image();
-          img22.src = elefante;
-          img22.onload = () => {
-            chessCtx.drawImage(
-              img22,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = elefante;
         }
       } else if (pieceType === 11) {
         if (equipo === WHITE) {
-          var img23 = new Image();
-          img23.src = leonbco;
-          img23.onload = () => {
-            chessCtx.drawImage(
-              img23,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = leonbco;
         } else {
-          var img24 = new Image();
-          img24.src = leon;
-          img24.onload = () => {
-            chessCtx.drawImage(
-              img24,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
-        }
-      } else if (pieceType === 12) {
-        if (equipo === WHITE) {
-          var img25 = new Image();
-          img25.src = fakekingbco;
-          img25.onload = () => {
-            chessCtx.drawImage(
-              img25,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
-        } else {
-          var img26 = new Image();
-          img26.src = fakeking;
-          img26.onload = () => {
-            chessCtx.drawImage(
-              img26,
-              TILE_SIZE * (j + 1 / 11),
-              TILE_SIZE * (i + 1 / 11),
-              50,
-              50
-            );
-          };
+          elemento.src = leon;
         }
       }
     }
