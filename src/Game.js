@@ -131,7 +131,7 @@ export function Game() {
 
       <Container fluid id="fondo_juego">
         <Row>
-          <Col xs={{ span: 4, order: 3 }} md={{ span: 2, order: 1 }} style={{ padding: 0 }}>
+          <Col xs={{ span: 4, order: 3 }} lg={{ span: 2, order: 1 }} style={{ padding: 0 }}>
             <div align="center" id="clave"></div>
             <div align="center" style={{ height: "40vh" }}>
               <img
@@ -164,7 +164,7 @@ export function Game() {
               <p id="blancas_comidas"></p>
             </div>
           </Col>
-          <Col xs={{ span: 11, order: 2 }} md={{ span: 6, order: 3 }} style={{ padding: 0 }}>
+          <Col xs={{ span: 11, order: 2 }} lg={{ span: 6, order: 3 }} style={{ padding: 0 }}>
 
             <div align="center" className="tablero">
 
@@ -1383,7 +1383,7 @@ export function Game() {
             </div>
           </Col>
 
-          <Col xs={{ span: 8, order: 4 }} md={{ span: 3, order: 4 }}>
+          <Col xs={{ span: 8, order: 4 }} lg={{ span: 3, order: 4 }}>
             <div id="extras">
               <ul align="center" className="d-flex justify-content-between p-1">
                 <li>

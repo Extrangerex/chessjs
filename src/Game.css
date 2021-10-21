@@ -1,9 +1,10 @@
 #fondo_juego{
     background-color: #3B424E;
+    min-height: 100vh;
 }
 
 #extras{
-    height:580px;
+    /*height:100vh;*/
     background-color: #1B232F;
     margin-top: 1vh;
     margin-bottom: 1vh;
@@ -40,7 +41,7 @@
 }
 
 #jugadas{
-    height: 38vh;
+    height: 35vh;
     overflow: auto;
     padding-left: 10px;
     padding-right: 10px;
@@ -80,6 +81,9 @@
 #clave{
     color:gold;
 } 
+.tablero {
+    margin-top: 1vh;
+}
 .tablero table {
     margin: inherit;
     /*border: outset #4A8129 6px;*/
@@ -168,10 +172,49 @@
     border: 0;
 }
 
+@media only screen and (min-width: 250px) and (max-width: 449px)  {
+    .tablero span img {
+        width: 7vw;
+        height: 7vw;
+    }
+} 
+
+@media only screen and (min-width: 450px) and (max-width: 600px)  {
+    .tablero span img {
+        width: 7.5vw;
+        height: 7.5vw;
+    }
+} 
+@media only screen and (min-width: 601px) and (max-width: 710px)  {
+    .tablero span img {
+        width: 7vw;
+        height: 7vw;
+    }
+} 
+@media only screen and (min-width: 711px) and (max-width: 750px)  {
+    .tablero span img {
+        width: 6.5vw;
+        height: 6.5vw;
+    }
+} 
+@media only screen and (min-width: 751px) and (max-width: 800px)  {
+    .tablero span img {
+        width: 5.5vw;
+        height: 5.5vw;
+    }
+} 
+@media only screen and (min-width: 801px) and (max-width: 991px)  {
+    .tablero span img {
+        width: 4.5vw;
+        height: 4.5vw;
+    }
+} 
+
 @media only screen and (max-width: 752px) {
     .tablero .table {
         margin: auto;
     }   
+    
     
       
 }
@@ -186,4 +229,5 @@
         height: 10px;
         border-radius: 5px;
     }  
+    
 }    
