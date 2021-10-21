@@ -54,7 +54,7 @@ export function Game() {
     const gameRef = firebase.database().ref(`${game?.lobbyRef}`);
 
     const player1Ref = firebase.database().ref(`${game?.lobbyRef}/player1`);
-                     
+
 
     // firebase.database().ref("lobby").remove();
 
@@ -86,7 +86,7 @@ export function Game() {
       jugadasBox.scrollTop = jugadasBox.scrollHeight;
     });
 
-    
+
     player1Ref.on("value", (snapshot) => {
       if (!snapshot.exists()) {
         return;
@@ -164,69 +164,21 @@ export function Game() {
               <p id="blancas_comidas"></p>
             </div>
           </Col>
+          <Col xs={{ span: 11, order: 2 }} md={{ span: 6, order: 3 }} style={{ padding: 0 }}>
 
-          <Col xs={{ span: 1, order: 1 }} md={{ span: 1, order: 2 }} style={{ padding: 0 }}>
-            <div id="area_bloques">
-              <button
-                id="bloque10"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque9"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque8"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque7"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque6"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque5"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque4"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque3"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque2"
-                className="block_marker"
-              ></button>
-              <br></br>
-              <button
-                id="bloque1"
-                className="block_marker"
-              ></button>
-            </div>
-          </Col>
-          <Col xs={{ span: 10, order: 2 }} md={{ span: 5, order: 3 }} style={{ padding: 0 }}>
-
-            <div className="tablero">
+            <div align="center" className="tablero">
 
               {infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
 
                 <Table responsive>
                   <tbody>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque10"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y0x0" onClick={() => chess.onClick(0, 0)}>
                         <span className="nomenclatura_numero">10</span>
                         <span >
@@ -275,6 +227,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque9"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y1x0" onClick={() => chess.onClick(1, 0)}>
                         <span className="nomenclatura_numero">9</span>
                         <span >
@@ -323,6 +281,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque8"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y2x0" onClick={() => chess.onClick(2, 0)}>
                         <span className="nomenclatura_numero">8</span>
                         <span >
@@ -371,6 +335,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque7"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y3x0" onClick={() => chess.onClick(3, 0)}>
                         <span className="nomenclatura_numero">7</span>
                         <span>
@@ -419,6 +389,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque6"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y4x0" onClick={() => chess.onClick(4, 0)}>
                         <span className="nomenclatura_numero">6</span>
                         <span>
@@ -467,6 +443,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque5"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y5x0" onClick={() => chess.onClick(5, 0)}>
                         <span className="nomenclatura_numero">5</span>
                         <span>
@@ -515,6 +497,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque4"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y6x0" onClick={() => chess.onClick(6, 0)}>
                         <span className="nomenclatura_numero">4</span>
                         <span>
@@ -563,6 +551,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque3"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y7x0" onClick={() => chess.onClick(7, 0)}>
                         <span className="nomenclatura_numero">3</span>
                         <span >
@@ -612,6 +606,12 @@ export function Game() {
 
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque2"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y8x0" onClick={() => chess.onClick(8, 0)}>
                         <span className="nomenclatura_numero">2</span>
                         <span >
@@ -660,6 +660,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque1"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y9x0" onClick={() => chess.onClick(9, 0)}>
                         <span className="nomenclatura_numero">1</span>
                         <span className="nomenclatura_letra">a</span>
@@ -715,7 +721,54 @@ export function Game() {
                           <img src={vacio} id="y9x8" alt="" />
                         </span>
                       </td>
-
+                    </tr>
+                    <tr>
+                      <td className="marker"></td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada1"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada2"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada3"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada4"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada5"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada6"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada7"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada8"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada9"
+                        ></button>
+                      </td>
                     </tr>
                   </tbody>
                 </Table>
@@ -725,6 +778,12 @@ export function Game() {
                 <Table responsive>
                   <tbody>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque10"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y9x8" onClick={() => chess.onClick(9, 8)}>
                         <span className="nomenclatura_letra">i</span>
                         <span >
@@ -782,6 +841,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque9"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y8x8" onClick={() => chess.onClick(8, 8)}>
                         <span >
                           <img src={vacio} id="y8x8" alt="" />
@@ -830,6 +895,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque8"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y7x8" onClick={() => chess.onClick(7, 8)}>
                         <span >
                           <img src={vacio} id="y7x8" alt="" />
@@ -878,6 +949,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque7"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y6x8" onClick={() => chess.onClick(6, 8)}>
                         <span>
                           <img src={vacio} id="y6x8" alt="" />
@@ -926,6 +1003,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque6"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y5x8" onClick={() => chess.onClick(5, 8)}>
                         <span>
                           <img src={vacio} id="y5x8" alt="" />
@@ -974,6 +1057,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque5"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y4x8" onClick={() => chess.onClick(4, 8)}>
                         <span>
                           <img src={vacio} id="y4x8" alt="" />
@@ -1022,6 +1111,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque4"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y3x8" onClick={() => chess.onClick(3, 8)}>
                         <span>
                           <img src={vacio} id="y3x8" alt="" />
@@ -1070,6 +1165,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque3"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y2x8" onClick={() => chess.onClick(2, 8)}>
                         <span >
                           <img src={vacio} id="y2x8" alt="" />
@@ -1118,6 +1219,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque2"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y1x8" onClick={() => chess.onClick(1, 8)}>
                         <span >
                           <img src={vacio} id="y1x8" alt="" />
@@ -1166,6 +1273,12 @@ export function Game() {
                       </td>
                     </tr>
                     <tr>
+                      <td className="marker">
+                        <button
+                          id="bloque1"
+                          className="block_marker"
+                        ></button>
+                      </td>
                       <td id="celda_y0x8" onClick={() => chess.onClick(0, 8)}>
                         <span >
                           <img src={vacio} id="y0x8" alt="" />
@@ -1213,6 +1326,54 @@ export function Game() {
                         </span>
                       </td>
                     </tr>
+                    <tr>
+                      <td className="marker"></td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada1"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada2"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada3"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada4"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada5"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada6"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada7"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada8"
+                        ></button>
+                      </td>
+                      <td className="marker">
+                        <button className="btnturno"
+                          id="jugada9"
+                        ></button>
+                      </td>
+                    </tr>
                   </tbody>
                 </Table>
 
@@ -1220,45 +1381,6 @@ export function Game() {
               }
 
             </div>
-
-            <Row id="area_turnos">
-              <button className="btnturno"
-                id="jugada1"
-              ></button>
-
-              <button className="btnturno"
-                id="jugada2"
-              ></button>
-
-              <button className="btnturno"
-                id="jugada3"
-              ></button>
-
-              <button className="btnturno"
-                id="jugada4"
-              ></button>
-
-              <button className="btnturno"
-                id="jugada5"
-              ></button>
-
-              <button className="btnturno"
-                id="jugada6"
-              ></button>
-
-              <button className="btnturno"
-                id="jugada7"
-
-              ></button>
-
-              <button className="btnturno"
-                id="jugada8"
-              ></button>
-
-              <button className="btnturno"
-                id="jugada9"
-              ></button>
-            </Row>
           </Col>
 
           <Col xs={{ span: 8, order: 4 }} md={{ span: 3, order: 4 }}>

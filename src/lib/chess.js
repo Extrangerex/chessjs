@@ -468,7 +468,7 @@ async function startGame() {
       document.getElementById("turno").innerHTML = "Tu turno";
 
       clave_privada = localStorage.getItem("clave_privada");
-      if (clave_privada !== '') {
+      if (clave_privada !== '' && clave_privada !== null) {
         document.getElementById("clave").innerHTML = "Clave: " + clave_privada;
       }
 
@@ -4507,9 +4507,18 @@ async function leer_posicionreyblanco() {
 }
 
 function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
-  drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);
-  drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);
+  var coordenadanew = "celda_y" + movnewY + "x" + movnewX;
+  var celdanew = document.getElementById(coordenadanew);
+  celdanew.style.backgroundColor = HIGHLIGHT_COLOR;
+
+  var coordenadaold = "celda_y" + movoldY + "x" + movoldX;
+  var celdaold = document.getElementById(coordenadaold);
+  celdaold.style.backgroundColor = HIGHLIGHT_COLOR;
+
+  /*drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);*/
+  /*drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);*/
   //console.log("x:" + movoldX);
+  /*
   if (movoldX === 0) {
     var letterold = 10 - movoldY;
     drawLetter(movoldX, movoldY, "black", letterold, .25);
@@ -4525,4 +4534,5 @@ function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
   if (movnewY === 9) {
     drawLetter(movnewX, movnewY, "black", ejeX[movnewX], .80);
   }
+  */
 }

@@ -38,9 +38,7 @@
     margin-right:5px;
     border-radius: .25rem;
 }
-#chessCanvas{
-    margin-top: 1vh;
-}
+
 #jugadas{
     height: 38vh;
     overflow: auto;
@@ -57,9 +55,7 @@
     padding-right: 5vw;
 }
 .btnturno{
-    margin-left: 1.5vw;
-    margin-right: 1.5vw;
-    margin-bottom: 1.5vw;
+    /*margin: 1.5vw;*/
     width: 16px;
     height: 16px;
     border-radius: 8px;
@@ -86,17 +82,17 @@
 } 
 .tablero table {
     margin: inherit;
-    border: outset #4A8129 6px;
+    /*border: outset #4A8129 6px;*/
     background: #B8E37B;
-    cursor: crosshair;
+    cursor: grab;
     width: auto !important;
 }
 
 .tablero td {
     position: relative;
     line-height: 0;
-    width: 3.4vw;
-    height: 3.4vw;
+    width: 3.2vw;
+    height: 3.2vw;
     background: #4A8129;
     text-align: center;
     vertical-align: middle;
@@ -142,8 +138,8 @@
 }
 
 .tablero span img {
-    width: 3.4vw;
-    height: 3.4vw;
+    width: 3.2vw;
+    height: 3.2vw;
 }
 .tablero .nomenclatura_numero{
     position:absolute;left:2px;top:1.2vw;font-size:.8vw
@@ -156,16 +152,16 @@
     background-color:#90C485;
 }
 
-#area_turnos{
-    margin-top: 15px;
-    max-width: 70vw;
+.tablero .marker{
+    background-color: #3B424E !important;
+    border-color: #3B424E !important;
+    cursor: default !important;
 }
-#area_bloques{
-    text-align: right; 
-    margin-top: 20px;
+.tablero .marker button{
+    cursor: default !important;
 }
 .block_marker{
-    margin: 1.5vw;
+/*    margin: 1.5vw;*/
     width: 16px;
     height: 16px;
     border-radius: 8px;
@@ -176,12 +172,8 @@
     .tablero .table {
         margin: auto;
     }   
-    #area_turnos{
-        margin-left: 18vw;
-    } 
-    #area_bloques{
-        margin-top: 0;
-    }   
+    
+      
 }
 @media only screen and (max-width: 1000px) {
     .btnturno{
