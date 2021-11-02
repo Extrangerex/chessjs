@@ -11,6 +11,11 @@ export const newGame = (uid) => async (dispatch) => {
   const itemRef = await firebase.database().ref("lobby").push();
   const clave = localStorage.getItem("clave_privada");
 
+  const ahorita = new Date();
+  const timetoplayplayers = ahorita.getTime() + 45 * 60 * 1000;
+  const timetoplay = ahorita.getTime() + 90 * 60 * 1000;
+   
+
   await itemRef.set({
     board: new Board(),
     curX: -1,
@@ -28,7 +33,11 @@ export const newGame = (uid) => async (dispatch) => {
     contadortorre2negro: 0,
     jaquereynegro: "No",
     jaquereyblanco: "No",
-    createdAt: Date.now(),
+    createdAt: timetoplay,
+    timeplayer1:timetoplayplayers,
+    timeplayer2:timetoplayplayers,
+    tiempo_restante_jugador1: "45:00",
+    tiempo_restante_jugador2: "45:00",
     side: uid,
     whiteCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     blackCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

@@ -30,7 +30,7 @@ export function Game() {
   const [infoplayer1, setPlayer1] = useState({});
 
 
-
+  //actualiza todos los relojes cada segundo
   const timerInterval = setInterval(() => {
     if (serverData?.createdAt != null) {
       chess.setTimerFromCreatedAt();
@@ -1387,12 +1387,16 @@ export function Game() {
             <div id="extras">
               <ul align="center" className="d-flex justify-content-between p-1">
                 <li>
-                  <i className="fa fa-clock" style={{ color: "#657696" }}></i> Jugada: <span id="time_play"></span>
+                  <i className="fa fa-clock" style={{ color: "#657696" }}></i> Blancas: <span id="time_toplay_player1"></span>
+                </li>
+                <li>
+                  <i className="fa fa-clock" style={{ color: "#657696" }}></i> Negras: <span id="time_toplay_player2"></span>
                 </li>
                 <li>
                   <i className="fa fa-clock" style={{ color: "#657696" }}></i> <span id="time_createdat"></span>
                 </li>
               </ul>
+
               <ul align="center" className="d-flex justify-content-between p-1">
                 <li>
                   Turno: <span id="numero_turno"></span>

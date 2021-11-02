@@ -42,11 +42,12 @@ export const event = new EventEmitter();
 
 const BOARD_WIDTH = GameConst.boardWidth;
 const BOARD_HEIGHT = GameConst.boardHeight;
-
+/*
 const TILE_SIZE = GameConst.tileSize;
 const WHITE_TILE_COLOR = GameConst.colors.whiteTileColor;
 const BLACK_TILE_COLOR = GameConst.colors.blackTileColor;
 const MIDDEL_TILE_COLOR = GameConst.colors.middleTileColor;
+*/
 const HIGHLIGHT_COLOR = GameConst.colors.highLightTileColor;
 const WHITE = GameConst.white;
 const BLACK = GameConst.black;
@@ -85,10 +86,10 @@ const piecesCharacters = {
   11: "Le",
   12: "FK",
 };
-
+/*
 let chessCanvas;
 let chessCtx;
-
+*/
 let whiteCasualitiesText;
 let blackCasualitiesText;
 
@@ -190,43 +191,75 @@ setInterval(() => {
  * Function called each second from Game Component
  */
 export async function setTimerFromCreatedAt() {
-  /**
-   * We change of current player's side every 10 minuts
-   */
-  //   let minutesdFromLastPieceJoue = Math.abs(
-  //     parseInt((getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60)
-  //   );
-  //   if (minutesdFromLastPieceJoue % 2 == 0 && minutesdFromLastPieceJoue != 0) {
-  //     if (!serverGameData?.isTriggeredChangeTeam) {
-  //       setIsTriggeredChangeTeam(true);
-  //     }
-  //   }
+  if (serverGameData?.status === "playing") {
+    if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) === 0) {
+      if (serverGameData?.status !== "tied") {
+        await getGameDbRef()
+          .update({
+            status: "tied",
+          })
+          .catch(console.error);
+      }
+    }
 
-  if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) >= 180) {
-    if (serverGameData?.status !== "tied") {
-      await getGameDbRef()
-        .update({
-          status: "tied",
-        })
-        .catch(console.error);
+    if (getMillisecondsFromPlayer1() < 0) {
+      if (serverGameData?.status !== "timeover black wins") {
+        await getGameDbRef()
+          .update({
+            status: "timeover black wins",
+          })
+          .catch(console.error);
+        Swal.fire({
+          title: "Opps..",
+          text: "SE TERMINÓ EL TIEMPO HAN GANADO LAS NEGRAS",
+        });
+      }
+    }
+
+    if (getMillisecondsFromPlayer2() < 0) {
+      if (serverGameData?.status !== "timeover white wins") {
+        await getGameDbRef()
+          .update({
+            status: "timeover white wins",
+          })
+          .catch(console.error);
+        Swal.fire({
+          title: "Opps..",
+          text: "SE TERMINÓ EL TIEMPO HAN GANADO LAS BLANCAS",
+        });
+      }
+    }
+
+    //timer general
+    document.getElementById("time_createdat").innerHTML =
+      getMinutesFromCreatedAt();
+    //document.getElementById("time_play").innerHTML = getMinutesromLastPieceJoueCreatedAt();
+
+    if (serverGameData?.side === serverGameData?.player1) {
+      document.getElementById("time_toplay_player1").innerHTML = getMinutesromPlayer1();
+    } else {
+      document.getElementById("time_toplay_player1").innerHTML = serverGameData?.tiempo_restante_jugador1
+    }
+
+    if (serverGameData?.side === serverGameData?.player2) {
+      document.getElementById("time_toplay_player2").innerHTML = getMinutesromPlayer2();
+    } else {
+      document.getElementById("time_toplay_player2").innerHTML = serverGameData?.tiempo_restante_jugador2
     }
   }
-
-  document.getElementById("time_createdat").innerHTML =
-    getMinutesFromCreatedAt();
-  document.getElementById("time_play").innerHTML =
-    getMinutesromLastPieceJoueCreatedAt();
 }
 
+//timer general
 export function getMinutesFromCreatedAt() {
   const date1 = new Date(serverGameData?.createdAt);
   const date2 = Date.now();
   const diffTime = Math.abs(date2 - date1);
   let seconds = (diffTime / 1000) % 60;
   let minutes = (diffTime / (1000 * 60)) % 60;
-  return `${parseInt(minutes)}:${parseInt(seconds)}`;
+  let hours = (diffTime / (1000 * 60 * 60)) % 60;
+  return `${parseInt(hours)}:${parseInt(minutes)}:${parseInt(seconds)}`;
 }
-
+//timer general
 function getMillisecondsFromCreatedAt() {
   const date1 = new Date(serverGameData?.createdAt);
   const date2 = Date.now();
@@ -240,12 +273,39 @@ function getMillisecondsFromLastPieceJoueCreatedAt() {
   const date2 = Date.now();
   return parseInt(date2 - date1);
 }
+
 function getMinutesromLastPieceJoueCreatedAt() {
   let seconds = (getMillisecondsFromLastPieceJoueCreatedAt() / 1000) % 60;
   let minutes =
     (getMillisecondsFromLastPieceJoueCreatedAt() / (1000 * 60)) % 60;
   return `${parseInt(minutes)}:${parseInt(seconds)}`;
 }
+
+function getMillisecondsFromPlayer1() {
+  const date1 = new Date(serverGameData?.timeplayer1);
+  const date2 = Date.now();
+  return parseInt(date1 - date2);
+}
+function getMinutesromPlayer1() {
+  let seconds = (getMillisecondsFromPlayer1() / 1000) % 60;
+  let minutes =
+    (getMillisecondsFromPlayer1() / (1000 * 60)) % 60;
+  return `${parseInt(minutes)}:${parseInt(seconds)}`;
+}
+
+function getMillisecondsFromPlayer2() {
+  const date1 = new Date(serverGameData?.timeplayer2);
+  const date2 = Date.now();
+  return parseInt(date1 - date2);
+}
+
+function getMinutesromPlayer2() {
+  let seconds = (getMillisecondsFromPlayer2() / 1000) % 60;
+  let minutes =
+    (getMillisecondsFromPlayer2() / (1000 * 60)) % 60;
+  return `${parseInt(minutes)}:${parseInt(seconds)}`;
+}
+
 
 async function startGame() {
   const lobbyDbRef = getGameDbRef(lobbyItemKey);
@@ -268,13 +328,21 @@ async function startGame() {
           text: "Comenzemos, ya llego tu oponente",
         });
         aviso_inicio = "false";
+
+        const timetoplay = new Date();
+        timetoplay.setTime(timetoplay.getTime() + 90 * 60 * 1000);
+
+        const timeavailableplayer1 = new Date();
+        timeavailableplayer1.setTime(timeavailableplayer1.getTime() + 45 * 60 * 1000);
+
         await getGameDbRef()
           .update({
             board,
             lastPiecejoue: {
               createdAt: Date.now(),
             },
-            createdAt: Date.now(),
+            createdAt: timetoplay,
+            timeplayer1: timeavailableplayer1
           })
           .catch(console.error);
       }
@@ -324,31 +392,31 @@ async function startGame() {
         let element = parseInt(_element);
         switch (element) {
           case 0:
-            document.getElementById("jugada1").style.backgroundColor = "red";
+            document.getElementById("jugada1").style.backgroundColor = "blue";
             break;
           case 1:
-            document.getElementById("jugada2").style.backgroundColor = "red";
+            document.getElementById("jugada2").style.backgroundColor = "blue";
             break;
           case 2:
-            document.getElementById("jugada3").style.backgroundColor = "red";
+            document.getElementById("jugada3").style.backgroundColor = "blue";
             break;
           case 3:
-            document.getElementById("jugada4").style.backgroundColor = "red";
+            document.getElementById("jugada4").style.backgroundColor = "blue";
             break;
           case 4:
-            document.getElementById("jugada5").style.backgroundColor = "red";
+            document.getElementById("jugada5").style.backgroundColor = "blue";
             break;
           case 5:
-            document.getElementById("jugada6").style.backgroundColor = "red";
+            document.getElementById("jugada6").style.backgroundColor = "blue";
             break;
           case 6:
-            document.getElementById("jugada7").style.backgroundColor = "red";
+            document.getElementById("jugada7").style.backgroundColor = "blue";
             break;
           case 7:
-            document.getElementById("jugada8").style.backgroundColor = "red";
+            document.getElementById("jugada8").style.backgroundColor = "blue";
             break;
           case 8:
-            document.getElementById("jugada9").style.backgroundColor = "red";
+            document.getElementById("jugada9").style.backgroundColor = "blue";
             break;
           default:
         }
@@ -554,6 +622,25 @@ export async function onClick(Y, X) {
     });
     return;
   }
+
+  if (serverGameData?.status === "timeover white wins") {
+    Swal.fire({
+      title: "Opps..",
+      text: "SE TERMINÓ EL TIEMPO HAN GANADO LAS BLANCAS",
+    });
+    return;
+  }
+
+  if (serverGameData?.status === "timeover black wins") {
+    Swal.fire({
+      title: "Opps..",
+      text: "SE TERMINÓ EL TIEMPO HAN GANADO LAS NEGRAS",
+    });
+    return;
+  }
+
+
+
   if (serverGameData?.status === "white wins") {
     Swal.fire({
       title: "Opps..",
@@ -605,12 +692,12 @@ export async function onClick(Y, X) {
 
   //let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
   //let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
-
   if (serverGameData?.numero_turno % 18 === 1) {
     if (
-      serverGameData?.lastPiecejoue?.x === X &&
-      serverGameData?.lastPiecejoue?.y === Y
+      serverGameData?.lastPiecejoue?.X === X &&
+      serverGameData?.lastPiecejoue?.Y === Y
     ) {
+
       Swal.fire({
         title: "Opps..",
         text: "No puedes mover la misma pieza",
@@ -780,6 +867,28 @@ export async function onClick(Y, X) {
       }
       //solo si no hay jaque cambiamos el turno
       if (cambio_de_turno === "Si") {
+        if (currentTeam === WHITE) {
+          var tiempo_disponible_white = getMinutesromPlayer1();
+          var tiempo_disponible_black = serverGameData?.tiempo_restante_jugador2
+        } else {
+          var tiempo_disponible_white = serverGameData?.tiempo_restante_jugador1
+          var tiempo_disponible_black = getMinutesromPlayer2();
+        }
+
+        const combo_restante_player1 = serverGameData?.tiempo_restante_jugador1.split(":");
+        const minutos_restantes_player1 = parseInt(combo_restante_player1[0]);
+        const segundos_restantes_player1 = parseInt(combo_restante_player1[1]);
+        const timeavailableplayer1 = new Date();
+        timeavailableplayer1.setTime(timeavailableplayer1.getTime() + (minutos_restantes_player1 * 60 * 1000) + (segundos_restantes_player1 * 1000));
+
+        const combo_restante_player2 = serverGameData?.tiempo_restante_jugador2.split(":");
+        const minutos_restantes_player2 = parseInt(combo_restante_player2[0]);
+        const segundos_restantes_player2 = parseInt(combo_restante_player2[1]);
+        const timeavailableplayer2 = new Date();
+        timeavailableplayer2.setTime(timeavailableplayer2.getTime() + (minutos_restantes_player2 * 60 * 1000) + (segundos_restantes_player2 * 1000));
+
+
+
         await getGameDbRef()
           .update({
             comeralpaso: comeralpaso,
@@ -801,6 +910,10 @@ export async function onClick(Y, X) {
             blackCasualitiesText: blackCasualitiesText,
             board,
             lastPiecejoue: { X, Y, createdAt: Date.now() },
+            timeplayer1: timeavailableplayer1,
+            timeplayer2: timeavailableplayer2,
+            tiempo_restante_jugador1: tiempo_disponible_white,
+            tiempo_restante_jugador2: tiempo_disponible_black,
           })
           .catch(console.error);
 
@@ -2895,13 +3008,12 @@ function drawBoard() {
     */
 }
 
+/*
 function drawTile(x, y, fillStyle) {
-  /*
   chessCtx.fillStyle = fillStyle;
   chessCtx.fillRect(TILE_SIZE * x, TILE_SIZE * y, TILE_SIZE, TILE_SIZE);
-  */
 }
-
+*/
 function drawCircle(x, y, fillStyle) {
   /*
   chessCtx.fillStyle = fillStyle;
@@ -2920,21 +3032,20 @@ function drawCircle(x, y, fillStyle) {
   celda.style.backgroundColor = "#90C485";
 }
 
+/*
 function drawLetter(x, y, color, letter, pos) {
-  /*
   chessCtx.fillStyle = color;
   chessCtx.font = '10px Arial';
   var xx = x + .05;
   var yy = y + pos;
   chessCtx.fillText(letter, TILE_SIZE * (xx), TILE_SIZE * (yy));
-  */
 }
-
+*/
 function drawCorners(x, y, fillStyle) {
   var coordenada = "celda_y" + y + "x" + x;
   var celda = document.getElementById(coordenada);
   celda.style.backgroundColor = 'red';
-  
+
 
   /*
   chessCtx.fillStyle = fillStyle;
