@@ -132,7 +132,7 @@ export function Game() {
       <Container fluid id="fondo_juego">
         <Row>
           {/*solo para pc*/}
-          <Col className='d-lg-block d-sm-none' lg={{ span: 2, order: 1 }} style={{ padding: 0 }}>
+          <Col className='d-lg-block d-none' lg={{ span: 2, order: 1 }} style={{ padding: 0 }}>
             <div align="center" id="clave"></div>
             <div align="center" style={{ height: "40vh" }}>
               <img
@@ -1384,10 +1384,10 @@ export function Game() {
             </div>
           </Col>
           {/*solo para movil*/}
-          <Col className='d-sm-block d-lg-none' xs={{ span: 12, order: 3 }}  style={{ padding: 0 }}>
+          <Col className='d-block d-lg-none' xs={{ span: 12, order: 3 }}  style={{ padding: 0 }}>
               <div align="center" id="clave_movil"></div>
           </Col>  
-          <Col className='d-sm-block d-lg-none' xs={{ span: 6, order: 3 }}  style={{ padding: 0 }}>
+          <Col className='d-block d-lg-none' xs={{ span: 6, order: 3 }}  style={{ padding: 0 }}>
             
             <div align="center">
               <img
@@ -1400,7 +1400,7 @@ export function Game() {
               <p id="negras_comidas_movil" style={{color:"white"}}></p>
             </div>
           </Col>  
-          <Col className='d-sm-block d-lg-none' xs={{ span: 6, order: 3 }}  style={{ padding: 0 }}> 
+          <Col className='d-block d-lg-none' xs={{ span: 6, order: 3 }}  style={{ padding: 0 }}> 
             <div align="center">
               <img
                 id="jugador1_movil"
