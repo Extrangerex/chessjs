@@ -131,7 +131,8 @@ export function Game() {
 
       <Container fluid id="fondo_juego">
         <Row>
-          <Col xs={{ span: 4, order: 3 }} lg={{ span: 2, order: 1 }} style={{ padding: 0 }}>
+          {/*solo para pc*/}
+          <Col className='d-lg-block d-sm-none' lg={{ span: 2, order: 1 }} style={{ padding: 0 }}>
             <div align="center" id="clave"></div>
             <div align="center" style={{ height: "40vh" }}>
               <img
@@ -1382,9 +1383,46 @@ export function Game() {
 
             </div>
           </Col>
+          {/*solo para movil*/}
+          <Col className='d-sm-block d-lg-none' xs={{ span: 12, order: 3 }}  style={{ padding: 0 }}>
+              <div align="center" id="clave_movil"></div>
+          </Col>  
+          <Col className='d-sm-block d-lg-none' xs={{ span: 6, order: 3 }}  style={{ padding: 0 }}>
+            
+            <div align="center">
+              <img
+                id="jugador2_movil"
+                src={peon}
+                alt=""
+                style={{ width: "35px", height: "35px", marginTop: "5px" }}
+              ></img>
+              <br></br>
+              <p id="negras_comidas_movil" style={{color:"white"}}></p>
+            </div>
+          </Col>  
+          <Col className='d-sm-block d-lg-none' xs={{ span: 6, order: 3 }}  style={{ padding: 0 }}> 
+            <div align="center">
+              <img
+                id="jugador1_movil"
+                src={peonbco}
+                alt=""
+                style={{
+                  border: "1px solid white",
+                  borderRadius: "50%",
+                  padding: "5px",
+                  width: "35px",
+                  height: "35px",
+                  marginTop: "5px",
+                }}
+              ></img>
+              <br></br>
+              <p id="blancas_comidas_movil" style={{color:"white"}}></p>
+            </div>
+          </Col>
 
-          <Col xs={{ span: 8, order: 4 }} lg={{ span: 3, order: 4 }}>
-            <div id="extras">
+
+          <Col xs={{ span: 12, order: 4 }} lg={{ span: 3, order: 4 }}>
+            <div align="center" id="extras">
               <ul align="center" className="d-flex justify-content-between p-1">
                 <li>
                   <i className="fa fa-clock" style={{ color: "#657696" }}></i> Blancas: <span id="time_toplay_player1"></span>

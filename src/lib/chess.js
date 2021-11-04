@@ -538,6 +538,7 @@ async function startGame() {
       clave_privada = localStorage.getItem("clave_privada");
       if (clave_privada !== '' && clave_privada !== null) {
         document.getElementById("clave").innerHTML = "Clave: " + clave_privada;
+        document.getElementById("clave_movil").innerHTML = "Clave: " + clave_privada;
       }
 
     }
@@ -562,31 +563,60 @@ async function startGame() {
 
 
     if (currentTeam === BLACK) {
+      //pc
       var jugador1a = document.getElementById("jugador2");
       jugador1a.style.border = "1px solid white";
       jugador1a.style.borderRadius = "50%";
       jugador1a.style.padding = "5px";
+      //movil
+      var jugador1a_movil = document.getElementById("jugador2_movil");
+      jugador1a_movil.style.border = "1px solid white";
+      jugador1a_movil.style.borderRadius = "50%";
+      jugador1a_movil.style.padding = "5px";
 
+      //pc
       var jugador2a = document.getElementById("jugador1");
       jugador2a.style.border = "0";
       jugador2a.style.borderRadius = "0";
       jugador2a.style.padding = "0";
+      //movil
+      var jugador2a_movil = document.getElementById("jugador1_movil");
+      jugador2a_movil.style.border = "0";
+      jugador2a_movil.style.borderRadius = "0";
+      jugador2a_movil.style.padding = "0";
+
     } else {
+      //pc
       var jugador1b = document.getElementById("jugador1");
       jugador1b.style.border = "1px solid white";
       jugador1b.style.borderRadius = "50%";
       jugador1b.style.padding = "5px";
 
+      //movil
+      var jugador1b_movil = document.getElementById("jugador1_movil");
+      jugador1b_movil.style.border = "1px solid white";
+      jugador1b_movil.style.borderRadius = "50%";
+      jugador1b_movil.style.padding = "5px";
+
+      //pc
       var jugador2b = document.getElementById("jugador2");
       jugador2b.style.border = "0";
       jugador2b.style.borderRadius = "0";
       jugador2b.style.padding = "0";
+
+      //movil
+      var jugador2b_movil = document.getElementById("jugador2_movil");
+      jugador2b_movil.style.border = "0";
+      jugador2b_movil.style.borderRadius = "0";
+      jugador2b_movil.style.padding = "0";
     }
     if (whiteCasualitiesText !== undefined) {
       document.getElementById("blancas_comidas").innerHTML = whiteCasualitiesText;
+      document.getElementById("blancas_comidas_movil").innerHTML = whiteCasualitiesText;
     }
     if (blackCasualitiesText !== undefined) {
       document.getElementById("negras_comidas").innerHTML = blackCasualitiesText;
+      document.getElementById("negras_comidas_movil").innerHTML = blackCasualitiesText;
     }
 
   });

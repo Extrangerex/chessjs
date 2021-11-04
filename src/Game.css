@@ -81,6 +81,9 @@
 #clave{
     color:gold;
 } 
+#clave_movil{
+    color:gold;
+}
 .tablero {
     margin-top: 1vh;
 }
