@@ -103,8 +103,8 @@ let curY;
 let whiteCasualities;
 let blackCasualities;
 
-let contadorleonnegro;
-let contadorleonblanco;
+//let contadorleonnegro;
+//let contadorleonblanco;
 
 let contadorreyblanco;
 let contadorreynegro;
@@ -141,6 +141,7 @@ let ultimomovimiento;
 let nomenclatura;
 let aviso_doble_turno = false;
 let aviso_inicio = true;
+let aviso_jaque = false;
 let clave_privada;
 
 let lobbyItemKey;
@@ -624,8 +625,8 @@ async function startGame() {
   curX = -1;
   curY = -1;
 
-  contadorleonnegro = 0;
-  contadorleonblanco = 0;
+  //contadorleonnegro = 0;
+  //contadorleonblanco = 0;
 
   contadorreyblanco = 0;
   contadorreynegro = 0;
@@ -736,7 +737,7 @@ export async function onClick(Y, X) {
     }
   }
 
-  ganoleon();
+  //ganoleon();
 
   if (checkValidMovement(X, Y) === true) {
     ultimotipodemovimiento = "Movimiento";
@@ -818,9 +819,10 @@ export async function onClick(Y, X) {
       const combo_posicionreyblanco = posicionreyblanco.split(",");
       const checkWX = combo_posicionreyblanco[0];
       const checkWY = combo_posicionreyblanco[1];
-      //si hay jaque regresamos la jugada
 
-      if (checkTileUnderAttack(checkWX, checkWY, BLACK) === true &&
+     
+      //si hay jaque regresamos la jugada el false de la funcion de abajo es para que no cheque checkmate
+      if (checkTileUnderAttack(checkWX, checkWY, BLACK, false) === true &&
         currentTeam === WHITE) {
 
         //alert('Movimiento inválido');
@@ -860,10 +862,11 @@ export async function onClick(Y, X) {
       const checkBX = combo_posicionreynegro[0];
       const checkBY = combo_posicionreynegro[1];
 
+      
+      //si hay jaque regresamos la jugada el false de la funcion de abajo es para que no cheque checkmate
       if (
-        checkTileUnderAttack(checkBX, checkBY, WHITE) === true &&
-        currentTeam === BLACK
-      ) {
+        checkTileUnderAttack(checkBX, checkBY, WHITE, false) === true &&
+        currentTeam === BLACK) {
         //alert('Movimiento inválido');
         //regresamos todo a como estaba antes del movimiento
         const combo_ultimomovimiento = ultimomovimiento.split("/");
@@ -978,7 +981,7 @@ function checkPossiblePlays() {
   var celda = document.getElementById(coordenada);
   //celda.style.backgroundColor = HIGHLIGHT_COLOR;
   celda.style.setProperty('background-color', HIGHLIGHT_COLOR, 'important');
-  
+
 
   board.resetValidMoves();
 
@@ -1610,9 +1613,9 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre2blanco === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam)) === false
+          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam), true) === false
         ) {
           if (board.tiles[curY][(curX + 1)].team === EMPTY &&
             board.tiles[curY][(curX + 2)].team === EMPTY &&
@@ -1627,9 +1630,9 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre1blanco === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam)) === false
+          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam), true) === false
         ) {
           if (board.tiles[curY][(curX - 1)].team === EMPTY &&
             board.tiles[curY][(curX - 2)].team === EMPTY &&
@@ -1649,9 +1652,9 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre2negro === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam)) === false
+          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam), true) === false
         ) {
           if (board.tiles[curY][(curX + 1)].team === EMPTY &&
             board.tiles[curY][(curX + 2)].team === EMPTY &&
@@ -1666,9 +1669,9 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre1negro === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam)) === false &&
-          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam)) === false
+          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam), true) === false &&
+          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam), true) === false
         ) {
           if (board.tiles[curY][(curX - 1)].team === EMPTY &&
             board.tiles[curY][(curX - 2)].team === EMPTY &&
@@ -2779,7 +2782,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     const checkX = combo_posicionreyblanco[0];
     const checkY = combo_posicionreyblanco[1];
 
-    if (checkTileUnderAttack(checkX, checkY, BLACK) === true) {
+    if (checkTileUnderAttack(checkX, checkY, BLACK, true) === true) {
       //alert('Movimiento inválido');
       //regresamos todo a como estaba antes del movimiento
       board.tiles[oldY][oldX].pieceType = board.tiles[y][x].pieceType;
@@ -2806,7 +2809,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     const checkX = combo_posicionreynegro[0];
     const checkY = combo_posicionreynegro[1];
 
-    if (checkTileUnderAttack(checkX, checkY, WHITE) === true) {
+    if (checkTileUnderAttack(checkX, checkY, WHITE, true) === true) {
       //alert('Movimiento inválido');
       //regresamos todo a como estaba antes del movimiento
       board.tiles[oldY][oldX].pieceType = board.tiles[y][x].pieceType;
@@ -2843,6 +2846,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     "-" +
     ejeY[y];
 }
+/*
 function ganoleon() {
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[9][j].pieceType;
@@ -2870,7 +2874,7 @@ function ganoleon() {
     }
   }
 }
-
+*/
 export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
   if (serverGameData == null) return;
   if (serverGameData?.player2 == null) return;
@@ -3197,6 +3201,23 @@ function drawPieces() {
   }
   //fin coronacion
 
+  //revisamos que nadie le haga jaque al rey blanco
+  if (posicionreyblanco !== undefined) {
+    const combo_posicionreyblanco = posicionreyblanco.split(",");
+    const checkWX = combo_posicionreyblanco[0];
+    const checkWY = combo_posicionreyblanco[1];
+    checkTileUnderAttack(checkWX, checkWY, BLACK, true)
+  }
+
+  //revisamos que nadie le haga jaque al rey negro
+  if (posicionreynegro !== undefined) {
+    const combo_posicionreynegro = posicionreynegro.split(",");
+    const checkBX = combo_posicionreynegro[0];
+    const checkBY = combo_posicionreynegro[1];
+    checkTileUnderAttack(checkBX, checkBY, WHITE, true)
+  }
+
+  //pintamos las piezas
   for (let i = 0; i < BOARD_HEIGHT; i++) {
     for (let j = 0; j < BOARD_WIDTH; j++) {
 
@@ -3302,6 +3323,13 @@ function drawPieces() {
         } else {
           elemento.src = leon;
         }
+
+      } else if (pieceType === 12) {
+        if (equipo === WHITE) {
+          elemento.src = fakekingbco;
+        } else {
+          elemento.src = fakeking;
+        }
       }
     }
   }
@@ -3351,7 +3379,7 @@ function getOppositeTeam(team) {
   else if (team === BLACK) return WHITE;
   else return EMPTY;
 }
-function checkTileUnderAttack(x, y, equipo) {
+function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
   //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
   for (let xx = 0; xx <= 8; xx++) {
     for (let yy = 0; yy <= 9; yy++) {
@@ -3391,19 +3419,19 @@ function checkTileUnderAttack(x, y, equipo) {
   if (casillasenpeligro.includes(x + "/" + y)) {
     //vaciamos el arreglo
     casillasenpeligro = [];
-    if (board.tiles[y][x].pieceType === KING) {
+    if (board.tiles[y][x].pieceType === KING && checarjaquemate === true) {
+
       if (board.tiles[y][x].team === WHITE) {
         jaquereyblanco = "Si";
         posicionreyblanco = x + "," + y;
 
-        const combo_ultimomovimiento = ultimomovimiento.split("/");
-        const combo_newxy = combo_ultimomovimiento[2].split(",");
-        const lastWX = combo_newxy[0];
-        const lastWY = combo_newxy[1];
-
+        //checamos jaque o jaquemate
+        const lastWX = serverGameData?.lastPiecejoue?.X;
+        const lastWY = serverGameData?.lastPiecejoue?.Y;
         if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttack(lastWX, lastWY, WHITE) === false
+          checkTileUnderAttack(lastWX, lastWY, WHITE, true) === false
         ) {
+
           getGameDbRef()
             .update({
               status: "black wins",
@@ -3414,23 +3442,27 @@ function checkTileUnderAttack(x, y, equipo) {
             title: "Opps....",
             text: "JAQUE MATE HAN GANADO LAS NEGRAS",
           });
+
         } else {
-          Swal.fire({
-            title: "Opps....",
-            text: "JAQUE",
-          });
+          if (aviso_jaque === false) {
+            aviso_jaque = true;
+            Swal.fire({
+              title: "Opps....",
+              text: "JAQUE",
+            });
+          }
         }
       } else {
         jaquereynegro = "Si";
         posicionreynegro = x + "," + y;
 
-        const combo_ultimomovimiento = ultimomovimiento.split("/");
-        const combo_newxy = combo_ultimomovimiento[2].split(",");
-        const lastBX = combo_newxy[0];
-        const lastBY = combo_newxy[1];
+
+        const lastBX = serverGameData?.lastPiecejoue?.X;
+        const lastBY = serverGameData?.lastPiecejoue?.Y;
 
         if (moverelreynegro(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttack(lastBX, lastBY, BLACK) === false) {
+          checkTileUnderAttack(lastBX, lastBY, BLACK, true) === false) {
+
           getGameDbRef()
             .update({
               status: "white wins",
@@ -3441,11 +3473,15 @@ function checkTileUnderAttack(x, y, equipo) {
             title: "Opps....",
             text: "JAQUE MATE HAN GANADO LAS BLANCAS",
           });
+
         } else {
-          Swal.fire({
-            title: "Opps....",
-            text: "JAQUE",
-          });
+          if (aviso_jaque === false) {
+            aviso_jaque = true;
+            Swal.fire({
+              title: "Opps....",
+              text: "JAQUE",
+            });
+          }
         }
       }
     }
@@ -4073,7 +4109,7 @@ function moverelreynegro(x, y) {
   if (x - 1 < BOARD_WIDTH - 1 && x - 1 >= 0) {
     if (
       board.tiles[y][x - 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x - 1, y, WHITE) === false
+      checkTileUnderAttack(x - 1, y, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4083,7 +4119,7 @@ function moverelreynegro(x, y) {
   if (x + 1 < BOARD_WIDTH - 1 && x + 1 >= 0) {
     if (
       board.tiles[y][x + 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x + 1, y, WHITE) === false
+      checkTileUnderAttack(x + 1, y, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4094,7 +4130,7 @@ function moverelreynegro(x, y) {
   if (y - 1 < BOARD_HEIGHT - 1 && y - 1 >= 0) {
     if (
       board.tiles[y - 1][x].pieceType === EMPTY &&
-      checkTileUnderAttack(x, y - 1, WHITE) === false
+      checkTileUnderAttack(x, y - 1, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4105,7 +4141,7 @@ function moverelreynegro(x, y) {
   if (y + 1 < BOARD_HEIGHT - 1 && y + 1 >= 0) {
     if (
       board.tiles[y + 1][x].pieceType === EMPTY &&
-      checkTileUnderAttack(x, y + 1, WHITE) === false
+      checkTileUnderAttack(x, y + 1, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4121,7 +4157,7 @@ function moverelreynegro(x, y) {
   ) {
     if (
       board.tiles[y - 1][x - 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x - 1, y - 1, WHITE) === false
+      checkTileUnderAttack(x - 1, y - 1, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4136,7 +4172,7 @@ function moverelreynegro(x, y) {
   ) {
     if (
       board.tiles[y - 1][x + 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x + 1, y - 1, WHITE) === false
+      checkTileUnderAttack(x + 1, y - 1, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4151,7 +4187,7 @@ function moverelreynegro(x, y) {
   ) {
     if (
       board.tiles[y + 1][x - 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x - 1, y + 1, WHITE) === false
+      checkTileUnderAttack(x - 1, y + 1, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4167,7 +4203,7 @@ function moverelreynegro(x, y) {
   ) {
     if (
       board.tiles[y + 1][x + 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x + 1, y + 1, WHITE) === false
+      checkTileUnderAttack(x + 1, y + 1, WHITE, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4186,7 +4222,7 @@ function moverelreyblanco(x, y) {
   if (x - 1 < BOARD_WIDTH - 1 && x - 1 >= 0) {
     if (
       board.tiles[y][x - 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x - 1, y, BLACK) === false
+      checkTileUnderAttack(x - 1, y, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4196,7 +4232,7 @@ function moverelreyblanco(x, y) {
   if (x + 1 < BOARD_WIDTH - 1 && x + 1 >= 0) {
     if (
       board.tiles[y][x + 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x + 1, y, BLACK) === false
+      checkTileUnderAttack(x + 1, y, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4207,7 +4243,7 @@ function moverelreyblanco(x, y) {
   if (y - 1 < BOARD_HEIGHT - 1 && y - 1 >= 0) {
     if (
       board.tiles[y - 1][x].pieceType === EMPTY &&
-      checkTileUnderAttack(x, y - 1, BLACK) === false
+      checkTileUnderAttack(x, y - 1, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4218,7 +4254,7 @@ function moverelreyblanco(x, y) {
   if (y + 1 < BOARD_HEIGHT - 1 && y + 1 >= 0) {
     if (
       board.tiles[y + 1][x].pieceType === EMPTY &&
-      checkTileUnderAttack(x, y + 1, BLACK) === false
+      checkTileUnderAttack(x, y + 1, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4234,7 +4270,7 @@ function moverelreyblanco(x, y) {
   ) {
     if (
       board.tiles[y - 1][x - 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x - 1, y - 1, BLACK) === false
+      checkTileUnderAttack(x - 1, y - 1, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4249,7 +4285,7 @@ function moverelreyblanco(x, y) {
   ) {
     if (
       board.tiles[y - 1][x + 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x + 1, y - 1, BLACK) === false
+      checkTileUnderAttack(x + 1, y - 1, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4264,7 +4300,7 @@ function moverelreyblanco(x, y) {
   ) {
     if (
       board.tiles[y + 1][x - 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x - 1, y + 1, BLACK) === false
+      checkTileUnderAttack(x - 1, y + 1, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
@@ -4280,7 +4316,7 @@ function moverelreyblanco(x, y) {
   ) {
     if (
       board.tiles[y + 1][x + 1].pieceType === EMPTY &&
-      checkTileUnderAttack(x + 1, y + 1, BLACK) === false
+      checkTileUnderAttack(x + 1, y + 1, BLACK, true) === false
     ) {
       //console.log("true");
       return true;
