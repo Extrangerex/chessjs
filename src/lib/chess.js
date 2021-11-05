@@ -3059,7 +3059,8 @@ function drawCircle(x, y, fillStyle) {
   */
   var coordenada = "celda_y" + y + "x" + x;
   var celda = document.getElementById(coordenada);
-  celda.style.backgroundColor = "#90C485";
+  //celda.style.backgroundColor = "#90C485";
+  celda.style.setProperty('background-color', '#90C485', 'important');
 }
 
 /*
@@ -3074,7 +3075,8 @@ function drawLetter(x, y, color, letter, pos) {
 function drawCorners(x, y, fillStyle) {
   var coordenada = "celda_y" + y + "x" + x;
   var celda = document.getElementById(coordenada);
-  celda.style.backgroundColor = 'red';
+  //celda.style.backgroundColor = 'red';
+  celda.style.setProperty('background-color', 'red', 'important');
 
 
   /*

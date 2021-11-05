@@ -186,7 +186,7 @@ export function Game() {
                           <img src={vacio} id="y0x0" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x1" onClick={() => chess.onClick(0, 1)}>
+                      <td className= "side_light" id="celda_y0x1" onClick={() => chess.onClick(0, 1)}>
                         <span >
                           <img src={vacio} id="y0x1" alt="" />
                         </span>
@@ -196,7 +196,7 @@ export function Game() {
                           <img src={vacio} id="y0x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x3" onClick={() => chess.onClick(0, 3)}>
+                      <td className= "side_light" id="celda_y0x3" onClick={() => chess.onClick(0, 3)}>
                         <span >
                           <img src={vacio} id="y0x3" alt="" />
                         </span>
@@ -206,7 +206,7 @@ export function Game() {
                           <img src={vacio} id="y0x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x5" onClick={() => chess.onClick(0, 5)}>
+                      <td className= "side_light" id="celda_y0x5" onClick={() => chess.onClick(0, 5)}>
                         <span >
                           <img src={vacio} id="y0x5" alt="" />
                         </span>
@@ -216,7 +216,7 @@ export function Game() {
                           <img src={vacio} id="y0x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x7" onClick={() => chess.onClick(0, 7)}>
+                      <td className= "side_light" id="celda_y0x7" onClick={() => chess.onClick(0, 7)}>
                         <span >
                           <img src={vacio} id="y0x7" alt="" />
                         </span>
@@ -234,7 +234,7 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y1x0" onClick={() => chess.onClick(1, 0)}>
+                      <td className= "side_light" id="celda_y1x0" onClick={() => chess.onClick(1, 0)}>
                         <span className="nomenclatura_numero">9</span>
                         <span >
                           <img src={vacio} id="y1x0" alt="" />
@@ -245,7 +245,7 @@ export function Game() {
                           <img src={vacio} id="y1x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x2" onClick={() => chess.onClick(1, 2)}>
+                      <td className= "side_light" id="celda_y1x2" onClick={() => chess.onClick(1, 2)}>
                         <span >
                           <img src={vacio} id="y1x2" alt="" />
                         </span>
@@ -255,7 +255,7 @@ export function Game() {
                           <img src={vacio} id="y1x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x4" onClick={() => chess.onClick(1, 4)}>
+                      <td className= "side_light" id="celda_y1x4" onClick={() => chess.onClick(1, 4)}>
                         <span >
                           <img src={vacio} id="y1x4" alt="" />
                         </span>
@@ -265,7 +265,7 @@ export function Game() {
                           <img src={vacio} id="y1x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x6" onClick={() => chess.onClick(1, 6)}>
+                      <td className= "side_light" id="celda_y1x6" onClick={() => chess.onClick(1, 6)}>
                         <span >
                           <img src={vacio} id="y1x6" alt="" />
                         </span>
@@ -275,7 +275,7 @@ export function Game() {
                           <img src={vacio} id="y1x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x8" onClick={() => chess.onClick(1, 8)}>
+                      <td className= "side_light" id="celda_y1x8" onClick={() => chess.onClick(1, 8)}>
                         <span >
                           <img src={vacio} id="y1x8" alt="" />
                         </span>
@@ -294,7 +294,7 @@ export function Game() {
                           <img src={vacio} id="y2x0" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x1" onClick={() => chess.onClick(2, 1)}>
+                      <td className= "side_light" id="celda_y2x1" onClick={() => chess.onClick(2, 1)}>
                         <span >
                           <img src={vacio} id="y2x1" alt="" />
                         </span>
@@ -304,7 +304,7 @@ export function Game() {
                           <img src={vacio} id="y2x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x3" onClick={() => chess.onClick(2, 3)}>
+                      <td className= "side_light" id="celda_y2x3" onClick={() => chess.onClick(2, 3)}>
                         <span >
                           <img src={vacio} id="y2x3" alt="" />
                         </span>
@@ -314,7 +314,7 @@ export function Game() {
                           <img src={vacio} id="y2x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x5" onClick={() => chess.onClick(2, 5)}>
+                      <td className= "side_light" id="celda_y2x5" onClick={() => chess.onClick(2, 5)}>
                         <span >
                           <img src={vacio} id="y2x5" alt="" />
                         </span>
@@ -324,7 +324,7 @@ export function Game() {
                           <img src={vacio} id="y2x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x7" onClick={() => chess.onClick(2, 7)}>
+                      <td className= "side_light" id="celda_y2x7" onClick={() => chess.onClick(2, 7)}>
                         <span >
                           <img src={vacio} id="y2x7" alt="" />
                         </span>
@@ -342,48 +342,48 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y3x0" onClick={() => chess.onClick(3, 0)}>
+                      <td className= "side_light" id="celda_y3x0" onClick={() => chess.onClick(3, 0)}>
                         <span className="nomenclatura_numero">7</span>
                         <span>
                           <img src={vacio} id="y3x0" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x1" onClick={() => chess.onClick(3, 1)}>
+                      <td className="middle_dark" id="celda_y3x1" onClick={() => chess.onClick(3, 1)}>
                         <span>
                           <img src={vacio} id="y3x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x2" onClick={() => chess.onClick(3, 2)}>
+                      <td className= "side_light" id="celda_y3x2" onClick={() => chess.onClick(3, 2)}>
                         <span>
                           <img src={vacio} id="y3x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x3" onClick={() => chess.onClick(3, 3)}>
+                      <td className="middle_dark" id="celda_y3x3" onClick={() => chess.onClick(3, 3)}>
                         <span>
                           <img src={vacio} id="y3x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x4" onClick={() => chess.onClick(3, 4)}>
+                      <td className= "side_light" id="celda_y3x4" onClick={() => chess.onClick(3, 4)}>
                         <span>
                           <img src={vacio} id="y3x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x5" onClick={() => chess.onClick(3, 5)}>
+                      <td className="middle_dark" id="celda_y3x5" onClick={() => chess.onClick(3, 5)}>
                         <span>
                           <img src={vacio} id="y3x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x6" onClick={() => chess.onClick(3, 6)}>
+                      <td className= "side_light" id="celda_y3x6" onClick={() => chess.onClick(3, 6)}>
                         <span>
                           <img src={vacio} id="y3x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x7" onClick={() => chess.onClick(3, 7)}>
+                      <td className="middle_dark" id="celda_y3x7" onClick={() => chess.onClick(3, 7)}>
                         <span>
                           <img src={vacio} id="y3x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x8" onClick={() => chess.onClick(3, 8)}>
+                      <td className= "side_light" id="celda_y3x8" onClick={() => chess.onClick(3, 8)}>
                         <span>
                           <img src={vacio} id="y3x8" alt="" />
                         </span>
@@ -396,48 +396,48 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y4x0" onClick={() => chess.onClick(4, 0)}>
+                      <td className="middle_dark" id="celda_y4x0" onClick={() => chess.onClick(4, 0)}>
                         <span className="nomenclatura_numero">6</span>
                         <span>
                           <img src={vacio} id="y4x0" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x1" onClick={() => chess.onClick(4, 1)}>
+                      <td className= "side_light" id="celda_y4x1" onClick={() => chess.onClick(4, 1)}>
                         <span>
                           <img src={vacio} id="y4x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x2" onClick={() => chess.onClick(4, 2)}>
+                      <td className="middle_dark" id="celda_y4x2" onClick={() => chess.onClick(4, 2)}>
                         <span>
                           <img src={vacio} id="y4x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x3" onClick={() => chess.onClick(4, 3)}>
+                      <td className= "side_light" id="celda_y4x3" onClick={() => chess.onClick(4, 3)}>
                         <span>
                           <img src={vacio} id="y4x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x4" onClick={() => chess.onClick(4, 4)}>
+                      <td className="middle_dark" id="celda_y4x4" onClick={() => chess.onClick(4, 4)}>
                         <span>
                           <img src={vacio} id="y4x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x5" onClick={() => chess.onClick(4, 5)}>
+                      <td className= "side_light" id="celda_y4x5" onClick={() => chess.onClick(4, 5)}>
                         <span>
                           <img src={vacio} id="y4x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x6" onClick={() => chess.onClick(4, 6)}>
+                      <td className="middle_dark" id="celda_y4x6" onClick={() => chess.onClick(4, 6)}>
                         <span>
                           <img src={vacio} id="y4x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x7" onClick={() => chess.onClick(4, 7)}>
+                      <td className= "side_light" id="celda_y4x7" onClick={() => chess.onClick(4, 7)}>
                         <span>
                           <img src={vacio} id="y4x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x8" onClick={() => chess.onClick(4, 8)}>
+                      <td className="middle_dark" id="celda_y4x8" onClick={() => chess.onClick(4, 8)}>
                         <span>
                           <img src={vacio} id="y4x8" alt="" />
                         </span>
@@ -450,48 +450,48 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y5x0" onClick={() => chess.onClick(5, 0)}>
+                      <td className= "side_light" id="celda_y5x0" onClick={() => chess.onClick(5, 0)}>
                         <span className="nomenclatura_numero">5</span>
                         <span>
                           <img src={vacio} id="y5x0" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x1" onClick={() => chess.onClick(5, 1)}>
+                      <td className="middle_dark" id="celda_y5x1" onClick={() => chess.onClick(5, 1)}>
                         <span>
                           <img src={vacio} id="y5x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x2" onClick={() => chess.onClick(5, 2)}>
+                      <td className= "side_light" id="celda_y5x2" onClick={() => chess.onClick(5, 2)}>
                         <span>
                           <img src={vacio} id="y5x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x3" onClick={() => chess.onClick(5, 3)}>
+                      <td className="middle_dark" id="celda_y5x3" onClick={() => chess.onClick(5, 3)}>
                         <span>
                           <img src={vacio} id="y5x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x4" onClick={() => chess.onClick(5, 4)}>
+                      <td className= "side_light" id="celda_y5x4" onClick={() => chess.onClick(5, 4)}>
                         <span>
                           <img src={vacio} id="y5x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x5" onClick={() => chess.onClick(5, 5)}>
+                      <td className="middle_dark" id="celda_y5x5" onClick={() => chess.onClick(5, 5)}>
                         <span>
                           <img src={vacio} id="y5x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x6" onClick={() => chess.onClick(5, 6)}>
+                      <td className= "side_light" id="celda_y5x6" onClick={() => chess.onClick(5, 6)}>
                         <span>
                           <img src={vacio} id="y5x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x7" onClick={() => chess.onClick(5, 7)}>
+                      <td className="middle_dark" id="celda_y5x7" onClick={() => chess.onClick(5, 7)}>
                         <span>
                           <img src={vacio} id="y5x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x8" onClick={() => chess.onClick(5, 8)}>
+                      <td className= "side_light" id="celda_y5x8" onClick={() => chess.onClick(5, 8)}>
                         <span>
                           <img src={vacio} id="y5x8" alt="" />
                         </span>
@@ -504,48 +504,48 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y6x0" onClick={() => chess.onClick(6, 0)}>
+                      <td className="middle_dark" id="celda_y6x0" onClick={() => chess.onClick(6, 0)}>
                         <span className="nomenclatura_numero">4</span>
                         <span>
                           <img src={vacio} id="y6x0" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x1" onClick={() => chess.onClick(6, 1)}>
+                      <td className= "side_light" id="celda_y6x1" onClick={() => chess.onClick(6, 1)}>
                         <span>
                           <img src={vacio} id="y6x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x2" onClick={() => chess.onClick(6, 2)}>
+                      <td className="middle_dark" id="celda_y6x2" onClick={() => chess.onClick(6, 2)}>
                         <span>
                           <img src={vacio} id="y6x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x3" onClick={() => chess.onClick(6, 3)}>
+                      <td className= "side_light" id="celda_y6x3" onClick={() => chess.onClick(6, 3)}>
                         <span>
                           <img src={vacio} id="y6x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x4" onClick={() => chess.onClick(6, 4)}>
+                      <td className="middle_dark" id="celda_y6x4" onClick={() => chess.onClick(6, 4)}>
                         <span>
                           <img src={vacio} id="y6x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x5" onClick={() => chess.onClick(6, 5)}>
+                      <td className= "side_light" id="celda_y6x5" onClick={() => chess.onClick(6, 5)}>
                         <span>
                           <img src={vacio} id="y6x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x6" onClick={() => chess.onClick(6, 6)}>
+                      <td className="middle_dark" id="celda_y6x6" onClick={() => chess.onClick(6, 6)}>
                         <span>
                           <img src={vacio} id="y6x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x7" onClick={() => chess.onClick(6, 7)}>
+                      <td className= "side_light" id="celda_y6x7" onClick={() => chess.onClick(6, 7)}>
                         <span>
                           <img src={vacio} id="y6x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x8" onClick={() => chess.onClick(6, 8)}>
+                      <td className="middle_dark" id="celda_y6x8" onClick={() => chess.onClick(6, 8)}>
                         <span>
                           <img src={vacio} id="y6x8" alt="" />
                         </span>
@@ -558,7 +558,7 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y7x0" onClick={() => chess.onClick(7, 0)}>
+                      <td className= "side_light" id="celda_y7x0" onClick={() => chess.onClick(7, 0)}>
                         <span className="nomenclatura_numero">3</span>
                         <span >
                           <img src={vacio} id="y7x0" alt="" />
@@ -569,7 +569,7 @@ export function Game() {
                           <img src={vacio} id="y7x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x2" onClick={() => chess.onClick(7, 2)}>
+                      <td className= "side_light" id="celda_y7x2" onClick={() => chess.onClick(7, 2)}>
                         <span >
                           <img src={vacio} id="y7x2" alt="" />
                         </span>
@@ -579,7 +579,7 @@ export function Game() {
                           <img src={vacio} id="y7x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x4" onClick={() => chess.onClick(7, 4)}>
+                      <td className= "side_light" id="celda_y7x4" onClick={() => chess.onClick(7, 4)}>
                         <span >
                           <img src={vacio} id="y7x4" alt="" />
                         </span>
@@ -589,7 +589,7 @@ export function Game() {
                           <img src={vacio} id="y7x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x6" onClick={() => chess.onClick(7, 6)}>
+                      <td className= "side_light" id="celda_y7x6" onClick={() => chess.onClick(7, 6)}>
                         <span >
                           <img src={vacio} id="y7x6" alt="" />
                         </span>
@@ -599,7 +599,7 @@ export function Game() {
                           <img src={vacio} id="y7x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x8" onClick={() => chess.onClick(7, 8)}>
+                      <td className= "side_light" id="celda_y7x8" onClick={() => chess.onClick(7, 8)}>
                         <span >
                           <img src={vacio} id="y7x8" alt="" />
                         </span>
@@ -613,43 +613,43 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y8x0" onClick={() => chess.onClick(8, 0)}>
+                      <td  id="celda_y8x0" onClick={() => chess.onClick(8, 0)}>
                         <span className="nomenclatura_numero">2</span>
                         <span >
                           <img src={vacio} id="y8x0" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x1" onClick={() => chess.onClick(8, 1)}>
+                      <td className= "side_light" id="celda_y8x1" onClick={() => chess.onClick(8, 1)}>
                         <span >
                           <img src={vacio} id="y8x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x2" onClick={() => chess.onClick(8, 2)}>
+                      <td  id="celda_y8x2" onClick={() => chess.onClick(8, 2)}>
                         <span >
                           <img src={vacio} id="y8x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x3" onClick={() => chess.onClick(8, 3)}>
+                      <td className= "side_light" id="celda_y8x3" onClick={() => chess.onClick(8, 3)}>
                         <span >
                           <img src={vacio} id="y8x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x4" onClick={() => chess.onClick(8, 4)}>
+                      <td  id="celda_y8x4" onClick={() => chess.onClick(8, 4)}>
                         <span >
                           <img src={vacio} id="y8x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x5" onClick={() => chess.onClick(8, 5)}>
+                      <td className= "side_light" id="celda_y8x5" onClick={() => chess.onClick(8, 5)}>
                         <span >
                           <img src={vacio} id="y8x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x6" onClick={() => chess.onClick(8, 6)}>
+                      <td  id="celda_y8x6" onClick={() => chess.onClick(8, 6)}>
                         <span >
                           <img src={vacio} id="y8x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x7" onClick={() => chess.onClick(8, 7)}>
+                      <td className= "side_light" id="celda_y8x7" onClick={() => chess.onClick(8, 7)}>
                         <span >
                           <img src={vacio} id="y8x7" alt="" />
                         </span>
@@ -667,7 +667,7 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y9x0" onClick={() => chess.onClick(9, 0)}>
+                      <td className= "side_light" id="celda_y9x0" onClick={() => chess.onClick(9, 0)}>
                         <span className="nomenclatura_numero">1</span>
                         <span className="nomenclatura_letra">a</span>
                         <span >
@@ -680,7 +680,7 @@ export function Game() {
                           <img src={vacio} id="y9x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x2" onClick={() => chess.onClick(9, 2)}>
+                      <td className= "side_light" id="celda_y9x2" onClick={() => chess.onClick(9, 2)}>
                         <span className="nomenclatura_letra">c</span>
                         <span >
                           <img src={vacio} id="y9x2" alt="" />
@@ -692,7 +692,7 @@ export function Game() {
                           <img src={vacio} id="y9x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x4" onClick={() => chess.onClick(9, 4)}>
+                      <td className= "side_light" id="celda_y9x4" onClick={() => chess.onClick(9, 4)}>
                         <span className="nomenclatura_letra">e</span>
                         <span >
                           <img src={vacio} id="y9x4" alt="" />
@@ -704,7 +704,7 @@ export function Game() {
                           <img src={vacio} id="y9x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x6" onClick={() => chess.onClick(9, 6)}>
+                      <td className= "side_light" id="celda_y9x6" onClick={() => chess.onClick(9, 6)}>
                         <span className="nomenclatura_letra">g</span>
                         <span >
                           <img src={vacio} id="y9x6" alt="" />
@@ -716,7 +716,7 @@ export function Game() {
                           <img src={vacio} id="y9x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x8" onClick={() => chess.onClick(9, 8)}>
+                      <td className= "side_light" id="celda_y9x8" onClick={() => chess.onClick(9, 8)}>
                         <span className="nomenclatura_letra">i</span>
                         <span >
                           <img src={vacio} id="y9x8" alt="" />
@@ -785,7 +785,7 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y9x8" onClick={() => chess.onClick(9, 8)}>
+                      <td className= "side_light" id="celda_y9x8" onClick={() => chess.onClick(9, 8)}>
                         <span className="nomenclatura_letra">i</span>
                         <span >
                           <img src={vacio} id="y9x8" alt="" />
@@ -797,7 +797,7 @@ export function Game() {
                           <img src={vacio} id="y9x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x6" onClick={() => chess.onClick(9, 6)}>
+                      <td className= "side_light" id="celda_y9x6" onClick={() => chess.onClick(9, 6)}>
                         <span className="nomenclatura_letra">g</span>
                         <span >
                           <img src={vacio} id="y9x6" alt="" />
@@ -809,7 +809,7 @@ export function Game() {
                           <img src={vacio} id="y9x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x4" onClick={() => chess.onClick(9, 4)}>
+                      <td className= "side_light" id="celda_y9x4" onClick={() => chess.onClick(9, 4)}>
                         <span className="nomenclatura_letra">e</span>
                         <span >
                           <img src={vacio} id="y9x4" alt="" />
@@ -821,7 +821,7 @@ export function Game() {
                           <img src={vacio} id="y9x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x2" onClick={() => chess.onClick(9, 2)}>
+                      <td className= "side_light" id="celda_y9x2" onClick={() => chess.onClick(9, 2)}>
                         <span className="nomenclatura_letra">c</span>
                         <span >
                           <img src={vacio} id="y9x2" alt="" />
@@ -833,7 +833,7 @@ export function Game() {
                           <img src={vacio} id="y9x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y9x0" onClick={() => chess.onClick(9, 0)}>
+                      <td className= "side_light" id="celda_y9x0" onClick={() => chess.onClick(9, 0)}>
                         <span className="nomenclatura_numero">1</span>
                         <span className="nomenclatura_letra">a</span>
                         <span >
@@ -853,7 +853,7 @@ export function Game() {
                           <img src={vacio} id="y8x8" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x7" onClick={() => chess.onClick(8, 7)}>
+                      <td className= "side_light" id="celda_y8x7" onClick={() => chess.onClick(8, 7)}>
                         <span >
                           <img src={vacio} id="y8x7" alt="" />
                         </span>
@@ -863,7 +863,7 @@ export function Game() {
                           <img src={vacio} id="y8x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x5" onClick={() => chess.onClick(8, 5)}>
+                      <td className= "side_light" id="celda_y8x5" onClick={() => chess.onClick(8, 5)}>
                         <span >
                           <img src={vacio} id="y8x5" alt="" />
                         </span>
@@ -873,7 +873,7 @@ export function Game() {
                           <img src={vacio} id="y8x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x3" onClick={() => chess.onClick(8, 3)}>
+                      <td className= "side_light" id="celda_y8x3" onClick={() => chess.onClick(8, 3)}>
                         <span >
                           <img src={vacio} id="y8x3" alt="" />
                         </span>
@@ -883,7 +883,7 @@ export function Game() {
                           <img src={vacio} id="y8x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y8x1" onClick={() => chess.onClick(8, 1)}>
+                      <td className= "side_light" id="celda_y8x1" onClick={() => chess.onClick(8, 1)}>
                         <span >
                           <img src={vacio} id="y8x1" alt="" />
                         </span>
@@ -902,7 +902,7 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y7x8" onClick={() => chess.onClick(7, 8)}>
+                      <td className= "side_light" id="celda_y7x8" onClick={() => chess.onClick(7, 8)}>
                         <span >
                           <img src={vacio} id="y7x8" alt="" />
                         </span>
@@ -912,7 +912,7 @@ export function Game() {
                           <img src={vacio} id="y7x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x6" onClick={() => chess.onClick(7, 6)}>
+                      <td className= "side_light" id="celda_y7x6" onClick={() => chess.onClick(7, 6)}>
                         <span >
                           <img src={vacio} id="y7x6" alt="" />
                         </span>
@@ -922,7 +922,7 @@ export function Game() {
                           <img src={vacio} id="y7x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x4" onClick={() => chess.onClick(7, 4)}>
+                      <td className= "side_light" id="celda_y7x4" onClick={() => chess.onClick(7, 4)}>
                         <span >
                           <img src={vacio} id="y7x4" alt="" />
                         </span>
@@ -932,7 +932,7 @@ export function Game() {
                           <img src={vacio} id="y7x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x2" onClick={() => chess.onClick(7, 2)}>
+                      <td className= "side_light" id="celda_y7x2" onClick={() => chess.onClick(7, 2)}>
                         <span >
                           <img src={vacio} id="y7x2" alt="" />
                         </span>
@@ -942,7 +942,7 @@ export function Game() {
                           <img src={vacio} id="y7x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y7x0" onClick={() => chess.onClick(7, 0)}>
+                      <td className= "side_light" id="celda_y7x0" onClick={() => chess.onClick(7, 0)}>
                         <span className="nomenclatura_numero">3</span>
                         <span >
                           <img src={vacio} id="y7x0" alt="" />
@@ -956,47 +956,47 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y6x8" onClick={() => chess.onClick(6, 8)}>
+                      <td className="middle_dark" id="celda_y6x8" onClick={() => chess.onClick(6, 8)}>
                         <span>
                           <img src={vacio} id="y6x8" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x7" onClick={() => chess.onClick(6, 7)}>
+                      <td className= "side_light" id="celda_y6x7" onClick={() => chess.onClick(6, 7)}>
                         <span>
                           <img src={vacio} id="y6x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x6" onClick={() => chess.onClick(6, 6)}>
+                      <td className="middle_dark" id="celda_y6x6" onClick={() => chess.onClick(6, 6)}>
                         <span>
                           <img src={vacio} id="y6x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x5" onClick={() => chess.onClick(6, 5)}>
+                      <td className= "side_light" id="celda_y6x5" onClick={() => chess.onClick(6, 5)}>
                         <span>
                           <img src={vacio} id="y6x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x4" onClick={() => chess.onClick(6, 4)}>
+                      <td className="middle_dark" id="celda_y6x4" onClick={() => chess.onClick(6, 4)}>
                         <span>
                           <img src={vacio} id="y6x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x3" onClick={() => chess.onClick(6, 3)}>
+                      <td className= "side_light" id="celda_y6x3" onClick={() => chess.onClick(6, 3)}>
                         <span>
                           <img src={vacio} id="y6x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x2" onClick={() => chess.onClick(6, 2)}>
+                      <td className="middle_dark" id="celda_y6x2" onClick={() => chess.onClick(6, 2)}>
                         <span>
                           <img src={vacio} id="y6x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x1" onClick={() => chess.onClick(6, 1)}>
+                      <td className= "side_light" id="celda_y6x1" onClick={() => chess.onClick(6, 1)}>
                         <span>
                           <img src={vacio} id="y6x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y6x0" onClick={() => chess.onClick(6, 0)}>
+                      <td className="middle_dark" id="celda_y6x0" onClick={() => chess.onClick(6, 0)}>
                         <span className="nomenclatura_numero">4</span>
                         <span>
                           <img src={vacio} id="y6x0" alt="" />
@@ -1010,47 +1010,47 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y5x8" onClick={() => chess.onClick(5, 8)}>
+                      <td className= "side_light" id="celda_y5x8" onClick={() => chess.onClick(5, 8)}>
                         <span>
                           <img src={vacio} id="y5x8" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x7" onClick={() => chess.onClick(5, 7)}>
+                      <td className="middle_dark" id="celda_y5x7" onClick={() => chess.onClick(5, 7)}>
                         <span>
                           <img src={vacio} id="y5x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x6" onClick={() => chess.onClick(5, 6)}>
+                      <td className= "side_light" id="celda_y5x6" onClick={() => chess.onClick(5, 6)}>
                         <span>
                           <img src={vacio} id="y5x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x5" onClick={() => chess.onClick(5, 5)}>
+                      <td className="middle_dark" id="celda_y5x5" onClick={() => chess.onClick(5, 5)}>
                         <span>
                           <img src={vacio} id="y5x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x4" onClick={() => chess.onClick(5, 4)}>
+                      <td className= "side_light" id="celda_y5x4" onClick={() => chess.onClick(5, 4)}>
                         <span>
                           <img src={vacio} id="y5x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x3" onClick={() => chess.onClick(5, 3)}>
+                      <td className="middle_dark" id="celda_y5x3" onClick={() => chess.onClick(5, 3)}>
                         <span>
                           <img src={vacio} id="y5x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x2" onClick={() => chess.onClick(5, 2)}>
+                      <td className= "side_light" id="celda_y5x2" onClick={() => chess.onClick(5, 2)}>
                         <span>
                           <img src={vacio} id="y5x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x1" onClick={() => chess.onClick(5, 1)}>
+                      <td className="middle_dark" id="celda_y5x1" onClick={() => chess.onClick(5, 1)}>
                         <span>
                           <img src={vacio} id="y5x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y5x0" onClick={() => chess.onClick(5, 0)}>
+                      <td className= "side_light" id="celda_y5x0" onClick={() => chess.onClick(5, 0)}>
                         <span className="nomenclatura_numero">5</span>
                         <span>
                           <img src={vacio} id="y5x0" alt="" />
@@ -1064,47 +1064,47 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y4x8" onClick={() => chess.onClick(4, 8)}>
+                      <td className="middle_dark" id="celda_y4x8" onClick={() => chess.onClick(4, 8)}>
                         <span>
                           <img src={vacio} id="y4x8" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x7" onClick={() => chess.onClick(4, 7)}>
+                      <td className= "side_light" id="celda_y4x7" onClick={() => chess.onClick(4, 7)}>
                         <span>
                           <img src={vacio} id="y4x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x6" onClick={() => chess.onClick(4, 6)}>
+                      <td className="middle_dark" id="celda_y4x6" onClick={() => chess.onClick(4, 6)}>
                         <span>
                           <img src={vacio} id="y4x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x5" onClick={() => chess.onClick(4, 5)}>
+                      <td className= "side_light" id="celda_y4x5" onClick={() => chess.onClick(4, 5)}>
                         <span>
                           <img src={vacio} id="y4x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x4" onClick={() => chess.onClick(4, 4)}>
+                      <td className="middle_dark" id="celda_y4x4" onClick={() => chess.onClick(4, 4)}>
                         <span>
                           <img src={vacio} id="y4x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x3" onClick={() => chess.onClick(4, 3)}>
+                      <td className= "side_light" id="celda_y4x3" onClick={() => chess.onClick(4, 3)}>
                         <span>
                           <img src={vacio} id="y4x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x2" onClick={() => chess.onClick(4, 2)}>
+                      <td className="middle_dark" id="celda_y4x2" onClick={() => chess.onClick(4, 2)}>
                         <span>
                           <img src={vacio} id="y4x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x1" onClick={() => chess.onClick(4, 1)}>
+                      <td className= "side_light" id="celda_y4x1" onClick={() => chess.onClick(4, 1)}>
                         <span>
                           <img src={vacio} id="y4x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y4x0" onClick={() => chess.onClick(4, 0)}>
+                      <td className="middle_dark" id="celda_y4x0" onClick={() => chess.onClick(4, 0)}>
                         <span className="nomenclatura_numero">6</span>
                         <span>
                           <img src={vacio} id="y4x0" alt="" />
@@ -1118,47 +1118,47 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y3x8" onClick={() => chess.onClick(3, 8)}>
+                      <td className= "side_light" id="celda_y3x8" onClick={() => chess.onClick(3, 8)}>
                         <span>
                           <img src={vacio} id="y3x8" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x7" onClick={() => chess.onClick(3, 7)}>
+                      <td className="middle_dark" id="celda_y3x7" onClick={() => chess.onClick(3, 7)}>
                         <span>
                           <img src={vacio} id="y3x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x6" onClick={() => chess.onClick(3, 6)}>
+                      <td className= "side_light" id="celda_y3x6" onClick={() => chess.onClick(3, 6)}>
                         <span>
                           <img src={vacio} id="y3x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x5" onClick={() => chess.onClick(3, 5)}>
+                      <td className="middle_dark" id="celda_y3x5" onClick={() => chess.onClick(3, 5)}>
                         <span>
                           <img src={vacio} id="y3x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x4" onClick={() => chess.onClick(3, 4)}>
+                      <td className= "side_light" id="celda_y3x4" onClick={() => chess.onClick(3, 4)}>
                         <span>
                           <img src={vacio} id="y3x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x3" onClick={() => chess.onClick(3, 3)}>
+                      <td className="middle_dark" id="celda_y3x3" onClick={() => chess.onClick(3, 3)}>
                         <span>
                           <img src={vacio} id="y3x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x2" onClick={() => chess.onClick(3, 2)}>
+                      <td className= "side_light" id="celda_y3x2" onClick={() => chess.onClick(3, 2)}>
                         <span>
                           <img src={vacio} id="y3x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x1" onClick={() => chess.onClick(3, 1)}>
+                      <td className="middle_dark" id="celda_y3x1" onClick={() => chess.onClick(3, 1)}>
                         <span>
                           <img src={vacio} id="y3x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y3x0" onClick={() => chess.onClick(3, 0)}>
+                      <td className= "side_light" id="celda_y3x0" onClick={() => chess.onClick(3, 0)}>
                         <span className="nomenclatura_numero">7</span>
                         <span>
                           <img src={vacio} id="y3x0" alt="" />
@@ -1177,7 +1177,7 @@ export function Game() {
                           <img src={vacio} id="y2x8" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x7" onClick={() => chess.onClick(2, 7)}>
+                      <td className= "side_light" id="celda_y2x7" onClick={() => chess.onClick(2, 7)}>
                         <span >
                           <img src={vacio} id="y2x7" alt="" />
                         </span>
@@ -1187,7 +1187,7 @@ export function Game() {
                           <img src={vacio} id="y2x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x5" onClick={() => chess.onClick(2, 5)}>
+                      <td className= "side_light" id="celda_y2x5" onClick={() => chess.onClick(2, 5)}>
                         <span >
                           <img src={vacio} id="y2x5" alt="" />
                         </span>
@@ -1197,7 +1197,7 @@ export function Game() {
                           <img src={vacio} id="y2x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x3" onClick={() => chess.onClick(2, 3)}>
+                      <td className= "side_light" id="celda_y2x3" onClick={() => chess.onClick(2, 3)}>
                         <span >
                           <img src={vacio} id="y2x3" alt="" />
                         </span>
@@ -1207,7 +1207,7 @@ export function Game() {
                           <img src={vacio} id="y2x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y2x1" onClick={() => chess.onClick(2, 1)}>
+                      <td className= "side_light" id="celda_y2x1" onClick={() => chess.onClick(2, 1)}>
                         <span >
                           <img src={vacio} id="y2x1" alt="" />
                         </span>
@@ -1226,7 +1226,7 @@ export function Game() {
                           className="block_marker"
                         ></button>
                       </td>
-                      <td id="celda_y1x8" onClick={() => chess.onClick(1, 8)}>
+                      <td className= "side_light" id="celda_y1x8" onClick={() => chess.onClick(1, 8)}>
                         <span >
                           <img src={vacio} id="y1x8" alt="" />
                         </span>
@@ -1236,7 +1236,7 @@ export function Game() {
                           <img src={vacio} id="y1x7" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x6" onClick={() => chess.onClick(1, 6)}>
+                      <td className= "side_light" id="celda_y1x6" onClick={() => chess.onClick(1, 6)}>
                         <span >
                           <img src={vacio} id="y1x6" alt="" />
                         </span>
@@ -1246,7 +1246,7 @@ export function Game() {
                           <img src={vacio} id="y1x5" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x4" onClick={() => chess.onClick(1, 4)}>
+                      <td className= "side_light" id="celda_y1x4" onClick={() => chess.onClick(1, 4)}>
                         <span >
                           <img src={vacio} id="y1x4" alt="" />
                         </span>
@@ -1256,7 +1256,7 @@ export function Game() {
                           <img src={vacio} id="y1x3" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x2" onClick={() => chess.onClick(1, 2)}>
+                      <td className= "side_light" id="celda_y1x2" onClick={() => chess.onClick(1, 2)}>
                         <span >
                           <img src={vacio} id="y1x2" alt="" />
                         </span>
@@ -1266,7 +1266,7 @@ export function Game() {
                           <img src={vacio} id="y1x1" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y1x0" onClick={() => chess.onClick(1, 0)}>
+                      <td className= "side_light" id="celda_y1x0" onClick={() => chess.onClick(1, 0)}>
                         <span className="nomenclatura_numero">9</span>
                         <span >
                           <img src={vacio} id="y1x0" alt="" />
@@ -1285,7 +1285,7 @@ export function Game() {
                           <img src={vacio} id="y0x8" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x7" onClick={() => chess.onClick(0, 7)}>
+                      <td className= "side_light" id="celda_y0x7" onClick={() => chess.onClick(0, 7)}>
                         <span >
                           <img src={vacio} id="y0x7" alt="" />
                         </span>
@@ -1295,7 +1295,7 @@ export function Game() {
                           <img src={vacio} id="y0x6" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x5" onClick={() => chess.onClick(0, 5)}>
+                      <td className= "side_light" id="celda_y0x5" onClick={() => chess.onClick(0, 5)}>
                         <span >
                           <img src={vacio} id="y0x5" alt="" />
                         </span>
@@ -1305,7 +1305,7 @@ export function Game() {
                           <img src={vacio} id="y0x4" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x3" onClick={() => chess.onClick(0, 3)}>
+                      <td className= "side_light" id="celda_y0x3" onClick={() => chess.onClick(0, 3)}>
                         <span >
                           <img src={vacio} id="y0x3" alt="" />
                         </span>
@@ -1315,7 +1315,7 @@ export function Game() {
                           <img src={vacio} id="y0x2" alt="" />
                         </span>
                       </td>
-                      <td id="celda_y0x1" onClick={() => chess.onClick(0, 1)}>
+                      <td className= "side_light" id="celda_y0x1" onClick={() => chess.onClick(0, 1)}>
                         <span >
                           <img src={vacio} id="y0x1" alt="" />
                         </span>

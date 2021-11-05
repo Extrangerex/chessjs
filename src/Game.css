@@ -108,12 +108,12 @@
     -moz-user-select: none;
     -ms-user-select: none;
 }
-
+/*
 .tablero tr:nth-child(odd) td:nth-child(odd),
 .tablero tr:nth-child(even) td:nth-child(even) {
     background: #B8E37B;
 }
-
+*/
 .tablero .blancas,
 .tablero .negras {
     display: inline-block;
@@ -155,8 +155,17 @@
     position:absolute;left:2px;bottom:1.2vw;font-size:.8vw
 }
 
-.tablero .middle {
-    background-color:#90C485;
+.tablero .middle_dark {
+    background-color:#4a812985 !important;
+}
+.tablero .side_light {
+    background: #B8E37B;
+}
+
+
+
+.tablero .middle_light {
+   /* background-color:red;*/
 }
 
 .tablero .marker{
