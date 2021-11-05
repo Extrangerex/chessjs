@@ -976,7 +976,9 @@ function checkPossiblePlays() {
   //drawTile(curX, curY, HIGHLIGHT_COLOR);
   var coordenada = "celda_y" + curY + "x" + curX;
   var celda = document.getElementById(coordenada);
-  celda.style.backgroundColor = HIGHLIGHT_COLOR;
+  //celda.style.backgroundColor = HIGHLIGHT_COLOR;
+  celda.style.setProperty('background-color', HIGHLIGHT_COLOR, 'important');
+  
 
   board.resetValidMoves();
 
@@ -4652,11 +4654,14 @@ async function leer_posicionreyblanco() {
 function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
   var coordenadanew = "celda_y" + movnewY + "x" + movnewX;
   var celdanew = document.getElementById(coordenadanew);
-  celdanew.style.backgroundColor = HIGHLIGHT_COLOR;
+  //celdanew.style.backgroundColor = HIGHLIGHT_COLOR;
+  celdanew.style.setProperty('background-color', HIGHLIGHT_COLOR, 'important');
 
   var coordenadaold = "celda_y" + movoldY + "x" + movoldX;
   var celdaold = document.getElementById(coordenadaold);
-  celdaold.style.backgroundColor = HIGHLIGHT_COLOR;
+  //celdaold.style.backgroundColor = HIGHLIGHT_COLOR;
+  celdaold.style.setProperty('background-color', HIGHLIGHT_COLOR, 'important');
+
 
   /*drawTile(movnewX, movnewY, HIGHLIGHT_COLOR);*/
   /*drawTile(movoldX, movoldY, HIGHLIGHT_COLOR);*/
