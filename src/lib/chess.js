@@ -33,21 +33,13 @@ import torrebco from "../assets/svg/torrebco.svg";
 import fakeking from "../assets/svg/rey.svg";
 import fakekingbco from "../assets/svg/reybco.svg";
 import vacio from "../assets/svg/vacio.svg";
-
-
-//import { ReactSwal } from "../utils/SwalUtils";
 import Swal from "sweetalert2";
 
 export const event = new EventEmitter();
 
 const BOARD_WIDTH = GameConst.boardWidth;
 const BOARD_HEIGHT = GameConst.boardHeight;
-/*
-const TILE_SIZE = GameConst.tileSize;
-const WHITE_TILE_COLOR = GameConst.colors.whiteTileColor;
-const BLACK_TILE_COLOR = GameConst.colors.blackTileColor;
-const MIDDEL_TILE_COLOR = GameConst.colors.middleTileColor;
-*/
+
 const HIGHLIGHT_COLOR = GameConst.colors.highLightTileColor;
 const WHITE = GameConst.white;
 const BLACK = GameConst.black;
@@ -86,25 +78,21 @@ const piecesCharacters = {
   11: "Le",
   12: "FK",
 };
-/*
-let chessCanvas;
-let chessCtx;
-*/
+
 let whiteCasualitiesText;
 let blackCasualitiesText;
 
 let board;
 let currentTeam;
 let currentTeamJUSTCHECK;
+let currentTeamCHECKBLOCKMATE;
+
 
 let curX;
 let curY;
 
 let whiteCasualities;
 let blackCasualities;
-
-//let contadorleonnegro;
-//let contadorleonblanco;
 
 let contadorreyblanco;
 let contadorreynegro;
@@ -114,6 +102,8 @@ let contadortorre2blanco;
 let contadortorre2negro;
 
 let casillasenpeligro = [];
+let bloquearjaquemate = [];
+
 
 let jaquereyblanco;
 let jaquereynegro;
@@ -155,10 +145,7 @@ whiteCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 blackCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 export function onLoad(_lobbyItemKey) {
-  //chessCanvas = document.getElementById("chessCanvas");
-  //chessCtx = chessCanvas.getContext("2d");
-  //chessCanvas.addEventListener("click", onClick);
-
+  
   lobbyItemKey = _lobbyItemKey;
 
   startGame(lobbyItemKey);
@@ -670,8 +657,6 @@ export async function onClick(Y, X) {
     return;
   }
 
-
-
   if (serverGameData?.status === "white wins") {
     Swal.fire({
       title: "Opps..",
@@ -718,11 +703,6 @@ export async function onClick(Y, X) {
     return;
   }
 
-  //let chessCanvasX = chessCanvas.getBoundingClientRect().left;
-  //let chessCanvasY = chessCanvas.getBoundingClientRect().top;
-
-  //let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
-  //let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
   if (serverGameData?.numero_turno % 18 === 1) {
     if (
       serverGameData?.lastPiecejoue?.X === X &&
@@ -820,7 +800,7 @@ export async function onClick(Y, X) {
       const checkWX = combo_posicionreyblanco[0];
       const checkWY = combo_posicionreyblanco[1];
 
-     
+
       //si hay jaque regresamos la jugada el false de la funcion de abajo es para que no cheque checkmate
       if (checkTileUnderAttack(checkWX, checkWY, BLACK, false) === true &&
         currentTeam === WHITE) {
@@ -862,7 +842,7 @@ export async function onClick(Y, X) {
       const checkBX = combo_posicionreynegro[0];
       const checkBY = combo_posicionreynegro[1];
 
-      
+
       //si hay jaque regresamos la jugada el false de la funcion de abajo es para que no cheque checkmate
       if (
         checkTileUnderAttack(checkBX, checkBY, WHITE, false) === true &&
@@ -2846,35 +2826,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     "-" +
     ejeY[y];
 }
-/*
-function ganoleon() {
-  for (let j = 0; j < BOARD_WIDTH; j++) {
-    let pieza = board.tiles[9][j].pieceType;
-    if (pieza === LEON) {
-      let leonequipo = board.tiles[9][j].team;
-      if (leonequipo === BLACK) {
-        contadorleonnegro = contadorleonnegro + 1;
-      }
-      if (contadorleonnegro === 3) {
-        startGame();
-      }
-    }
-  }
 
-  for (let j = 0; j < BOARD_WIDTH; j++) {
-    let pieza = board.tiles[0][j].pieceType;
-    if (pieza === LEON) {
-      let leonequipo = board.tiles[9][j].team;
-      if (leonequipo === WHITE) {
-        contadorleonblanco = contadorleonblanco + 1;
-      }
-      if (contadorleonblanco === 3) {
-        startGame();
-      }
-    }
-  }
-}
-*/
 export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
   if (serverGameData == null) return;
   if (serverGameData?.player2 == null) return;
@@ -2982,13 +2934,7 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
 }
 
 async function repaintBoard() {
-  /**
-   * dispatch update board
-   */
-
-  /*await getGameDbRef().update({ board }).catch(console.error);*/
-
-  drawBoard();
+   drawBoard();
   checkPossiblePlays();
   drawPieces();
 }
@@ -3002,116 +2948,22 @@ function drawBoard() {
       celda.style.backgroundColor = '';
     }
   }
-
-  /*
-    chessCtx.fillStyle = WHITE_TILE_COLOR;
-    chessCtx.fillRect(0, 0, BOARD_WIDTH * TILE_SIZE, BOARD_HEIGHT * TILE_SIZE);
-    var numero = 10;
-    var letra = 0;
-    for (let i = 0; i < BOARD_HEIGHT; i++) {
-  
-      if (i > 2 && i < 7) {
-        for (let j = 0; j < BOARD_WIDTH; j++) {
-          if ((i + j) % 2 === 1) {
-            drawTile(j, i, MIDDEL_TILE_COLOR);
-          }
-          if (j === 0) {
-            drawLetter(j, i, "black", numero, .25);
-            numero--;
-          }
-          if (i === 9) {
-            drawLetter(j, i, "black", ejeX[letra], .80);
-            letra++;
-          }
-        }
-      } else {
-        for (let j = 0; j < BOARD_WIDTH; j++) {
-          if ((i + j) % 2 === 1) {
-            drawTile(j, i, BLACK_TILE_COLOR);
-  
-          }
-          if (j === 0) {
-            drawLetter(j, i, "black", numero, .25);
-            numero--;
-          }
-          if (i === 9) {
-            drawLetter(j, i, "black", ejeX[letra], .80);
-            letra++;
-          }
-        }
-      }
-    }
-    */
 }
 
-/*
-function drawTile(x, y, fillStyle) {
-  chessCtx.fillStyle = fillStyle;
-  chessCtx.fillRect(TILE_SIZE * x, TILE_SIZE * y, TILE_SIZE, TILE_SIZE);
-}
-*/
+
 function drawCircle(x, y, fillStyle) {
-  /*
-  chessCtx.fillStyle = fillStyle;
-  chessCtx.beginPath();
-  chessCtx.arc(
-    TILE_SIZE * (x + 0.5),
-    TILE_SIZE * (y + 0.5),
-    TILE_SIZE / 5,
-    0,
-    2 * Math.PI
-  );
-  chessCtx.fill();
-  */
   var coordenada = "celda_y" + y + "x" + x;
   var celda = document.getElementById(coordenada);
   //celda.style.backgroundColor = "#90C485";
   celda.style.setProperty('background-color', '#90C485', 'important');
 }
 
-/*
-function drawLetter(x, y, color, letter, pos) {
-  chessCtx.fillStyle = color;
-  chessCtx.font = '10px Arial';
-  var xx = x + .05;
-  var yy = y + pos;
-  chessCtx.fillText(letter, TILE_SIZE * (xx), TILE_SIZE * (yy));
-}
-*/
 function drawCorners(x, y, fillStyle) {
   var coordenada = "celda_y" + y + "x" + x;
   var celda = document.getElementById(coordenada);
   //celda.style.backgroundColor = 'red';
   celda.style.setProperty('background-color', 'red', 'important');
-
-
-  /*
-  chessCtx.fillStyle = fillStyle;
-
-  chessCtx.beginPath();
-  chessCtx.moveTo(TILE_SIZE * x, TILE_SIZE * y);
-  chessCtx.lineTo(TILE_SIZE * x + 15, TILE_SIZE * y);
-  chessCtx.lineTo(TILE_SIZE * x, TILE_SIZE * y + 15);
-  chessCtx.fill();
-
-  chessCtx.beginPath();
-  chessCtx.moveTo(TILE_SIZE * (x + 1), TILE_SIZE * y);
-  chessCtx.lineTo(TILE_SIZE * (x + 1) - 15, TILE_SIZE * y);
-  chessCtx.lineTo(TILE_SIZE * (x + 1), TILE_SIZE * y + 15);
-  chessCtx.fill();
-
-  chessCtx.beginPath();
-  chessCtx.moveTo(TILE_SIZE * x, TILE_SIZE * (y + 1));
-  chessCtx.lineTo(TILE_SIZE * x + 15, TILE_SIZE * (y + 1));
-  chessCtx.lineTo(TILE_SIZE * x, TILE_SIZE * (y + 1) - 15);
-  chessCtx.fill();
-
-  chessCtx.beginPath();
-  chessCtx.moveTo(TILE_SIZE * (x + 1), TILE_SIZE * (y + 1));
-  chessCtx.lineTo(TILE_SIZE * (x + 1) - 15, TILE_SIZE * (y + 1));
-  chessCtx.lineTo(TILE_SIZE * (x + 1), TILE_SIZE * (y + 1) - 15);
-  chessCtx.fill();
-  */
+ 
 }
 
 function drawPieces() {
@@ -3160,21 +3012,27 @@ function drawPieces() {
 
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[0][j].pieceType;
-    if (pieza === PERRO) {
+    let equipo = board.tiles[0][j].team;
+
+    if (pieza === PERRO && equipo === WHITE) {
       board.tiles[0][j].pieceType = ROOK;
     }
   }
 
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[9][j].pieceType;
-    if (pieza === PERRO) {
+    let equipo = board.tiles[9][j].team;
+
+    if (pieza === PERRO && equipo === BLACK) {
       board.tiles[9][j].pieceType = ROOK;
     }
   }
 
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[0][j].pieceType;
-    if (pieza === LEON) {
+    let equipo = board.tiles[0][j].team;
+
+    if (pieza === LEON && equipo === WHITE) {
       board.tiles[0][j].pieceType = FAKEKING;
       if (currentTeam === WHITE) {
         marcaleonblanco(true);
@@ -3188,7 +3046,9 @@ function drawPieces() {
 
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[9][j].pieceType;
-    if (pieza === LEON) {
+    let equipo = board.tiles[9][j].team;
+
+    if (pieza === LEON && equipo === BLACK) {
       board.tiles[9][j].pieceType = FAKEKING;
       if (currentTeam === WHITE) {
         marcaleonnegro(true);
@@ -3230,17 +3090,7 @@ function drawPieces() {
         elemento.src = vacio;
         continue;
       }
-      /*
-            if (board.tiles[i][j].team === WHITE) {
-              chessCtx.fillStyle = "#FF0000";
-            } else {
-              chessCtx.fillStyle = "#0000FF";
-            }
       
-            chessCtx.font = "38px Arial";
-      
-            
-      */
       if (pieceType === 6) {
         if (equipo === WHITE) {
           elemento.src = ardillabco;
@@ -3428,8 +3278,12 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //checamos jaque o jaquemate
         const lastWX = serverGameData?.lastPiecejoue?.X;
         const lastWY = serverGameData?.lastPiecejoue?.Y;
+        //sino se puede mover el rey
+        //la pieza que hace jaque nadie se la puede comer
+        //y no hay pieza que pueda tapar el jaque es MATE
         if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttack(lastWX, lastWY, WHITE, true) === false
+          checkTileUnderAttack(lastWX, lastWY, WHITE, true) === false &&
+          checkblockmate(x, y, WHITE) === false
         ) {
 
           getGameDbRef()
@@ -3459,9 +3313,13 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
 
         const lastBX = serverGameData?.lastPiecejoue?.X;
         const lastBY = serverGameData?.lastPiecejoue?.Y;
-
+        //sino se puede mover el rey
+        //la pieza que hace jaque nadie se la puede comer
+        //y no hay pieza que pueda tapar el jaque es MATE
         if (moverelreynegro(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttack(lastBX, lastBY, BLACK, true) === false) {
+          checkTileUnderAttack(lastBX, lastBY, BLACK, true) === false &&
+          checkblockmate(x, y, BLACK) === false
+        ) {
 
           getGameDbRef()
             .update({
@@ -4719,4 +4577,608 @@ function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
     drawLetter(movnewX, movnewY, "black", ejeX[movnewX], .80);
   }
   */
+}
+
+function checkblockmate(xmirey, ymirey, miequipo) {
+  //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
+  for (let xx = 0; xx <= 8; xx++) {
+    for (let yy = 0; yy <= 9; yy++) {
+      //vemos que la pieza sea mia
+      if (board.tiles[yy][xx].team === miequipo) {
+        currentTeamCHECKBLOCKMATE = miequipo;
+
+        //casilla
+        let tile = board.tiles[yy][xx];
+
+        if (tile.pieceType === PAWN)
+          checkPossiblePlaysPawnCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === KNIGHT)
+          checkPossiblePlaysKnightCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === BISHOP)
+          checkPossiblePlaysBishopCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === ROOK)
+          checkPossiblePlaysRookCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === QUEEN)
+          checkPossiblePlaysQueenCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === ARDILLA)
+          checkPossiblePlaysArdillaCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === CONEJO)
+          checkPossiblePlaysConejoCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === PERRO)
+          checkPossiblePlaysPerroCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === PANTERA)
+          checkPossiblePlaysPanteraCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === ELEFANTE)
+          checkPossiblePlaysElefanteCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+        else if (tile.pieceType === LEON)
+          checkPossiblePlaysLeonCHECKBLOCKMATE(xmirey, ymirey, xx, yy);
+      }
+    }
+  }
+  if (bloquearjaquemate.includes("si")) {
+    //vaciamos el arreglo
+    bloquearjaquemate = [];
+    return true;
+  } else {
+    bloquearjaquemate = [];
+    return false;
+  }
+}
+function checkPossiblePlaysPawnCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  let direction;
+  if (currentTeamCHECKBLOCKMATE === WHITE) direction = -1;
+  else direction = 1;
+  if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
+
+  // Advance one tile
+  checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + direction, PAWN); //xrey,yrey,xold,yold,xnew,ynew,pieza
+}
+
+function checkPossiblePlaysKnightCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  // Far left moves
+  if (curX - 2 >= 0) {
+    // Upper move
+    if (curY - 1 >= 0) checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 2, curY - 1, KNIGHT);
+
+    // Lower move
+    if (curY + 1 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 2, curY + 1, KNIGHT);
+  }
+
+  // Near left moves
+  if (curX - 1 >= 0) {
+    // Upper move
+    if (curY - 2 >= 0) checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY - 2, KNIGHT);
+
+    // Lower move
+    if (curY + 2 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY + 2, KNIGHT);
+  }
+
+  // Near right moves
+  if (curX + 1 <= BOARD_WIDTH - 1) {
+    // Upper move
+    if (curY - 2 >= 0) checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY - 2, KNIGHT);
+
+    // Lower move
+    if (curY + 2 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY + 2, KNIGHT);
+  }
+
+  // Far right moves
+  if (curX + 2 <= BOARD_WIDTH - 1) {
+    // Upper move
+    if (curY - 1 >= 0) checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 2, curY - 1, KNIGHT);
+
+    // Lower move
+    if (curY + 1 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 2, curY + 1, KNIGHT);
+  }
+}
+
+function checkPossiblePlaysBishopCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  // Upper-right move
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, BISHOP)) break;
+  }
+
+  // Lower-right move
+  for (
+    let i = 1;
+    curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1;
+    i++
+  ) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, BISHOP)) break;
+  }
+
+  // Lower-left move
+  for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, BISHOP)) break;
+  }
+
+  // Upper-left move
+  for (let i = 1; curX - i >= 0 && curY - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, BISHOP)) break;
+  }
+}
+
+function checkPossiblePlaysRookCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  // Upper move
+  for (let i = 1; curY - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, ROOK)) break;
+  }
+
+  // Right move
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, ROOK)) break;
+  }
+
+  // Lower move
+  for (let i = 1; curY + i <= BOARD_HEIGHT - 1; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, ROOK)) break;
+  }
+
+  // Left move
+  for (let i = 1; curX - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, ROOK)) break;
+  }
+}
+
+function checkPossiblePlaysQueenCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  // Upper-right move
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, QUEEN)) break;
+  }
+
+  // Lower-right move
+  for (
+    let i = 1;
+    curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1;
+    i++
+  ) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, QUEEN)) break;
+  }
+
+  // Lower-left move
+  for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, QUEEN)) break;
+  }
+
+  // Upper-left move
+  for (let i = 1; curX - i >= 0 && curY - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, QUEEN)) break;
+  }
+
+  // Upper move
+  for (let i = 1; curY - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, QUEEN)) break;
+  }
+
+  // Right move
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, QUEEN)) break;
+  }
+
+  // Lower move
+  for (let i = 1; curY + i <= BOARD_HEIGHT - 1; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, QUEEN)) break;
+  }
+
+  // Left move
+  for (let i = 1; curX - i >= 0; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, QUEEN)) break;
+
+  }
+}
+
+function checkPossiblePlaysArdillaCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  let direction;
+  if (currentTeamCHECKBLOCKMATE === WHITE) direction = -1;
+  else direction = 1;
+  if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
+
+  // Advance one tile
+  checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + direction, ARDILLA);
+
+  // Advance two tile
+  //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
+  if (
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1
+  ) {
+    if (board.tiles[curY + 1 * direction][curX].team !== currentTeamCHECKBLOCKMATE) {
+      if (
+        board.tiles[curY + 1 * direction][curX].pieceType === 0 ||
+        board.tiles[curY + 1 * direction][curX].pieceType === CONEJO ||
+        board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
+      ) {
+        checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + 2 * direction, ARDILLA);
+      }
+    }
+  }
+
+  // Advance three tile
+  //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
+  if (
+    curY + 1 * direction >= 0 &&
+    curY + 1 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 2 * direction >= 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    curY + 3 * direction >= 0 &&
+    curY + 3 * direction <= BOARD_HEIGHT - 1
+  ) {
+    if (
+      board.tiles[curY + 1 * direction][curX].team !== currentTeamCHECKBLOCKMATE &&
+      board.tiles[curY + 2 * direction][curX].team !== currentTeamCHECKBLOCKMATE
+    ) {
+      if (
+        (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
+          board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
+          board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
+          board.tiles[curY + 2 * direction][curX].pieceType === CONEJO) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
+          board.tiles[curY + 2 * direction][curX].pieceType === CONEJO) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
+          board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
+          board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
+          board.tiles[curY + 2 * direction][curX].pieceType === PAWN) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === CONEJO &&
+          board.tiles[curY + 2 * direction][curX].pieceType === EMPTY) ||
+        (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
+          board.tiles[curY + 2 * direction][curX].pieceType === CONEJO)
+      ) {
+        checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + 3 * direction, ARDILLA);
+      }
+    }
+  }
+  // Advance Horizontal tile
+  if (curX > 0) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY, ARDILLA);
+  }
+  if (curX < 8) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY, ARDILLA);
+  }
+
+  // Check diagonal right move
+  if (curX + 1 <= BOARD_WIDTH - 1)
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY + direction, ARDILLA);
+  // Check diagonal left move
+  if (curX - 1 >= 0)
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY + direction, ARDILLA);
+}
+
+function checkPossiblePlaysConejoCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  let direction;
+  if (currentTeamCHECKBLOCKMATE === WHITE) direction = -1;
+  else direction = 1;
+  if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
+
+  // Advance one tile
+  checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + direction, CONEJO);
+
+  // Advance two tile
+  //si es un PAWN si se puede saltar Y COMER SI NO SOLO AVANZA
+  if (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY) {
+    //vemos que no se salga del tablero
+    if (curY + 2 * direction < BOARD_HEIGHT && curY + 2 * direction >= 0) {
+      checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + 2 * direction, CONEJO);
+    }
+  } else {
+    if (
+      board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
+      board.tiles[curY + 1 * direction][curX].team !== currentTeamCHECKBLOCKMATE
+    ) {
+      checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + 2 * direction, CONEJO);
+    }
+  }
+
+  // Check diagonal right move
+  if (curX + 1 <= BOARD_WIDTH - 1)
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY + direction, CONEJO);
+  // Check diagonal left move
+  if (curX - 1 >= 0)
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY + direction, CONEJO);
+
+
+}
+
+function checkPossiblePlaysPerroCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  let direction;
+  if (currentTeamCHECKBLOCKMATE === WHITE) direction = -1;
+  else direction = 1;
+  if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
+
+  // Advance one tile
+  checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + direction, PERRO);
+
+  if (
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction > 0 &&
+    curY + 2 * direction <= BOARD_HEIGHT - 1 &&
+    board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
+  ) {
+    // Advance two tile
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + 2 * direction, PERRO);
+
+  }
+
+  // Advance Horizontal tile
+  if (curX > 0) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY, PERRO);
+  }
+  if (curX > 1 && board.tiles[curY][curX - 1].pieceType === EMPTY) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 2, curY, PERRO);
+  }
+  if (curX < 8) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY, PERRO);
+  }
+  if (curX < 7 && board.tiles[curY][curX + 1].pieceType === EMPTY) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 2, curY, PERRO);
+  }
+
+  // Check diagonal right movimiento
+  if (curX + 1 <= BOARD_WIDTH - 1) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY + direction, PERRO);
+  }
+  if (
+    curX + 2 <= BOARD_WIDTH - 1 &&
+    board.tiles[curY + direction][curX + 1].pieceType === EMPTY
+  ) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 2, curY + 2 * direction, PERRO);
+  }
+
+  // Check diagonal left movimiento
+  if (curX - 1 >= 0) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY + direction, PERRO);
+  }
+  if (
+    curX - 2 >= 0 &&
+    board.tiles[curY + direction][curX - 1].pieceType === EMPTY
+  ) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 2, curY + 2 * direction, PERRO);
+  }
+
+  //movimiento hacia atras 1 casilla
+  // Lower move
+  if (curY - 1 * direction >= 0 && curY - 1 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - 1 * direction, PERRO);
+  }
+  //movimiento hacia atras 2 casillas
+  if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
+    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - 2 * direction, PERRO);
+  }
+}
+
+function checkPossiblePlaysPanteraCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  // Far left moves
+  if (curX - 3 >= 0) {
+    // Upper move
+    if (curY - 1 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 3, curY - 1, PANTERA);
+    // Lower move
+    if (curY + 1 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 3, curY + 1, PANTERA);
+  }
+
+  // Far left moves
+  if (curX - 2 >= 0) {
+    // Upper move
+    if (curY - 1 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 2, curY - 1, PANTERA);
+    // Lower move
+    if (curY + 1 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 2, curY + 1, PANTERA);
+  }
+
+  // Near left moves
+  if (curX - 1 >= 0) {
+    // Upper move
+    if (curY - 2 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY - 2, PANTERA);
+    if (curY - 3 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY - 3, PANTERA);
+    // Lower move
+    if (curY + 2 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY + 2, PANTERA);
+    if (curY + 3 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - 1, curY + 3, PANTERA);
+  }
+
+  // Near right moves
+  if (curX + 1 <= BOARD_WIDTH - 1) {
+    // Upper move
+    if (curY - 2 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY - 2, PANTERA);
+    if (curY - 3 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY - 3, PANTERA);
+    // Lower move
+    if (curY + 2 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY + 2, PANTERA);
+    if (curY + 3 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 1, curY + 3, PANTERA);
+  }
+
+  // Far right moves
+  if (curX + 2 <= BOARD_WIDTH - 1) {
+    // Upper move
+    if (curY - 1 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 2, curY - 1, PANTERA);
+    // Lower move
+    if (curY + 1 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 2, curY + 1, PANTERA);
+  }
+
+  if (curX + 3 <= BOARD_WIDTH - 1) {
+    // Upper move
+    if (curY - 1 >= 0)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 3, curY - 1, PANTERA);
+    // Lower move
+    if (curY + 1 <= BOARD_HEIGHT - 1)
+      checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + 3, curY + 1, PANTERA);
+  }
+}
+
+function checkPossiblePlaysElefanteCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  // Diagonal abajo a la derecha
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0 && i <= 2; i++) {
+    if (curX + i <= BOARD_WIDTH - 1 && curY - i >= 0) {
+      if (board.tiles[curY - 1][curX + 1].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, ELEFANTE);
+      }
+    }
+  }
+
+  // Diagonal arriba derecha
+  for (
+    let i = 1;
+    curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
+    if (curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1) {
+      if (board.tiles[curY + 1][curX + 1].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, ELEFANTE);
+      }
+    }
+  }
+
+  // derecha
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && i <= 2; i++) {
+    if (curX + i <= BOARD_WIDTH - 1) {
+      if (board.tiles[curY][curX + 1].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, ELEFANTE);
+      }
+    }
+  }
+
+  // diagonal arriba izquierda
+  for (
+    let i = 1;
+    curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
+    i++
+  ) {
+    if (curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1) {
+      if (board.tiles[curY + 1][curX - 1].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, ELEFANTE);
+      }
+    }
+  }
+
+  // diagonal abajo izquierda
+  for (let i = 1; curX - i >= 0 && curY - i >= 0 && i <= 2; i++) {
+    if (curX - i >= 0 && curY - i >= 0) {
+      if (board.tiles[curY - 1][curX - 1].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, ELEFANTE);
+      }
+    }
+  }
+
+  // izquierda
+  for (let i = 1; curX - i >= 0 && i <= 2; i++) {
+    if (curX - i >= 0) {
+      if (board.tiles[curY][curX - 1].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, ELEFANTE);
+      }
+    }
+  }
+
+  // abajo
+  for (let i = 1; curY - i >= 0 && i <= 2; i++) {
+    if (curY - i >= 0) {
+      if (board.tiles[curY - 1][curX].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, ELEFANTE);
+      }
+    }
+  }
+
+  // Arriba
+  for (let i = 1; curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+    if (curY + i <= BOARD_HEIGHT - 1) {
+      if (board.tiles[curY + 1][curX].team !== currentTeamCHECKBLOCKMATE) {
+        checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, ELEFANTE);
+      }
+    }
+  }
+}
+
+function checkPossiblePlaysLeonCHECKBLOCKMATE(xrey, yrey, curX, curY) {
+  // Upper-right move
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0 && i <= 2; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, LEON)) break;
+  }
+
+  // Lower-right move
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, LEON)) break;
+  }
+
+  // Lower-left move
+  for (let i = 1;curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, LEON)) break;
+  }
+
+  // Upper-left move
+  for (let i = 1; curX - i >= 0 && curY - i >= 0 && i <= 2; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, LEON)) break;
+  }
+
+  // Upper move
+  for (let i = 1; curY - i >= 0 && i <= 3; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, LEON)) break;
+  }
+
+  // Right move
+  for (let i = 1; curX + i <= BOARD_WIDTH - 1 && i <= 3; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, LEON)) break;
+  }
+
+  // Lower move
+  for (let i = 1; curY + i <= BOARD_HEIGHT - 1 && i <= 3; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, LEON)) break;
+  }
+
+  // Left move
+  for (let i = 1; curX - i >= 0 && i <= 3; i++) {
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, LEON)) break;
+  }
+}
+
+function checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, xold, yold, xnew, ynew, pieza) {
+  //si la casilla esta ocupada no podemos hace nada  
+  if (board.tiles[ynew][xnew].team !== EMPTY) return false;
+  //liberamos la casilla vieja
+  board.tiles[yold][xold].team = EMPTY;
+  board.tiles[yold][xold].pieceType = EMPTY;
+  //hacemos el movimiento nuevo  
+  board.tiles[ynew][xnew].team = currentTeamCHECKBLOCKMATE;
+  board.tiles[ynew][xnew].pieceType = pieza;
+  //checamos si todavia hay jaque
+  if (checkTileUnderAttack(xrey, yrey, getOppositeTeam(currentTeamCHECKBLOCKMATE), false) === true) {
+    //regresamos el tablero como estaba
+    board.tiles[ynew][xnew].team = EMPTY;
+    board.tiles[ynew][xnew].pieceType = EMPTY;
+    board.tiles[yold][xold].team = currentTeamCHECKBLOCKMATE;
+    board.tiles[yold][xold].pieceType = pieza;
+
+    bloquearjaquemate.push("no");
+    return false; //no hay salvacion
+  } else {
+    //regresamos el tablero como estaba
+    board.tiles[ynew][xnew].team = EMPTY;
+    board.tiles[ynew][xnew].pieceType = EMPTY;
+    board.tiles[yold][xold].team = currentTeamCHECKBLOCKMATE;
+    board.tiles[yold][xold].pieceType = pieza;
+
+    bloquearjaquemate.push("si");
+    return true; //si hay salvacion
+  }
+}
+
+function checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza) {
+  return !checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza);
 }
