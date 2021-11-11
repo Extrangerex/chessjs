@@ -180,6 +180,8 @@ setInterval(() => {
  */
 export async function setTimerFromCreatedAt() {
   if (serverGameData?.status === "playing") {
+
+    /*
     if (parseInt((getMillisecondsFromCreatedAt() / (1000 * 60)) % 60) === 0) {
       if (serverGameData?.status !== "tied") {
         await getGameDbRef()
@@ -189,7 +191,7 @@ export async function setTimerFromCreatedAt() {
           .catch(console.error);
       }
     }
-
+    */
     if (getMillisecondsFromPlayer1() < 0) {
       if (serverGameData?.status !== "timeover black wins") {
         await getGameDbRef()
@@ -242,10 +244,17 @@ export function getMinutesFromCreatedAt() {
   const date1 = new Date(serverGameData?.createdAt);
   const date2 = Date.now();
   const diffTime = Math.abs(date2 - date1);
-  let seconds = (diffTime / 1000) % 60;
+  /*let seconds = (diffTime / 1000) % 60;*/
   let minutes = (diffTime / (1000 * 60)) % 60;
+
+  if(minutes < 10){
+    minutes = "0"+parseInt(minutes);
+  }else{
+    minutes = parseInt(minutes);
+  }
   let hours = (diffTime / (1000 * 60 * 60)) % 60;
-  return `${parseInt(hours)}:${parseInt(minutes)}:${parseInt(seconds)}`;
+  //return `${parseInt(hours)}:${parseInt(minutes)}:${parseInt(seconds)}`;
+  return `${parseInt(hours)}:${minutes}`;
 }
 //timer general
 function getMillisecondsFromCreatedAt() {
