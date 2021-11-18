@@ -1205,9 +1205,8 @@ function checkPossiblePlaysPerro(curX, curY) {
 
   // Advance one tile
   checkPossibleMove(curX, curY + direction);
-  if (board.tiles[curY + direction][curX].pieceType !== ELEFANTE) {
-    checkPossibleCapture(curX, curY + direction);
-  }
+  checkPossibleCapture(curX, curY + direction);
+  
 
   if (
     curY + 2 * direction > 0 &&
@@ -1217,9 +1216,7 @@ function checkPossiblePlaysPerro(curX, curY) {
   ) {
     // Advance two tile
     checkPossibleMove(curX, curY + 2 * direction);
-    if (board.tiles[curY + 2 * direction][curX].pieceType !== ELEFANTE) {
-      checkPossibleCapture(curX, curY + 2 * direction);
-    }
+    checkPossibleCapture(curX, curY + 2 * direction);
   }
 
   // Advance Horizontal tile
@@ -1259,34 +1256,26 @@ function checkPossiblePlaysPerro(curX, curY) {
   }
 
   // Check diagonal left capture
-  if (
-    curX - 1 >= 0 &&
-    board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE
-  ) {
+  if (curX - 1 >= 0) {
     checkPossibleCapture(curX - 1, curY + direction);
   }
   if (
     curX - 2 >= 0 &&
     curY + 2 * direction > 0 &&
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    board.tiles[curY + 2 * direction][curX - 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
     checkPossibleCapture(curX - 2, curY + 2 * direction);
   }
 
   // Check diagonal right capture
-  if (
-    curX + 1 <= BOARD_WIDTH - 1 &&
-    board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE
-  ) {
+  if (curX + 1 <= BOARD_WIDTH - 1) {
     checkPossibleCapture(curX + 1, curY + direction);
   }
   if (
     curX + 2 <= BOARD_WIDTH - 1 &&
     curY + 2 * direction > 0 &&
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
     checkPossibleCapture(curX + 2, curY + 2 * direction);
@@ -3021,24 +3010,7 @@ function drawPieces() {
     }
   }
 
-  for (let j = 0; j < BOARD_WIDTH; j++) {
-    let pieza = board.tiles[0][j].pieceType;
-    let equipo = board.tiles[0][j].team;
-
-    if (pieza === PERRO && equipo === WHITE) {
-      board.tiles[0][j].pieceType = ROOK;
-    }
-  }
-
-  for (let j = 0; j < BOARD_WIDTH; j++) {
-    let pieza = board.tiles[9][j].pieceType;
-    let equipo = board.tiles[9][j].team;
-
-    if (pieza === PERRO && equipo === BLACK) {
-      board.tiles[9][j].pieceType = ROOK;
-    }
-  }
-
+  
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[0][j].pieceType;
     let equipo = board.tiles[0][j].team;
@@ -3548,9 +3520,8 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
 
   // Advance one tile
   checkPossibleMoveJUSTCHECK(curX, curY + direction);
-  if (board.tiles[curY + direction][curX].pieceType !== ELEFANTE) {
-    checkPossibleCaptureJUSTCHECK(curX, curY + direction);
-  }
+  checkPossibleCaptureJUSTCHECK(curX, curY + direction);
+  
 
   if (
     curY + 2 * direction > 0 &&
@@ -3560,9 +3531,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   ) {
     // Advance two tile
     checkPossibleMoveJUSTCHECK(curX, curY + 2 * direction);
-    if (board.tiles[curY + 2 * direction][curX].pieceType !== ELEFANTE) {
-      checkPossibleCaptureJUSTCHECK(curX, curY + 2 * direction);
-    }
+    checkPossibleCaptureJUSTCHECK(curX, curY + 2 * direction);
   }
 
   // Advance Horizontal tile
@@ -3602,34 +3571,26 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   }
 
   // Check diagonal left capture
-  if (
-    curX - 1 >= 0 &&
-    board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE
-  ) {
+  if (curX - 1 >= 0) {
     checkPossibleCaptureJUSTCHECK(curX - 1, curY + direction);
   }
   if (
     curX - 2 >= 0 &&
     curY + 2 * direction > 0 &&
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    board.tiles[curY + 2 * direction][curX - 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
     checkPossibleCaptureJUSTCHECK(curX - 2, curY + 2 * direction);
   }
 
   // Check diagonal right capture
-  if (
-    curX + 1 <= BOARD_WIDTH - 1 &&
-    board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE
-  ) {
+  if (curX + 1 <= BOARD_WIDTH - 1) {
     checkPossibleCaptureJUSTCHECK(curX + 1, curY + direction);
   }
   if (
     curX + 2 <= BOARD_WIDTH - 1 &&
     curY + 2 * direction > 0 &&
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
-    board.tiles[curY + 2 * direction][curX + 2].pieceType !== ELEFANTE &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
     checkPossibleCaptureJUSTCHECK(curX + 2, curY + 2 * direction);
