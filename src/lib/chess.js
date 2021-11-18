@@ -257,11 +257,13 @@ export function getMinutesFromCreatedAt() {
   return `${parseInt(hours)}:${minutes}`;
 }
 //timer general
+/*
 function getMillisecondsFromCreatedAt() {
   const date1 = new Date(serverGameData?.createdAt);
   const date2 = Date.now();
   return Math.abs(date2 - date1);
 }
+*/
 
 function getMillisecondsFromLastPieceJoueCreatedAt() {
   const date1 = new Date(
@@ -3290,6 +3292,7 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
+        
         if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttack(lastWX, lastWY, WHITE, true) === false &&
           checkblockmate(x, y, WHITE) === false
@@ -3973,7 +3976,7 @@ function moverelreynegro(x, y) {
   //vemos si se puede movar a lugares vacios o con piezas enemigas dentro del rango de movimiento del rey
 
   //movemos al rey ala izq
-  if (x - 1 < BOARD_WIDTH - 1 && x - 1 >= 0) {
+  if (x - 1 <= BOARD_WIDTH - 1 && x - 1 >= 0) {
     if (
       board.tiles[y][x - 1].pieceType === EMPTY &&
       checkTileUnderAttack(x - 1, y, WHITE, true) === false
@@ -3983,7 +3986,7 @@ function moverelreynegro(x, y) {
     }
   }
   //movemos al rey ala der
-  if (x + 1 < BOARD_WIDTH - 1 && x + 1 >= 0) {
+  if (x + 1 <= BOARD_WIDTH - 1 && x + 1 >= 0) {
     if (
       board.tiles[y][x + 1].pieceType === EMPTY &&
       checkTileUnderAttack(x + 1, y, WHITE, true) === false
@@ -3994,7 +3997,7 @@ function moverelreynegro(x, y) {
   }
 
   //movemos al rey arriba
-  if (y - 1 < BOARD_HEIGHT - 1 && y - 1 >= 0) {
+  if (y - 1 <= BOARD_HEIGHT - 1 && y - 1 >= 0) {
     if (
       board.tiles[y - 1][x].pieceType === EMPTY &&
       checkTileUnderAttack(x, y - 1, WHITE, true) === false
@@ -4005,7 +4008,7 @@ function moverelreynegro(x, y) {
   }
 
   //movemos al rey abajo
-  if (y + 1 < BOARD_HEIGHT - 1 && y + 1 >= 0) {
+  if (y + 1 <= BOARD_HEIGHT - 1 && y + 1 >= 0) {
     if (
       board.tiles[y + 1][x].pieceType === EMPTY &&
       checkTileUnderAttack(x, y + 1, WHITE, true) === false
@@ -4017,9 +4020,9 @@ function moverelreynegro(x, y) {
 
   //movemos al rey diag izq arriba
   if (
-    x - 1 < BOARD_WIDTH - 1 &&
+    x - 1 <= BOARD_WIDTH - 1 &&
     x - 1 >= 0 &&
-    y - 1 < BOARD_HEIGHT - 1 &&
+    y - 1 <= BOARD_HEIGHT - 1 &&
     y - 1 >= 0
   ) {
     if (
@@ -4032,9 +4035,9 @@ function moverelreynegro(x, y) {
   }
   //movemos al rey ala der arriba
   if (
-    x + 1 < BOARD_WIDTH - 1 &&
+    x + 1 <= BOARD_WIDTH - 1 &&
     x + 1 >= 0 &&
-    y - 1 < BOARD_HEIGHT - 1 &&
+    y - 1 <= BOARD_HEIGHT - 1 &&
     y - 1 >= 0
   ) {
     if (
@@ -4047,9 +4050,9 @@ function moverelreynegro(x, y) {
   }
   //movemos al rey diag izq abajo
   if (
-    x - 1 < BOARD_WIDTH - 1 &&
+    x - 1 <= BOARD_WIDTH - 1 &&
     x - 1 >= 0 &&
-    y + 1 < BOARD_HEIGHT - 1 &&
+    y + 1 <= BOARD_HEIGHT - 1 &&
     y + 1 >= 0
   ) {
     if (
@@ -4063,9 +4066,9 @@ function moverelreynegro(x, y) {
 
   //movemos al rey diag der abajo
   if (
-    x + 1 < BOARD_WIDTH - 1 &&
+    x + 1 <= BOARD_WIDTH - 1 &&
     x + 1 >= 0 &&
-    y + 1 < BOARD_HEIGHT - 1 &&
+    y + 1 <= BOARD_HEIGHT - 1 &&
     y + 1 >= 0
   ) {
     if (
@@ -4086,7 +4089,7 @@ function moverelreyblanco(x, y) {
   //vemos si se puede movar a lugares vacios o con piezas enemigas dentro del rango de movimiento del rey
 
   //movemos al rey ala izq
-  if (x - 1 < BOARD_WIDTH - 1 && x - 1 >= 0) {
+  if (x - 1 <= BOARD_WIDTH - 1 && x - 1 >= 0) {
     if (
       board.tiles[y][x - 1].pieceType === EMPTY &&
       checkTileUnderAttack(x - 1, y, BLACK, true) === false
@@ -4096,7 +4099,7 @@ function moverelreyblanco(x, y) {
     }
   }
   //movemos al rey ala der
-  if (x + 1 < BOARD_WIDTH - 1 && x + 1 >= 0) {
+  if (x + 1 <= BOARD_WIDTH - 1 && x + 1 >= 0) {
     if (
       board.tiles[y][x + 1].pieceType === EMPTY &&
       checkTileUnderAttack(x + 1, y, BLACK, true) === false
@@ -4107,7 +4110,7 @@ function moverelreyblanco(x, y) {
   }
 
   //movemos al rey arriba
-  if (y - 1 < BOARD_HEIGHT - 1 && y - 1 >= 0) {
+  if (y - 1 <= BOARD_HEIGHT - 1 && y - 1 >= 0) {
     if (
       board.tiles[y - 1][x].pieceType === EMPTY &&
       checkTileUnderAttack(x, y - 1, BLACK, true) === false
@@ -4118,7 +4121,7 @@ function moverelreyblanco(x, y) {
   }
 
   //movemos al rey abajo
-  if (y + 1 < BOARD_HEIGHT - 1 && y + 1 >= 0) {
+  if (y + 1 <= BOARD_HEIGHT - 1 && y + 1 >= 0) {
     if (
       board.tiles[y + 1][x].pieceType === EMPTY &&
       checkTileUnderAttack(x, y + 1, BLACK, true) === false
@@ -4130,9 +4133,9 @@ function moverelreyblanco(x, y) {
 
   //movemos al rey diag izq arriba
   if (
-    x - 1 < BOARD_WIDTH - 1 &&
+    x - 1 <= BOARD_WIDTH - 1 &&
     x - 1 >= 0 &&
-    y - 1 < BOARD_HEIGHT - 1 &&
+    y - 1 <= BOARD_HEIGHT - 1 &&
     y - 1 >= 0
   ) {
     if (
@@ -4145,9 +4148,9 @@ function moverelreyblanco(x, y) {
   }
   //movemos al rey ala der arriba
   if (
-    x + 1 < BOARD_WIDTH - 1 &&
+    x + 1 <= BOARD_WIDTH - 1 &&
     x + 1 >= 0 &&
-    y - 1 < BOARD_HEIGHT - 1 &&
+    y - 1 <= BOARD_HEIGHT - 1 &&
     y - 1 >= 0
   ) {
     if (
@@ -4160,9 +4163,9 @@ function moverelreyblanco(x, y) {
   }
   //movemos al rey diag izq abajo
   if (
-    x - 1 < BOARD_WIDTH - 1 &&
+    x - 1 <= BOARD_WIDTH - 1 &&
     x - 1 >= 0 &&
-    y + 1 < BOARD_HEIGHT - 1 &&
+    y + 1 <= BOARD_HEIGHT - 1 &&
     y + 1 >= 0
   ) {
     if (
@@ -4176,9 +4179,9 @@ function moverelreyblanco(x, y) {
 
   //movemos al rey diag der abajo
   if (
-    x + 1 < BOARD_WIDTH - 1 &&
+    x + 1 <= BOARD_WIDTH - 1 &&
     x + 1 >= 0 &&
-    y + 1 < BOARD_HEIGHT - 1 &&
+    y + 1 <= BOARD_HEIGHT - 1 &&
     y + 1 >= 0
   ) {
     if (
