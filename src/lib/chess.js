@@ -110,6 +110,10 @@ let jaquereynegro;
 let posicionreynegro;
 let posicionreyblanco;
 
+let jugadas_negras;
+let jugadas_blancas;
+
+
 let comeralpaso;
 let comeralpasoardilla;
 let comeralpasoardillatres;
@@ -145,7 +149,7 @@ whiteCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 blackCasualities = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 export function onLoad(_lobbyItemKey) {
-  
+
   lobbyItemKey = _lobbyItemKey;
 
   startGame(lobbyItemKey);
@@ -247,9 +251,9 @@ export function getMinutesFromCreatedAt() {
   /*let seconds = (diffTime / 1000) % 60;*/
   let minutes = (diffTime / (1000 * 60)) % 60;
 
-  if(minutes < 10){
-    minutes = "0"+parseInt(minutes);
-  }else{
+  if (minutes < 10) {
+    minutes = "0" + parseInt(minutes);
+  } else {
     minutes = parseInt(minutes);
   }
   let hours = (diffTime / (1000 * 60 * 60)) % 60;
@@ -1206,7 +1210,7 @@ function checkPossiblePlaysPerro(curX, curY) {
   // Advance one tile
   checkPossibleMove(curX, curY + direction);
   checkPossibleCapture(curX, curY + direction);
-  
+
 
   if (
     curY + 2 * direction > 0 &&
@@ -2931,10 +2935,172 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
       })
       .catch(console.error);
   }
+
+  //guardamos jugadas por jugador 
+  if (currentTeam === WHITE) {
+    //leemos las jugadas anteriores
+    await getGameDbRef()
+      .child("jugadas_negras")
+      .get()
+      .then((snapshot) => {
+        jugadas_negras = snapshot.val();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    //buscamos la jugada nueva en la bd
+    if (jugadas_negras !== '' && jugadas_negras !== undefined && jugadas_negras !== null) {
+
+      let valores_negras = Array.from(Object.entries(jugadas_negras));
+      let existe = 'No';
+      for (let i = 0; i < valores_negras.length; i++) {
+        if (valores_negras[i][1]['movimiento'] === nomenclatura) {
+          existe = 'Si';
+          if (valores_negras[i][1]['veces'] === 1) {
+            //console.log(nomenclatura + " existe 1 vez en las jugadas negras");
+
+            let key_jugada = valores_negras[i][0];
+
+            await getGameDbRef()
+              .child('jugadas_negras')
+              .child(key_jugada)
+              .update({
+                veces: 2,
+              })
+              .catch(console.error);
+          }
+          if (valores_negras[i][1]['veces'] === 2) {
+            //console.log(nomenclatura + " existe 2 veces en las jugadas negras");
+            //declaramos empate por ser la 3a vez que el jugador repite la misma jugada
+            let key_jugada = valores_negras[i][0];
+            await getGameDbRef()
+              .child('jugadas_negras')
+              .child(key_jugada)
+              .update({
+                veces: 3,
+              })
+              .catch(console.error);
+
+            await getGameDbRef()
+              .update({
+                status: "tied",
+              })
+              .catch(console.error);
+
+              Swal.fire({
+                title: "Opps..",
+                text: "El juego se ha empatado",
+              });
+
+          }
+          break;
+        }
+      }
+      if (existe === 'No') {
+        getGameDbRef()
+          .child("jugadas_negras")
+          .push({
+            movimiento: nomenclatura,
+            veces: 1,
+          })
+          .catch(console.error);
+        //console.log(nomenclatura + " no existe en las jugadas negras");
+      }
+    } else {
+      await getGameDbRef()
+        .child("jugadas_negras")
+        .push({
+          movimiento: nomenclatura,
+          veces: 1,
+        })
+        .catch(console.error);
+    }
+
+  } else {
+
+    //leemos las jugadas anteriores
+    await getGameDbRef()
+      .child("jugadas_blancas")
+      .get()
+      .then((snapshot) => {
+        jugadas_blancas = snapshot.val();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    //buscamos la jugada nueva en la bd
+    if (jugadas_blancas !== '' && jugadas_blancas !== undefined && jugadas_blancas !== null) {
+
+      let valores_blancas = Array.from(Object.entries(jugadas_blancas));
+      let existe = 'No';
+      for (let i = 0; i < valores_blancas.length; i++) {
+        if (valores_blancas[i][1]['movimiento'] === nomenclatura) {
+          existe = 'Si';
+          if (valores_blancas[i][1]['veces'] === 1) {
+            //console.log(nomenclatura + " existe 1 vez en las jugadas blancas");
+            let key_jugada = valores_blancas[i][0];
+
+            await getGameDbRef()
+              .child('jugadas_blancas')
+              .child(key_jugada)
+              .update({
+                veces: 2,
+              })
+              .catch(console.error);
+          }
+          if (valores_blancas[i][1]['veces'] === 2) {
+            //console.log(nomenclatura + " existe 2 veces en las jugadas blancas");
+            //declaramos empate por ser la 3a vez que el jugador repite la misma jugada
+            let key_jugada = valores_blancas[i][0];
+            await getGameDbRef()
+              .child('jugadas_blancas')
+              .child(key_jugada)
+              .update({
+                veces: 3,
+              })
+              .catch(console.error);
+
+            await getGameDbRef()
+              .update({
+                status: "tied",
+              })
+              .catch(console.error);
+
+              Swal.fire({
+                title: "Opps..",
+                text: "El juego se ha empatado",
+              });
+
+          }
+          break;
+        }
+      }
+      if (existe === 'No') {
+        getGameDbRef()
+          .child("jugadas_blancas")
+          .push({
+            movimiento: nomenclatura,
+            veces: 1,
+          })
+          .catch(console.error);
+        //console.log(nomenclatura + " no existe en las jugadas blancas");
+      }
+    } else {
+      await getGameDbRef()
+        .child("jugadas_blancas")
+        .push({
+          movimiento: nomenclatura,
+          veces: 1,
+        })
+        .catch(console.error);
+    }
+  }
 }
 
 async function repaintBoard() {
-   drawBoard();
+  drawBoard();
   checkPossiblePlays();
   drawPieces();
 }
@@ -2963,7 +3129,7 @@ function drawCorners(x, y, fillStyle) {
   var celda = document.getElementById(coordenada);
   //celda.style.backgroundColor = 'red';
   celda.style.setProperty('background-color', 'red', 'important');
- 
+
 }
 
 function drawPieces() {
@@ -3010,7 +3176,7 @@ function drawPieces() {
     }
   }
 
-  
+
   for (let j = 0; j < BOARD_WIDTH; j++) {
     let pieza = board.tiles[0][j].pieceType;
     let equipo = board.tiles[0][j].team;
@@ -3073,7 +3239,7 @@ function drawPieces() {
         elemento.src = vacio;
         continue;
       }
-      
+
       if (pieceType === 6) {
         if (equipo === WHITE) {
           elemento.src = ardillabco;
@@ -3264,7 +3430,7 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-        
+
         if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttack(lastWX, lastWY, WHITE, true) === false &&
           checkblockmate(x, y, WHITE) === false
@@ -3521,7 +3687,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   // Advance one tile
   checkPossibleMoveJUSTCHECK(curX, curY + direction);
   checkPossibleCaptureJUSTCHECK(curX, curY + direction);
-  
+
 
   if (
     curY + 2 * direction > 0 &&
@@ -5091,7 +5257,7 @@ function checkPossiblePlaysLeonCHECKBLOCKMATE(xrey, yrey, curX, curY) {
   }
 
   // Lower-left move
-  for (let i = 1;curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;i++) {
+  for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
     if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, LEON)) break;
   }
 
