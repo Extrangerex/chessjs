@@ -37,6 +37,7 @@ export function Inicio() {
 
     const isOnline = useOnlineState();
     const loginForm = useForm();
+    const NewsForm = useForm();
 
     const onLoginSubmit = data => {
         reset();
@@ -60,6 +61,36 @@ export function Inicio() {
             setLoading(false);
         })
     }
+
+    const onNewsSubmit = data => {
+        reset();
+        //setLoading(true);
+        
+        axios.post('https://www.agencianuba.com/megachess_panel/apis/newsletter.php', {
+            Idusuario:"123456789",
+            Clientid:1,
+            correo: data.emailAddress
+        })
+        
+        .then(res => {
+            ReactSwal.fire({
+                title: "Aviso",
+                icon: "success",
+                text: res.data.mensaje
+            }).then(() => {
+                handleClose();
+            });
+        }).catch((error) => {
+            ReactSwal.fire({
+                title: "Opps..",
+                icon: "error",
+                text: error.toString()
+            });
+        }).finally(() => {
+           //setLoading(false);
+        })
+    }
+
     useEffect(() => {
         console.log(isOnline);
         if (isOnline) {
@@ -204,12 +235,13 @@ export function Inicio() {
                             <h2 align="center">Suscríbete ahora para noticias y novedades relacionadas con el mundo del Chess.</h2>
                         </div>
                         <Col xs={12}>
-                            <form className="form-inline justify-content-center align-items-center " method="post">
+                            <form className="form-inline justify-content-center align-items-center " method="post" onSubmit={NewsForm.handleSubmit(onNewsSubmit)}>
                                 <div className="form-group">
-                                    <input className="form-control" id="email" type="email" name="email" placeholder="Escribe tu correo electrónico"></input>
+                                    <input className="form-control" {...NewsForm.register("emailAddress", { required: true })} type="email"  placeholder="Escribe tu correo electrónico"/>
+                                    {NewsForm.formState.errors.emailAddress?.type === 'required' && "Email address is required"}
                                 </div>
                                 <div className="form-group">
-                                    <button className="btn btn-newsletter" type="button" >SUSCRIBIRME</button>
+                                    <button className="btn btn-newsletter" type="submit" >SUSCRIBIRME</button>
                                 </div>
                             </form>
                         </Col>
