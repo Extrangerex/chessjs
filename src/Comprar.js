@@ -1,8 +1,6 @@
 import "bootstrap/dist/css/bootstrap.css";
 import { Container, Row, Col, Navbar, NavDropdown, Nav } from 'react-bootstrap';
 
-import "./css/Footer-Dark.css";
-
 import "./fonts/fontawesome-all.min.css";
 import "./fonts/ionicons.min.css";
 import "./fonts/line-awesome.min.css";
@@ -10,11 +8,10 @@ import "./fonts/fontawesome5-overrides.min.css";
 import "./css/Social-Icons.css";
 
 import "./css/menu.css";
-import "./css/footer.css";
 import "./css/encabezado.css";
 
 import logo from "./images/logo-megachess.png";
-import logo_footer from "./images/logo-megachess-bco.svg";
+import { MyFooter } from "./Footer";
 
 export function Comprar() {
 
@@ -54,24 +51,9 @@ export function Comprar() {
                     </Container>
                 </header>
             </section>
-            <footer className="footer-dark">
-                <Container>
-                    <Row>
-                        <Col xs={12} lg={1} style={{ padding: 0 }}>
-                        <p id="logo_footer"><img src={logo_footer} alt="" /></p>
-                        </Col>    
-                        <Col xs={12} lg={5} style={{ padding: 0 }}>
-                            <p id="marca_footer"> Mega Chess ® 2021 Todos los derechos reservados.</p>
-                        </Col>    
-                        <Col xs={12} lg={3} style={{ padding: 0 }}>
-                            <p style={{ textAlign: "center" }}>Diseñado por Agencia NUBA</p>
-                        </Col>
-                        <Col xs={12} lg={3} style={{ padding: 0 }}>
-                            <div className="item social"><a href="#!"><i className="icon ion-social-facebook"></i></a><a href="#!"><i className="la la-twitter"></i></a><a href="#!"><i className="icon ion-social-youtube-outline"></i></a><a href="#!"><i className="fab fa-instagram"></i></a></div>
-                        </Col>    
-                    </Row>
-                </Container>
-            </footer>
+            
+            <MyFooter/>
+
         </section>
     );
 }
