@@ -86,6 +86,7 @@ let board;
 let currentTeam;
 let currentTeamJUSTCHECK;
 let currentTeamCHECKBLOCKMATE;
+let currentTeamCHECKMOVE;
 
 
 let curX;
@@ -103,6 +104,7 @@ let contadortorre2negro;
 
 let casillasenpeligro = [];
 let bloquearjaquemate = [];
+let posiblemovimiento = [];
 
 
 let jaquereyblanco;
@@ -536,6 +538,15 @@ async function startGame() {
           text: "HAN GANADO LAS NEGRAS",
         });
       }
+
+      if (serverGameData?.status === "tied") {
+        Swal.fire({
+          title: "Opps....",
+          text: "El juego se ha empatado",
+        });
+      }
+
+
       document.getElementById("turno").innerHTML = "Tu turno";
 
       clave_privada = localStorage.getItem("clave_privada");
@@ -802,6 +813,50 @@ export async function onClick(Y, X) {
         }
       }
 
+      //vemos si despues de que movio se ahogo algun rey (0 = NO marcar casilla)
+      const combo_posicionreyblanco = posicionreyblanco.split(",");
+      const checkWX = combo_posicionreyblanco[0];
+      const checkWY = combo_posicionreyblanco[1];
+
+      const combo_posicionreynegro = posicionreynegro.split(",");
+      const checkBX = combo_posicionreynegro[0];
+      const checkBY = combo_posicionreynegro[1];
+
+      if (checkPossiblePlaysCHECKMOVE(0, WHITE) === false && moverelreyblanco(parseInt(checkWX), parseInt(checkWY)) === false) {
+        //console.log("rey BLANCO ahogado");  
+        await getGameDbRef()
+          .update({
+            status: "tied",
+            board,
+          })
+          .catch(console.error);
+
+        Swal.fire({
+          title: "Opps..",
+          text: "El juego se ha empatado",
+        });
+      } else {
+        //console.log("rey BLANCO NO ahogado");  
+      }
+      if (checkPossiblePlaysCHECKMOVE(0, BLACK) === false && moverelreynegro(parseInt(checkBX), parseInt(checkBY)) === false) {
+        //console.log("rey NEGRO ahogado");  
+        await getGameDbRef()
+          .update({
+            status: "tied",
+            board,
+          })
+          .catch(console.error);
+
+        Swal.fire({
+          title: "Opps..",
+          text: "El juego se ha empatado",
+        });
+      } else {
+        //console.log("reyNEGRO NO ahogado");  
+      }
+
+
+
       //vemos si al moverse hace jaque o se crea un jaque
       //ponemos en cero los jaques
       jaquereyblanco = "No";
@@ -811,11 +866,6 @@ export async function onClick(Y, X) {
       var cambio_de_turno = "Si";
 
       //revisamos que nadie le haga jaque al rey blanco
-      const combo_posicionreyblanco = posicionreyblanco.split(",");
-      const checkWX = combo_posicionreyblanco[0];
-      const checkWY = combo_posicionreyblanco[1];
-
-
       //si hay jaque regresamos la jugada el false de la funcion de abajo es para que no cheque checkmate
       if (checkTileUnderAttack(checkWX, checkWY, BLACK, false) === true &&
         currentTeam === WHITE) {
@@ -853,11 +903,6 @@ export async function onClick(Y, X) {
       }
 
       //revisamos que nadie le haga jaque al rey negro
-      const combo_posicionreynegro = posicionreynegro.split(",");
-      const checkBX = combo_posicionreynegro[0];
-      const checkBY = combo_posicionreynegro[1];
-
-
       //si hay jaque regresamos la jugada el false de la funcion de abajo es para que no cheque checkmate
       if (
         checkTileUnderAttack(checkBX, checkBY, WHITE, false) === true &&
@@ -965,45 +1010,82 @@ export async function onClick(Y, X) {
   repaintBoard();
 }
 
-function checkPossiblePlays() {
+function checkPossiblePlaysCHECKMOVE(marcar_casilla, equipo) {
+  //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
+  for (let xx = 0; xx <= 8; xx++) {
+    for (let yy = 0; yy <= 9; yy++) {
+
+      if (board.tiles[yy][xx].team === equipo) {
+        currentTeamCHECKMOVE = equipo;
+        let tile = board.tiles[yy][xx];
+
+        if (tile.pieceType === PAWN) checkPossiblePlaysPawn(xx, yy, marcar_casilla);
+        else if (tile.pieceType === KNIGHT) checkPossiblePlaysKnight(xx, yy, marcar_casilla);
+        else if (tile.pieceType === BISHOP) checkPossiblePlaysBishop(xx, yy, marcar_casilla);
+        else if (tile.pieceType === ROOK) checkPossiblePlaysRook(xx, yy, marcar_casilla);
+        else if (tile.pieceType === QUEEN) checkPossiblePlaysQueen(xx, yy, marcar_casilla);
+        //else if (tile.pieceType === KING) checkPossiblePlaysKing(xx, yy, marcar_casilla);
+        else if (tile.pieceType === ARDILLA) checkPossiblePlaysArdilla(xx, yy, marcar_casilla);
+        else if (tile.pieceType === CONEJO) checkPossiblePlaysConejo(xx, yy, marcar_casilla);
+        else if (tile.pieceType === PERRO) checkPossiblePlaysPerro(xx, yy, marcar_casilla);
+        else if (tile.pieceType === PANTERA) checkPossiblePlaysPantera(xx, yy, marcar_casilla);
+        else if (tile.pieceType === ELEFANTE) checkPossiblePlaysElefante(xx, yy, marcar_casilla);
+        else if (tile.pieceType === LEON) checkPossiblePlaysLeon(xx, yy, marcar_casilla);
+      }
+    }
+  }
+  if (posiblemovimiento.includes("Si")) {
+    //vaciamos el arreglo
+    posiblemovimiento = [];
+    return true;
+  } else {
+    posiblemovimiento = [];
+    return false;
+  }
+}
+
+function checkPossiblePlays(marcar_casilla) {
   if (curX < 0 || curY < 0) return;
 
   let tile = board.tiles[curY][curX];
   if (tile.team === EMPTY || tile.team !== currentTeam) return;
 
-  //drawTile(curX, curY, HIGHLIGHT_COLOR);
   var coordenada = "celda_y" + curY + "x" + curX;
   var celda = document.getElementById(coordenada);
-  //celda.style.backgroundColor = HIGHLIGHT_COLOR;
   celda.style.setProperty('background-color', HIGHLIGHT_COLOR, 'important');
 
+  currentTeamCHECKMOVE = currentTeam;
 
   board.resetValidMoves();
 
-  if (tile.pieceType === PAWN) checkPossiblePlaysPawn(curX, curY);
-  else if (tile.pieceType === KNIGHT) checkPossiblePlaysKnight(curX, curY);
-  else if (tile.pieceType === BISHOP) checkPossiblePlaysBishop(curX, curY);
-  else if (tile.pieceType === ROOK) checkPossiblePlaysRook(curX, curY);
-  else if (tile.pieceType === QUEEN) checkPossiblePlaysQueen(curX, curY);
-  else if (tile.pieceType === KING) checkPossiblePlaysKing(curX, curY);
-  else if (tile.pieceType === ARDILLA) checkPossiblePlaysArdilla(curX, curY);
-  else if (tile.pieceType === CONEJO) checkPossiblePlaysConejo(curX, curY);
-  else if (tile.pieceType === PERRO) checkPossiblePlaysPerro(curX, curY);
-  else if (tile.pieceType === PANTERA) checkPossiblePlaysPantera(curX, curY);
-  else if (tile.pieceType === ELEFANTE) checkPossiblePlaysElefante(curX, curY);
-  else if (tile.pieceType === LEON) checkPossiblePlaysLeon(curX, curY);
+  if (tile.pieceType === PAWN) checkPossiblePlaysPawn(curX, curY, marcar_casilla);
+  else if (tile.pieceType === KNIGHT) checkPossiblePlaysKnight(curX, curY, marcar_casilla);
+  else if (tile.pieceType === BISHOP) checkPossiblePlaysBishop(curX, curY, marcar_casilla);
+  else if (tile.pieceType === ROOK) checkPossiblePlaysRook(curX, curY, marcar_casilla);
+  else if (tile.pieceType === QUEEN) checkPossiblePlaysQueen(curX, curY, marcar_casilla);
+  else if (tile.pieceType === KING) checkPossiblePlaysKing(curX, curY, marcar_casilla);
+  else if (tile.pieceType === ARDILLA) checkPossiblePlaysArdilla(curX, curY, marcar_casilla);
+  else if (tile.pieceType === CONEJO) checkPossiblePlaysConejo(curX, curY, marcar_casilla);
+  else if (tile.pieceType === PERRO) checkPossiblePlaysPerro(curX, curY, marcar_casilla);
+  else if (tile.pieceType === PANTERA) checkPossiblePlaysPantera(curX, curY, marcar_casilla);
+  else if (tile.pieceType === ELEFANTE) checkPossiblePlaysElefante(curX, curY, marcar_casilla);
+  else if (tile.pieceType === LEON) checkPossiblePlaysLeon(curX, curY, marcar_casilla);
+
+  //va a guardar los posibles movimientos pero aqui no los vamos a usar
+  //por eso los borramos
+  posiblemovimiento = [];
 }
 
-function checkPossiblePlaysPawn(curX, curY) {
+function checkPossiblePlaysPawn(curX, curY, marcar_casilla) {
   let direction;
 
-  if (currentTeam === WHITE) direction = -1;
+  if (currentTeamCHECKMOVE === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
 
   // Advance one tile
-  checkPossibleMove(curX, curY + direction);
+  checkPossibleMove(curX, curY + direction, marcar_casilla);
 
   // First double move
   if (
@@ -1011,7 +1093,7 @@ function checkPossiblePlaysPawn(curX, curY) {
     (curY === 7 && board.tiles[curY][curX].team === WHITE)
   ) {
     if (board.tiles[curY + direction][curX].pieceType === EMPTY) {
-      checkPossibleMove(curX, curY + 2 * direction);
+      checkPossibleMove(curX, curY + 2 * direction, marcar_casilla);
     }
   }
 
@@ -1019,18 +1101,18 @@ function checkPossiblePlaysPawn(curX, curY) {
   if (curX - 1 >= 0) {
     if (board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE) {
       if (board.tiles[curY + direction][curX - 1].pieceType !== LEON) {
-        checkPossibleCapture(curX - 1, curY + direction);
+        checkPossibleCapture(curX - 1, curY + direction, marcar_casilla);
       }
     }
     //vemos si puede comer al paso
-    if (currentTeam === 0 && curY === 4) {
+    if (currentTeamCHECKMOVE === 0 && curY === 4) {
       if (curX - 1 + "," + (curY - 1) === comeralpaso) {
-        checkPossibleMove(curX - 1, curY - 1);
+        checkPossibleMove(curX - 1, curY - 1, marcar_casilla);
       }
     }
-    if (currentTeam === 1 && curY === 5) {
+    if (currentTeamCHECKMOVE === 1 && curY === 5) {
       if (curX - 1 + "," + (curY + 1) === comeralpaso) {
-        checkPossibleMove(curX - 1, curY + 1);
+        checkPossibleMove(curX - 1, curY + 1, marcar_casilla);
       }
     }
   }
@@ -1039,81 +1121,81 @@ function checkPossiblePlaysPawn(curX, curY) {
   if (curX + 1 <= BOARD_WIDTH - 1) {
     if (board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE) {
       if (board.tiles[curY + direction][curX + 1].pieceType !== LEON) {
-        checkPossibleCapture(curX + 1, curY + direction);
+        checkPossibleCapture(curX + 1, curY + direction, marcar_casilla);
       }
     }
     //vemos si puede comer al paso
-    if (currentTeam === 0 && curY === 4) {
+    if (currentTeamCHECKMOVE === 0 && curY === 4) {
       if (curX + 1 + "," + (curY - 1) === comeralpaso) {
-        checkPossibleMove(curX + 1, curY - 1);
+        checkPossibleMove(curX + 1, curY - 1, marcar_casilla);
       }
     }
-    if (currentTeam === 1 && curY === 5) {
+    if (currentTeamCHECKMOVE === 1 && curY === 5) {
       if (curX + 1 + "," + (curY + 1) === comeralpaso) {
-        checkPossibleMove(curX + 1, curY + 1);
+        checkPossibleMove(curX + 1, curY + 1, marcar_casilla);
       }
     }
   }
 }
 
-function checkPossiblePlaysConejo(curX, curY) {
+function checkPossiblePlaysConejo(curX, curY, marcar_casilla) {
   let direction;
 
-  if (currentTeam === WHITE) direction = -1;
+  if (currentTeamCHECKMOVE === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
 
   // Advance one tile
-  checkPossibleMove(curX, curY + direction);
+  checkPossibleMove(curX, curY + direction, marcar_casilla);
 
   // Advance two tile
   //si es un PAWN si se puede saltar Y COMER SI NO SOLO AVANZA
   if (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY) {
     //vemos que no se salga del tablero
     if (curY + 2 * direction < BOARD_HEIGHT && curY + 2 * direction >= 0) {
-      checkPossibleMove(curX, curY + 2 * direction);
+      checkPossibleMove(curX, curY + 2 * direction, marcar_casilla);
     }
   } else {
     if (
       board.tiles[curY + 1 * direction][curX].pieceType === PAWN &&
-      board.tiles[curY + 1 * direction][curX].team !== currentTeam
+      board.tiles[curY + 1 * direction][curX].team !== currentTeamCHECKMOVE
     ) {
-      checkPossibleMove(curX, curY + 2 * direction);
+      checkPossibleMove(curX, curY + 2 * direction, marcar_casilla);
     }
   }
 
   // Check diagonal right capture
   if (curX + 1 <= BOARD_WIDTH - 1)
-    checkPossibleMove(curX + 1, curY + direction);
+    checkPossibleMove(curX + 1, curY + direction, marcar_casilla);
   // Check diagonal left capture
-  if (curX - 1 >= 0) checkPossibleMove(curX - 1, curY + direction);
+  if (curX - 1 >= 0) checkPossibleMove(curX - 1, curY + direction, marcar_casilla);
 
   // Check diagonal left capture
   if (curX - 1 >= 0) {
     if (board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE) {
-      checkPossibleCapture(curX - 1, curY + direction);
+      checkPossibleCapture(curX - 1, curY + direction, marcar_casilla);
     }
   }
 
   // Check diagonal right capture
   if (curX + 1 <= BOARD_WIDTH - 1) {
     if (board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE) {
-      checkPossibleCapture(curX + 1, curY + direction);
+      checkPossibleCapture(curX + 1, curY + direction, marcar_casilla);
     }
   }
 }
 
-function checkPossiblePlaysArdilla(curX, curY) {
+function checkPossiblePlaysArdilla(curX, curY, marcar_casilla) {
   let direction;
 
-  if (currentTeam === WHITE) direction = -1;
+  if (currentTeamCHECKMOVE === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
 
   // Advance one tile
-  checkPossibleMove(curX, curY + direction);
+  checkPossibleMove(curX, curY + direction, marcar_casilla);
 
   // Advance two tile
   //si es un PAWN O CONEJO si se puede saltar y comer sino no hacer nada
@@ -1129,7 +1211,7 @@ function checkPossiblePlaysArdilla(curX, curY) {
       board.tiles[curY + 1 * direction][curX].pieceType === CONEJO ||
       board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
     ) {
-      checkPossibleMove(curX, curY + 2 * direction);
+      checkPossibleMove(curX, curY + 2 * direction, marcar_casilla);
     }
 
   }
@@ -1165,51 +1247,51 @@ function checkPossiblePlaysArdilla(curX, curY) {
       (board.tiles[curY + 1 * direction][curX].pieceType === EMPTY &&
         board.tiles[curY + 2 * direction][curX].pieceType === CONEJO)
     ) {
-      checkPossibleMove(curX, curY + 3 * direction);
+      checkPossibleMove(curX, curY + 3 * direction, marcar_casilla);
     }
 
   }
 
   // Advance Horizontal tile
   if (curX > 0) {
-    checkPossibleMove(curX - 1, curY);
+    checkPossibleMove(curX - 1, curY, marcar_casilla);
   }
   if (curX < 8) {
-    checkPossibleMove(curX + 1, curY);
+    checkPossibleMove(curX + 1, curY, marcar_casilla);
   }
 
   // Check diagonal right move
   if (curX + 1 <= BOARD_WIDTH - 1)
-    checkPossibleMove(curX + 1, curY + direction);
+    checkPossibleMove(curX + 1, curY + direction, marcar_casilla);
   // Check diagonal left move
-  if (curX - 1 >= 0) checkPossibleMove(curX - 1, curY + direction);
+  if (curX - 1 >= 0) checkPossibleMove(curX - 1, curY + direction, marcar_casilla);
 
   // Check diagonal left capture
   if (curX - 1 >= 0) {
     if (board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE) {
-      checkPossibleCapture(curX - 1, curY + direction);
+      checkPossibleCapture(curX - 1, curY + direction, marcar_casilla);
     }
   }
 
   // Check diagonal right capture
   if (curX + 1 <= BOARD_WIDTH - 1) {
     if (board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE) {
-      checkPossibleCapture(curX + 1, curY + direction);
+      checkPossibleCapture(curX + 1, curY + direction, marcar_casilla);
     }
   }
 }
 
-function checkPossiblePlaysPerro(curX, curY) {
+function checkPossiblePlaysPerro(curX, curY, marcar_casilla) {
   let direction;
 
-  if (currentTeam === WHITE) direction = -1;
+  if (currentTeamCHECKMOVE === WHITE) direction = -1;
   else direction = 1;
 
   if (curY + direction < 0 || curY + direction > BOARD_HEIGHT - 1) return;
 
   // Advance one tile
-  checkPossibleMove(curX, curY + direction);
-  checkPossibleCapture(curX, curY + direction);
+  checkPossibleMove(curX, curY + direction, marcar_casilla);
+  checkPossibleCapture(curX, curY + direction, marcar_casilla);
 
 
   if (
@@ -1219,49 +1301,49 @@ function checkPossiblePlaysPerro(curX, curY) {
     board.tiles[curY + 1 * direction][curX].pieceType === EMPTY
   ) {
     // Advance two tile
-    checkPossibleMove(curX, curY + 2 * direction);
-    checkPossibleCapture(curX, curY + 2 * direction);
+    checkPossibleMove(curX, curY + 2 * direction, marcar_casilla);
+    checkPossibleCapture(curX, curY + 2 * direction, marcar_casilla);
   }
 
   // Advance Horizontal tile
   if (curX > 0) {
-    checkPossibleMove(curX - 1, curY);
+    checkPossibleMove(curX - 1, curY, marcar_casilla);
   }
   if (curX > 1 && board.tiles[curY][curX - 1].pieceType === EMPTY) {
-    checkPossibleMove(curX - 2, curY);
+    checkPossibleMove(curX - 2, curY, marcar_casilla);
   }
   if (curX < 8) {
-    checkPossibleMove(curX + 1, curY);
+    checkPossibleMove(curX + 1, curY, marcar_casilla);
   }
   if (curX < 7 && board.tiles[curY][curX + 1].pieceType === EMPTY) {
-    checkPossibleMove(curX + 2, curY);
+    checkPossibleMove(curX + 2, curY, marcar_casilla);
   }
 
   // Check diagonal right movimiento
   if (curX + 1 <= BOARD_WIDTH - 1) {
-    checkPossibleMove(curX + 1, curY + direction);
+    checkPossibleMove(curX + 1, curY + direction, marcar_casilla);
   }
   if (
     curX + 2 <= BOARD_WIDTH - 1 &&
     board.tiles[curY + direction][curX + 1].pieceType === EMPTY
   ) {
-    checkPossibleMove(curX + 2, curY + 2 * direction);
+    checkPossibleMove(curX + 2, curY + 2 * direction, marcar_casilla);
   }
 
   // Check diagonal left movimiento
   if (curX - 1 >= 0) {
-    checkPossibleMove(curX - 1, curY + direction);
+    checkPossibleMove(curX - 1, curY + direction, marcar_casilla);
   }
   if (
     curX - 2 >= 0 &&
     board.tiles[curY + direction][curX - 1].pieceType === EMPTY
   ) {
-    checkPossibleMove(curX - 2, curY + 2 * direction);
+    checkPossibleMove(curX - 2, curY + 2 * direction, marcar_casilla);
   }
 
   // Check diagonal left capture
   if (curX - 1 >= 0) {
-    checkPossibleCapture(curX - 1, curY + direction);
+    checkPossibleCapture(curX - 1, curY + direction, marcar_casilla);
   }
   if (
     curX - 2 >= 0 &&
@@ -1269,12 +1351,12 @@ function checkPossiblePlaysPerro(curX, curY) {
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
-    checkPossibleCapture(curX - 2, curY + 2 * direction);
+    checkPossibleCapture(curX - 2, curY + 2 * direction, marcar_casilla);
   }
 
   // Check diagonal right capture
   if (curX + 1 <= BOARD_WIDTH - 1) {
-    checkPossibleCapture(curX + 1, curY + direction);
+    checkPossibleCapture(curX + 1, curY + direction, marcar_casilla);
   }
   if (
     curX + 2 <= BOARD_WIDTH - 1 &&
@@ -1282,143 +1364,143 @@ function checkPossiblePlaysPerro(curX, curY) {
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
-    checkPossibleCapture(curX + 2, curY + 2 * direction);
+    checkPossibleCapture(curX + 2, curY + 2 * direction, marcar_casilla);
   }
 
   //movimiento hacia atras 1 casilla
   // Lower move
   if (curY - 1 * direction >= 0 && curY - 1 * direction <= BOARD_HEIGHT - 1) {
-    checkPossibleMove(curX, curY - 1 * direction);
+    checkPossibleMove(curX, curY - 1 * direction, marcar_casilla);
   }
   //movimiento hacia atras 2 casillas
   if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
-    checkPossibleMove(curX, curY - 2 * direction);
+    checkPossibleMove(curX, curY - 2 * direction, marcar_casilla);
   }
 }
 
-function checkPossiblePlaysKnight(curX, curY) {
+function checkPossiblePlaysKnight(curX, curY, marcar_casilla) {
   // Far left moves
   if (curX - 2 >= 0) {
     // Upper move
-    if (curY - 1 >= 0) checkPossiblePlay(curX - 2, curY - 1);
+    if (curY - 1 >= 0) checkPossiblePlay(curX - 2, curY - 1, marcar_casilla);
 
     // Lower move
-    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 2, curY + 1);
+    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 2, curY + 1, marcar_casilla);
   }
 
   // Near left moves
   if (curX - 1 >= 0) {
     // Upper move
-    if (curY - 2 >= 0) checkPossiblePlay(curX - 1, curY - 2);
+    if (curY - 2 >= 0) checkPossiblePlay(curX - 1, curY - 2, marcar_casilla);
 
     // Lower move
-    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 1, curY + 2);
+    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 1, curY + 2, marcar_casilla);
   }
 
   // Near right moves
   if (curX + 1 <= BOARD_WIDTH - 1) {
     // Upper move
-    if (curY - 2 >= 0) checkPossiblePlay(curX + 1, curY - 2);
+    if (curY - 2 >= 0) checkPossiblePlay(curX + 1, curY - 2, marcar_casilla);
 
     // Lower move
-    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 1, curY + 2);
+    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 1, curY + 2, marcar_casilla);
   }
 
   // Far right moves
   if (curX + 2 <= BOARD_WIDTH - 1) {
     // Upper move
-    if (curY - 1 >= 0) checkPossiblePlay(curX + 2, curY - 1);
+    if (curY - 1 >= 0) checkPossiblePlay(curX + 2, curY - 1, marcar_casilla);
 
     // Lower move
-    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 2, curY + 1);
+    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 2, curY + 1, marcar_casilla);
   }
 }
 
-function checkPossiblePlaysPantera(curX, curY) {
+function checkPossiblePlaysPantera(curX, curY, marcar_casilla) {
   // Far left moves
   if (curX - 3 >= 0) {
     // Upper move
-    if (curY - 1 >= 0) checkPossiblePlay(curX - 3, curY - 1);
+    if (curY - 1 >= 0) checkPossiblePlay(curX - 3, curY - 1, marcar_casilla);
 
     // Lower move
-    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 3, curY + 1);
+    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 3, curY + 1, marcar_casilla);
   }
 
   // Far left moves
   if (curX - 2 >= 0) {
     // Upper move
-    if (curY - 1 >= 0) checkPossiblePlay(curX - 2, curY - 1);
+    if (curY - 1 >= 0) checkPossiblePlay(curX - 2, curY - 1, marcar_casilla);
 
     // Lower move
-    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 2, curY + 1);
+    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 2, curY + 1, marcar_casilla);
   }
 
   // Near left moves
   if (curX - 1 >= 0) {
     // Upper move
-    if (curY - 2 >= 0) checkPossiblePlay(curX - 1, curY - 2);
-    if (curY - 3 >= 0) checkPossiblePlay(curX - 1, curY - 3);
+    if (curY - 2 >= 0) checkPossiblePlay(curX - 1, curY - 2, marcar_casilla);
+    if (curY - 3 >= 0) checkPossiblePlay(curX - 1, curY - 3, marcar_casilla);
 
     // Lower move
-    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 1, curY + 2);
-    if (curY + 3 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 1, curY + 3);
+    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 1, curY + 2, marcar_casilla);
+    if (curY + 3 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX - 1, curY + 3, marcar_casilla);
   }
 
   // Near right moves
   if (curX + 1 <= BOARD_WIDTH - 1) {
     // Upper move
-    if (curY - 2 >= 0) checkPossiblePlay(curX + 1, curY - 2);
-    if (curY - 3 >= 0) checkPossiblePlay(curX + 1, curY - 3);
+    if (curY - 2 >= 0) checkPossiblePlay(curX + 1, curY - 2, marcar_casilla);
+    if (curY - 3 >= 0) checkPossiblePlay(curX + 1, curY - 3, marcar_casilla);
 
     // Lower move
-    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 1, curY + 2);
-    if (curY + 3 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 1, curY + 3);
+    if (curY + 2 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 1, curY + 2, marcar_casilla);
+    if (curY + 3 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 1, curY + 3, marcar_casilla);
   }
 
   // Far right moves
   if (curX + 2 <= BOARD_WIDTH - 1) {
     // Upper move
-    if (curY - 1 >= 0) checkPossiblePlay(curX + 2, curY - 1);
+    if (curY - 1 >= 0) checkPossiblePlay(curX + 2, curY - 1, marcar_casilla);
 
     // Lower move
-    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 2, curY + 1);
+    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 2, curY + 1, marcar_casilla);
   }
 
   if (curX + 3 <= BOARD_WIDTH - 1) {
     // Upper move
-    if (curY - 1 >= 0) checkPossiblePlay(curX + 3, curY - 1);
+    if (curY - 1 >= 0) checkPossiblePlay(curX + 3, curY - 1, marcar_casilla);
 
     // Lower move
-    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 3, curY + 1);
+    if (curY + 1 <= BOARD_HEIGHT - 1) checkPossiblePlay(curX + 3, curY + 1, marcar_casilla);
   }
 }
 
-function checkPossiblePlaysRook(curX, curY) {
+function checkPossiblePlaysRook(curX, curY, marcar_casilla) {
   // Upper move
   for (let i = 1; curY - i >= 0; i++) {
-    if (checkPossiblePlay(curX, curY - i)) break;
+    if (checkPossiblePlay(curX, curY - i, marcar_casilla)) break;
   }
 
   // Right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1; i++) {
-    if (checkPossiblePlay(curX + i, curY)) break;
+    if (checkPossiblePlay(curX + i, curY, marcar_casilla)) break;
   }
 
   // Lower move
   for (let i = 1; curY + i <= BOARD_HEIGHT - 1; i++) {
-    if (checkPossiblePlay(curX, curY + i)) break;
+    if (checkPossiblePlay(curX, curY + i, marcar_casilla)) break;
   }
 
   // Left move
   for (let i = 1; curX - i >= 0; i++) {
-    if (checkPossiblePlay(curX - i, curY)) break;
+    if (checkPossiblePlay(curX - i, curY, marcar_casilla)) break;
   }
 }
 
-function checkPossiblePlaysBishop(curX, curY) {
+function checkPossiblePlaysBishop(curX, curY, marcar_casilla) {
   // Upper-right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0; i++) {
-    if (checkPossiblePlay(curX + i, curY - i)) break;
+    if (checkPossiblePlay(curX + i, curY - i, marcar_casilla)) break;
   }
 
   // Lower-right move
@@ -1427,26 +1509,26 @@ function checkPossiblePlaysBishop(curX, curY) {
     curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1;
     i++
   ) {
-    if (checkPossiblePlay(curX + i, curY + i)) break;
+    if (checkPossiblePlay(curX + i, curY + i, marcar_casilla)) break;
   }
 
   // Lower-left move
   for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1; i++) {
-    if (checkPossiblePlay(curX - i, curY + i)) break;
+    if (checkPossiblePlay(curX - i, curY + i, marcar_casilla)) break;
   }
 
   // Upper-left move
   for (let i = 1; curX - i >= 0 && curY - i >= 0; i++) {
-    if (checkPossiblePlay(curX - i, curY - i)) break;
+    if (checkPossiblePlay(curX - i, curY - i, marcar_casilla)) break;
   }
 }
 
-function checkPossiblePlaysElefante(curX, curY) {
+function checkPossiblePlaysElefante(curX, curY, marcar_casilla) {
   // Diagonal abajo a la derecha
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0 && i <= 2; i++) {
     if (curX + i <= BOARD_WIDTH - 1 && curY - i >= 0) {
-      if (board.tiles[curY - 1][curX + 1].team !== currentTeam) {
-        checkPossiblePlay(curX + i, curY - i);
+      if (board.tiles[curY - 1][curX + 1].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX + i, curY - i, marcar_casilla);
       }
     }
   }
@@ -1458,8 +1540,8 @@ function checkPossiblePlaysElefante(curX, curY) {
     i++
   ) {
     if (curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1) {
-      if (board.tiles[curY + 1][curX + 1].team !== currentTeam) {
-        checkPossiblePlay(curX + i, curY + i);
+      if (board.tiles[curY + 1][curX + 1].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX + i, curY + i, marcar_casilla);
       }
     }
   }
@@ -1467,8 +1549,8 @@ function checkPossiblePlaysElefante(curX, curY) {
   // derecha
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && i <= 2; i++) {
     if (curX + i <= BOARD_WIDTH - 1) {
-      if (board.tiles[curY][curX + 1].team !== currentTeam) {
-        checkPossiblePlay(curX + i, curY);
+      if (board.tiles[curY][curX + 1].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX + i, curY, marcar_casilla);
       }
     }
   }
@@ -1480,8 +1562,8 @@ function checkPossiblePlaysElefante(curX, curY) {
     i++
   ) {
     if (curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1) {
-      if (board.tiles[curY + 1][curX - 1].team !== currentTeam) {
-        checkPossiblePlay(curX - i, curY + i);
+      if (board.tiles[curY + 1][curX - 1].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX - i, curY + i, marcar_casilla);
       }
     }
   }
@@ -1489,8 +1571,8 @@ function checkPossiblePlaysElefante(curX, curY) {
   // diagonal abajo izquierda
   for (let i = 1; curX - i >= 0 && curY - i >= 0 && i <= 2; i++) {
     if (curX - i >= 0 && curY - i >= 0) {
-      if (board.tiles[curY - 1][curX - 1].team !== currentTeam) {
-        checkPossiblePlay(curX - i, curY - i);
+      if (board.tiles[curY - 1][curX - 1].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX - i, curY - i, marcar_casilla);
       }
     }
   }
@@ -1498,8 +1580,8 @@ function checkPossiblePlaysElefante(curX, curY) {
   // izquierda
   for (let i = 1; curX - i >= 0 && i <= 2; i++) {
     if (curX - i >= 0) {
-      if (board.tiles[curY][curX - 1].team !== currentTeam) {
-        checkPossiblePlay(curX - i, curY);
+      if (board.tiles[curY][curX - 1].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX - i, curY, marcar_casilla);
       }
     }
   }
@@ -1507,8 +1589,8 @@ function checkPossiblePlaysElefante(curX, curY) {
   // abajo
   for (let i = 1; curY - i >= 0 && i <= 2; i++) {
     if (curY - i >= 0) {
-      if (board.tiles[curY - 1][curX].team !== currentTeam) {
-        checkPossiblePlay(curX, curY - i);
+      if (board.tiles[curY - 1][curX].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX, curY - i, marcar_casilla);
       }
     }
   }
@@ -1516,17 +1598,17 @@ function checkPossiblePlaysElefante(curX, curY) {
   // Arriba
   for (let i = 1; curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
     if (curY + i <= BOARD_HEIGHT - 1) {
-      if (board.tiles[curY + 1][curX].team !== currentTeam) {
-        checkPossiblePlay(curX, curY + i);
+      if (board.tiles[curY + 1][curX].team !== currentTeamCHECKMOVE) {
+        checkPossiblePlay(curX, curY + i, marcar_casilla);
       }
     }
   }
 }
 
-function checkPossiblePlaysLeon(curX, curY) {
+function checkPossiblePlaysLeon(curX, curY, marcar_casilla) {
   // Upper-right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0 && i <= 2; i++) {
-    if (checkPossiblePlay(curX + i, curY - i)) break;
+    if (checkPossiblePlay(curX + i, curY - i, marcar_casilla)) break;
   }
 
   // Lower-right move
@@ -1535,7 +1617,7 @@ function checkPossiblePlaysLeon(curX, curY) {
     curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
     i++
   ) {
-    if (checkPossiblePlay(curX + i, curY + i)) break;
+    if (checkPossiblePlay(curX + i, curY + i, marcar_casilla)) break;
   }
 
   // Lower-left move
@@ -1544,41 +1626,41 @@ function checkPossiblePlaysLeon(curX, curY) {
     curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2;
     i++
   ) {
-    if (checkPossiblePlay(curX - i, curY + i)) break;
+    if (checkPossiblePlay(curX - i, curY + i, marcar_casilla)) break;
   }
 
   // Upper-left move
   for (let i = 1; curX - i >= 0 && curY - i >= 0 && i <= 2; i++) {
-    if (checkPossiblePlay(curX - i, curY - i)) break;
+    if (checkPossiblePlay(curX - i, curY - i, marcar_casilla)) break;
   }
 
   // Upper move
   for (let i = 1; curY - i >= 0 && i <= 3; i++) {
-    if (checkPossiblePlay(curX, curY - i)) break;
+    if (checkPossiblePlay(curX, curY - i, marcar_casilla)) break;
   }
 
   // Right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && i <= 3; i++) {
-    if (checkPossiblePlay(curX + i, curY)) break;
+    if (checkPossiblePlay(curX + i, curY, marcar_casilla)) break;
   }
 
   // Lower move
   for (let i = 1; curY + i <= BOARD_HEIGHT - 1 && i <= 3; i++) {
-    if (checkPossiblePlay(curX, curY + i)) break;
+    if (checkPossiblePlay(curX, curY + i, marcar_casilla)) break;
   }
 
   // Left move
   for (let i = 1; curX - i >= 0 && i <= 3; i++) {
-    if (checkPossiblePlay(curX - i, curY)) break;
+    if (checkPossiblePlay(curX - i, curY, marcar_casilla)) break;
   }
 }
 
-function checkPossiblePlaysQueen(curX, curY) {
-  checkPossiblePlaysBishop(curX, curY);
-  checkPossiblePlaysRook(curX, curY);
+function checkPossiblePlaysQueen(curX, curY, marcar_casilla) {
+  checkPossiblePlaysBishop(curX, curY, marcar_casilla);
+  checkPossiblePlaysRook(curX, curY, marcar_casilla);
 }
 
-function checkPossiblePlaysKing(curX, curY) {
+function checkPossiblePlaysKing(curX, curY, marcar_casilla) {
   for (let i = -1; i <= 1; i++) {
     if (curY + i < 0 || curY + i > BOARD_HEIGHT - 1) continue;
 
@@ -1586,27 +1668,27 @@ function checkPossiblePlaysKing(curX, curY) {
       if (curX + j < 0 || curX + j > BOARD_WIDTH - 1) continue;
       if (i === 0 && j === 0) continue;
 
-      checkPossiblePlay(curX + j, curY + i);
+      checkPossiblePlay(curX + j, curY + i, marcar_casilla);
     }
   }
 
   //posible enroque de las blancas
-  if (currentTeam === 0) {
+  if (currentTeamCHECKMOVE === 0) {
     if (contadorreyblanco === 0 && jaquereyblanco === "No") {
       //torre2
       if (contadortorre2blanco === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam), true) === false
+          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false
         ) {
           if (board.tiles[curY][(curX + 1)].team === EMPTY &&
             board.tiles[curY][(curX + 2)].team === EMPTY &&
             board.tiles[curY][(curX + 3)].team === EMPTY) {
             //marcamos las casillas para que se pueda enrocar
-            checkPossiblePlay(curX + 2, curY);
-            checkPossiblePlay(curX + 3, curY);
+            checkPossiblePlay(curX + 2, curY, marcar_casilla);
+            checkPossiblePlay(curX + 3, curY, marcar_casilla);
           }
         }
       }
@@ -1614,38 +1696,38 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre1blanco === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam), true) === false
+          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false
         ) {
           if (board.tiles[curY][(curX - 1)].team === EMPTY &&
             board.tiles[curY][(curX - 2)].team === EMPTY &&
             board.tiles[curY][(curX - 3)].team === EMPTY) {
             //marcamos las casillas para que se pueda enrocar
-            checkPossiblePlay(curX - 2, curY);
-            checkPossiblePlay(curX - 3, curY);
+            checkPossiblePlay(curX - 2, curY, marcar_casilla);
+            checkPossiblePlay(curX - 3, curY, marcar_casilla);
           }
         }
       }
     }
   }
   //posible enroque de las negras
-  if (currentTeam === 1) {
+  if (currentTeamCHECKMOVE === 1) {
     if (contadorreynegro === 0 && jaquereynegro === "No") {
       //torre2
       if (contadortorre2negro === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeam), true) === false
+          checkTileUnderAttack(curX + 1, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX + 2, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX + 3, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false
         ) {
           if (board.tiles[curY][(curX + 1)].team === EMPTY &&
             board.tiles[curY][(curX + 2)].team === EMPTY &&
             board.tiles[curY][(curX + 3)].team === EMPTY) {
             //marcamos las casillas para que se pueda enrocar
-            checkPossiblePlay(curX + 2, curY);
-            checkPossiblePlay(curX + 3, curY);
+            checkPossiblePlay(curX + 2, curY, marcar_casilla);
+            checkPossiblePlay(curX + 3, curY, marcar_casilla);
           }
         }
       }
@@ -1653,16 +1735,16 @@ function checkPossiblePlaysKing(curX, curY) {
       if (contadortorre1negro === 0) {
         //verificamos casillas libres de ataque
         if (
-          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeam), true) === false &&
-          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeam), true) === false
+          checkTileUnderAttack(curX - 1, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX - 2, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false &&
+          checkTileUnderAttack(curX - 3, curY, getOppositeTeam(currentTeamCHECKMOVE), true) === false
         ) {
           if (board.tiles[curY][(curX - 1)].team === EMPTY &&
             board.tiles[curY][(curX - 2)].team === EMPTY &&
             board.tiles[curY][(curX - 3)].team === EMPTY) {
             //marcamos las casillas para que se pueda enrocar
-            checkPossiblePlay(curX - 2, curY);
-            checkPossiblePlay(curX - 3, curY);
+            checkPossiblePlay(curX - 2, curY, marcar_casilla);
+            checkPossiblePlay(curX - 3, curY, marcar_casilla);
           }
         }
       }
@@ -1670,29 +1752,33 @@ function checkPossiblePlaysKing(curX, curY) {
   }
 }
 
-function checkPossiblePlay(x, y) {
-  if (checkPossibleCapture(x, y)) {
+function checkPossiblePlay(x, y, marcar_casilla) {
+  if (checkPossibleCapture(x, y, marcar_casilla)) {
     return true;
   }
 
-  return !checkPossibleMove(x, y);
+  return !checkPossibleMove(x, y, marcar_casilla);
 }
 
-function checkPossibleMove(x, y) {
+function checkPossibleMove(x, y, marcar_casilla) {
   if (board.tiles[y][x].team !== EMPTY) return false;
 
   board.validMoves[y][x] = VALID;
-
-  drawCircle(x, y, HIGHLIGHT_COLOR);
+  posiblemovimiento.push("Si");
+  if (marcar_casilla === 1) {
+    drawCircle(x, y, HIGHLIGHT_COLOR);
+  }
   return true;
 }
 
-function checkPossibleCapture(x, y) {
-  if (board.tiles[y][x].team !== getOppositeTeam(currentTeam)) return false;
+function checkPossibleCapture(x, y, marcar_casilla) {
+  if (board.tiles[y][x].team !== getOppositeTeam(currentTeamCHECKMOVE)) return false;
 
   board.validMoves[y][x] = VALID_CAPTURE;
-
-  drawCorners(x, y, HIGHLIGHT_COLOR);
+  posiblemovimiento.push("Si");
+  if (marcar_casilla === 1) {
+    drawCorners(x, y, HIGHLIGHT_COLOR);
+  }
   return true;
 }
 
@@ -2750,6 +2836,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     }
   }
 
+  //movemos la pieza
   board.tiles[y][x].pieceType = board.tiles[curY][curX].pieceType;
   board.tiles[y][x].team = board.tiles[curY][curX].team;
 
@@ -2988,10 +3075,10 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
               })
               .catch(console.error);
 
-              Swal.fire({
-                title: "Opps..",
-                text: "El juego se ha empatado",
-              });
+            Swal.fire({
+              title: "Opps..",
+              text: "El juego se ha empatado",
+            });
 
           }
           break;
@@ -3068,10 +3155,10 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
               })
               .catch(console.error);
 
-              Swal.fire({
-                title: "Opps..",
-                text: "El juego se ha empatado",
-              });
+            Swal.fire({
+              title: "Opps..",
+              text: "El juego se ha empatado",
+            });
 
           }
           break;
@@ -3101,7 +3188,7 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
 
 async function repaintBoard() {
   drawBoard();
-  checkPossiblePlays();
+  checkPossiblePlays(1); //1 = marcar casilla
   drawPieces();
 }
 
@@ -3378,6 +3465,129 @@ function getOppositeTeam(team) {
   else if (team === BLACK) return WHITE;
   else return EMPTY;
 }
+function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
+  //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
+  for (let xx = 0; xx <= 8; xx++) {
+    for (let yy = 0; yy <= 9; yy++) {
+      //vemos que la pieza sea enemiga
+      if (board.tiles[yy][xx].team === equipo) {
+        currentTeamJUSTCHECK = equipo;
+        let tile = board.tiles[yy][xx];
+        if (tile.pieceType === PAWN)
+          checkPossiblePlaysPawnJUSTCHECK(xx, yy);
+        else if (tile.pieceType === KNIGHT)
+          checkPossiblePlaysKnightJUSTCHECK(xx, yy);
+        else if (tile.pieceType === BISHOP)
+          checkPossiblePlaysBishopJUSTCHECK(xx, yy);
+        else if (tile.pieceType === ROOK)
+          checkPossiblePlaysRookJUSTCHECK(xx, yy);
+        else if (tile.pieceType === QUEEN)
+          checkPossiblePlaysQueenJUSTCHECK(xx, yy);
+        //else if (tile.pieceType === KING) checkPossiblePlaysKingJUSTCHECK(xx, yy);
+        else if (tile.pieceType === ARDILLA)
+          checkPossiblePlaysArdillaJUSTCHECK(xx, yy);
+        else if (tile.pieceType === CONEJO)
+          checkPossiblePlaysConejoJUSTCHECK(xx, yy);
+        else if (tile.pieceType === PERRO)
+          checkPossiblePlaysPerroJUSTCHECK(xx, yy);
+        else if (tile.pieceType === PANTERA)
+          checkPossiblePlaysPanteraJUSTCHECK(xx, yy);
+        else if (tile.pieceType === ELEFANTE)
+          checkPossiblePlaysElefanteJUSTCHECK(xx, yy);
+        else if (tile.pieceType === LEON)
+          checkPossiblePlaysLeonJUSTCHECK(xx, yy);
+
+        //console.log('X:'+xx+'Y:'+yy+'Pieza:'+board.tiles[yy][xx].pieceType);
+      }
+    }
+  }
+  if (casillasenpeligro.includes(x + "/" + y)) {
+    //vaciamos el arreglo
+    casillasenpeligro = [];
+    if (board.tiles[y][x].pieceType === KING && checarjaquemate === true) {
+
+      if (board.tiles[y][x].team === WHITE) {
+        jaquereyblanco = "Si";
+        posicionreyblanco = x + "," + y;
+
+        //checamos jaque o jaquemate
+        const lastWX = serverGameData?.lastPiecejoue?.X;
+        const lastWY = serverGameData?.lastPiecejoue?.Y;
+        //sino se puede mover el rey
+        //la pieza que hace jaque nadie se la puede comer
+        //y no hay pieza que pueda tapar el jaque es MATE
+
+        
+        if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
+          checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
+          checkblockmate(x, y, WHITE) === false
+        ) {
+
+          getGameDbRef()
+            .update({
+              status: "black wins",
+              board,
+            })
+            .catch(console.error);
+          Swal.fire({
+            title: "Opps....",
+            text: "JAQUE MATE HAN GANADO LAS NEGRAS",
+          });
+
+        } else {
+          if (aviso_jaque === false) {
+            aviso_jaque = true;
+            Swal.fire({
+              title: "Opps....",
+              text: "JAQUE",
+            });
+          }
+        }
+      } else {
+        jaquereynegro = "Si";
+        posicionreynegro = x + "," + y;
+
+
+        const lastBX = serverGameData?.lastPiecejoue?.X;
+        const lastBY = serverGameData?.lastPiecejoue?.Y;
+        //sino se puede mover el rey
+        //la pieza que hace jaque nadie se la puede comer
+        //y no hay pieza que pueda tapar el jaque es MATE
+        if (moverelreynegro(parseInt(x), parseInt(y)) === false &&
+          checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
+          checkblockmate(x, y, BLACK) === false
+        ) {
+
+          getGameDbRef()
+            .update({
+              status: "white wins",
+              board,
+            })
+            .catch(console.error);
+          Swal.fire({
+            title: "Opps....",
+            text: "JAQUE MATE HAN GANADO LAS BLANCAS",
+          });
+
+        } else {
+          if (aviso_jaque === false) {
+            aviso_jaque = true;
+            Swal.fire({
+              title: "Opps....",
+              text: "JAQUE",
+            });
+          }
+        }
+      }
+    }
+    return true;
+  } else {
+    //vaciamos el arreglo
+    casillasenpeligro = [];
+    return false;
+  }
+}
+
 function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
   //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
   for (let xx = 0; xx <= 8; xx++) {
@@ -3432,7 +3642,7 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //y no hay pieza que pueda tapar el jaque es MATE
 
         if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttack(lastWX, lastWY, WHITE, true) === false &&
+          checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
           checkblockmate(x, y, WHITE) === false
         ) {
 
@@ -3467,7 +3677,7 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
         if (moverelreynegro(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttack(lastBX, lastBY, BLACK, true) === false &&
+          checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
           checkblockmate(x, y, BLACK) === false
         ) {
 

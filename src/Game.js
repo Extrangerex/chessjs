@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { Container, Row, Col, Navbar, NavDropdown, Nav, Table } from "react-bootstrap";
 
 import logo from "./images/logo-megachess.png";
-import { MyFooter } from "./Footer";
+//import { MyFooter } from "./Footer";
 import peon from "./assets/svg/peon.svg";
 import peonbco from "./assets/svg/peonbco.svg";
 import vacio from "./assets/svg/vacio.svg";
@@ -1567,7 +1567,7 @@ export function Game() {
         </Row>
       </Container>
       
-      <MyFooter/>
+      
 
     </section>
   );
