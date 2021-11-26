@@ -139,6 +139,7 @@ let aviso_doble_turno = false;
 let aviso_inicio = true;
 let aviso_jaque = false;
 let clave_privada;
+let validar = true;
 
 let lobbyItemKey;
 
@@ -822,6 +823,7 @@ export async function onClick(Y, X) {
       const checkBX = combo_posicionreynegro[0];
       const checkBY = combo_posicionreynegro[1];
 
+      
       if (checkPossiblePlaysCHECKMOVE(0, WHITE) === false && moverelreyblanco(parseInt(checkWX), parseInt(checkWY)) === false) {
         //console.log("rey BLANCO ahogado");  
         await getGameDbRef()
@@ -838,6 +840,7 @@ export async function onClick(Y, X) {
       } else {
         //console.log("rey BLANCO NO ahogado");  
       }
+
       if (checkPossiblePlaysCHECKMOVE(0, BLACK) === false && moverelreynegro(parseInt(checkBX), parseInt(checkBY)) === false) {
         //console.log("rey NEGRO ahogado");  
         await getGameDbRef()
@@ -1011,6 +1014,8 @@ export async function onClick(Y, X) {
 }
 
 function checkPossiblePlaysCHECKMOVE(marcar_casilla, equipo) {
+  validar = false; //no marcar casillas con validcapture o validmove
+
   //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
   for (let xx = 0; xx <= 8; xx++) {
     for (let yy = 0; yy <= 9; yy++) {
@@ -1045,6 +1050,8 @@ function checkPossiblePlaysCHECKMOVE(marcar_casilla, equipo) {
 }
 
 function checkPossiblePlays(marcar_casilla) {
+  validar = true;//si marcar casillas con validcapture o validmove
+
   if (curX < 0 || curY < 0) return;
 
   let tile = board.tiles[curY][curX];
@@ -1763,7 +1770,10 @@ function checkPossiblePlay(x, y, marcar_casilla) {
 function checkPossibleMove(x, y, marcar_casilla) {
   if (board.tiles[y][x].team !== EMPTY) return false;
 
-  board.validMoves[y][x] = VALID;
+  if (validar === true) {
+    board.validMoves[y][x] = VALID;
+  }
+
   posiblemovimiento.push("Si");
   if (marcar_casilla === 1) {
     drawCircle(x, y, HIGHLIGHT_COLOR);
@@ -1774,7 +1784,9 @@ function checkPossibleMove(x, y, marcar_casilla) {
 function checkPossibleCapture(x, y, marcar_casilla) {
   if (board.tiles[y][x].team !== getOppositeTeam(currentTeamCHECKMOVE)) return false;
 
-  board.validMoves[y][x] = VALID_CAPTURE;
+  if (validar === true) {
+    board.validMoves[y][x] = VALID_CAPTURE;
+  }
   posiblemovimiento.push("Si");
   if (marcar_casilla === 1) {
     drawCorners(x, y, HIGHLIGHT_COLOR);
@@ -3517,7 +3529,7 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
 
-        
+
         if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
           checkblockmate(x, y, WHITE) === false
@@ -3640,6 +3652,7 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
+
 
         if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
