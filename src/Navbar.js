@@ -61,8 +61,16 @@ export function MyNavbar() {
                             </Modal.Header>
                             <Modal.Body>
                                 <div align="center">
+                                {isOnline ? (
+                                <div>    
                                     <button onClick={createPrivateGame} className="btn btn-success" style={{margin:"5px"}}>Privada</button>
                                     <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
+                                </div>
+                                ) : (
+                                <div>    
+                                    <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
+                                </div>
+                                )}
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>

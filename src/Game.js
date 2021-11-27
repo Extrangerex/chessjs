@@ -40,7 +40,7 @@ export function Game() {
   useEffect(() => {
     if (!game?.lobbyRef) {
       if (lobbyItemId === undefined) {
-        dispatch(newGame(auth?.user?.uid));
+        dispatch(newGame(auth?.user?.uid,auth?.user?.email));
       } else {
         dispatch(joinGame(lobbyItemId, auth?.user?.uid));
       }

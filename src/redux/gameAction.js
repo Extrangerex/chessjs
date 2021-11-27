@@ -4,7 +4,7 @@ import { Board } from "../models/Board";
 import { finishLoading, startLoading } from "./actions";
 import { ReactSwal } from "../utils/SwalUtils";
 
-export const newGame = (uid) => async (dispatch) => {
+export const newGame = (uid,email) => async (dispatch) => {
   if (uid === undefined) return;
   dispatch(startLoading());
 
@@ -15,8 +15,12 @@ export const newGame = (uid) => async (dispatch) => {
   const timetoplayplayers = ahorita.getTime() + 45 * 60 * 1000;
   const timetoplay = ahorita.getTime() + 90 * 60 * 1000;
    
+  if(email === null || email === undefined){
+    email = "Anonimo";
+  }
 
   await itemRef.set({
+    creador:email,
     board: new Board(),
     curX: -1,
     curY: -1,
