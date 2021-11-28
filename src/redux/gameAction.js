@@ -10,6 +10,9 @@ export const newGame = (uid,email) => async (dispatch) => {
 
   const itemRef = await firebase.database().ref("lobby").push();
   const clave = localStorage.getItem("clave_privada");
+  const moves = localStorage.getItem("moves");
+  const time = localStorage.getItem("time");
+
 
   const ahorita = new Date();
   const timetoplayplayers = ahorita.getTime() + 45 * 60 * 1000;
@@ -65,6 +68,8 @@ export const newGame = (uid,email) => async (dispatch) => {
     isTriggeredChangeTeam: false,
     ultimo_movimiento: "",
     clave_privada: clave,
+    partida_con_movimientos:moves,
+    partida_con_tiempo:time,
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));

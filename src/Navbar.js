@@ -12,6 +12,8 @@ export function MyNavbar() {
     const createGame = () => {
         window.location = "/game";
         localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('moves', 'true');
         return;
     };
 
@@ -28,6 +30,8 @@ export function MyNavbar() {
         }
 
         localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('moves', 'true');
         return;
     };
 

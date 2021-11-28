@@ -61,30 +61,30 @@ export function Inicio() {
     const onNewsSubmit = data => {
         reset();
         //setLoading(true);
-        
+
         axios.post('https://www.agencianuba.com/megachess_panel/apis/newsletter.php', {
-            Idusuario:"123456789",
-            Clientid:1,
+            Idusuario: "123456789",
+            Clientid: 1,
             correo: data.emailAddress
         })
-        
-        .then(res => {
-            ReactSwal.fire({
-                title: "Aviso",
-                icon: "success",
-                text: res.data.mensaje
-            }).then(() => {
-                handleClose();
-            });
-        }).catch((error) => {
-            ReactSwal.fire({
-                title: "Opps..",
-                icon: "error",
-                text: error.toString()
-            });
-        }).finally(() => {
-           //setLoading(false);
-        })
+
+            .then(res => {
+                ReactSwal.fire({
+                    title: "Aviso",
+                    icon: "success",
+                    text: res.data.mensaje
+                }).then(() => {
+                    handleClose();
+                });
+            }).catch((error) => {
+                ReactSwal.fire({
+                    title: "Opps..",
+                    icon: "error",
+                    text: error.toString()
+                });
+            }).finally(() => {
+                //setLoading(false);
+            })
     }
 
     useEffect(() => {
@@ -101,12 +101,35 @@ export function Inicio() {
         .then(res => {
             //console.log(JSON.stringify(res.data[0]['id']));
             setPublicaciones(res.data);
-            
+
         })
 
-                   
-    
-      return (
+    const createGame = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+
+    const createNoTimeGame = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'true');
+        
+        return;
+    };
+
+    const createNotAnyGame = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'false');
+        return;
+    };
+
+    return (
         <section>
             <Navbar bg="light" expand="md">
                 <Container>
@@ -141,45 +164,42 @@ export function Inicio() {
                             </Col>
 
 
-                            <Col xs={12} md={3} style={{ padding: 0 }}>
+                            <Col xs={12} md={4} style={{ padding: 0 }}>
                                 <a href="#!">
                                     <div className="card-body">
                                         <i className="fas fa-chess-rook"></i>
-                                        <h4 className="card-title">Desafío</h4>
-                                        <p className="card-text">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                        <h4 className="card-title">
+                                            <button onClick={createGame} className="btn btn-info" style={{margin:"5px"}}>Desafío</button>
+                                        </h4>
+                                        <p className="card-text">Crea una partida con un límite de tiempo de 45 min. y 90 turnos por jugador.</p>
                                     </div>
                                 </a>
                             </Col>
 
-                            <Col xs={12} md={3} style={{ padding: 0 }}>
+                            <Col xs={12} md={4} style={{ padding: 0 }}>
                                 <a href="#!">
                                     <div className="card-body">
                                         <i className="fas fa-chess"></i>
-                                        <h4 className="card-title">Jugar</h4>
-                                        <p className="card-text">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                        <h4 className="card-title">
+                                            <button onClick={createNoTimeGame} className="btn btn-info" style={{margin:"5px"}}>Reto</button>
+                                        </h4>
+                                        <p className="card-text">Crea una partida sin límite de tiempo y 90 turnos por jugador</p>
                                     </div>
                                 </a>
                             </Col>
 
-                            <Col xs={12} md={3} style={{ padding: 0 }}>
+                            <Col xs={12} md={4} style={{ padding: 0 }}>
                                 <a href="#!">
                                     <div className="card-body">
                                         <i className="fas fa-chess-board"></i>
-                                        <h4 className="card-title">Torneo</h4>
-                                        <p className="card-text">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                                        <h4 className="card-title">
+                                            <button onClick={createNotAnyGame} className="btn btn-info" style={{margin:"5px"}}>Relax</button>
+                                        </h4>
+                                        <p className="card-text">Crea una partida sin límite de tiempo ni turnos.</p>
                                     </div>
                                 </a>
                             </Col>
 
-                            <Col xs={12} md={3} style={{ padding: 0 }}>
-                                <a href="#!">
-                                    <div className="card-body">
-                                        <i className="fas fa-chess-knight"></i>
-                                        <h4 className="card-title">Clasificación</h4>
-                                        <p className="card-text">Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-                                    </div>
-                                </a>
-                            </Col>
 
                         </Row>
                     </Container>
@@ -234,7 +254,7 @@ export function Inicio() {
                         <Col xs={12}>
                             <form className="form-inline justify-content-center align-items-center " method="post" onSubmit={NewsForm.handleSubmit(onNewsSubmit)}>
                                 <div className="form-group">
-                                    <input className="form-control" {...NewsForm.register("emailAddress", { required: true })} type="email"  placeholder="Escribe tu correo electrónico"/>
+                                    <input className="form-control" {...NewsForm.register("emailAddress", { required: true })} type="email" placeholder="Escribe tu correo electrónico" />
                                     {NewsForm.formState.errors.emailAddress?.type === 'required' && "Email address is required"}
                                 </div>
                                 <div className="form-group">

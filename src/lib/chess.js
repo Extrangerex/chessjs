@@ -139,6 +139,7 @@ let aviso_doble_turno = false;
 let aviso_inicio = true;
 let aviso_jaque = false;
 let clave_privada;
+
 let validar = true;
 
 let lobbyItemKey;
@@ -170,6 +171,7 @@ async function setIsTriggeredChangeTeam(value) {
     .catch(console.error);
 }
 
+
 setInterval(() => {
   let val = getMinutesromLastPieceJoueCreatedAt();
 
@@ -186,6 +188,7 @@ setInterval(() => {
  * Function called each second from Game Component
  */
 export async function setTimerFromCreatedAt() {
+
   if (serverGameData?.status === "playing") {
 
     /*
@@ -227,21 +230,28 @@ export async function setTimerFromCreatedAt() {
       }
     }
 
-    //timer general
-    document.getElementById("time_createdat").innerHTML =
-      getMinutesFromCreatedAt();
-    //document.getElementById("time_play").innerHTML = getMinutesromLastPieceJoueCreatedAt();
+    
+    
 
-    if (serverGameData?.side === serverGameData?.player1) {
-      document.getElementById("time_toplay_player1").innerHTML = getMinutesromPlayer1();
-    } else {
-      document.getElementById("time_toplay_player1").innerHTML = serverGameData?.tiempo_restante_jugador1
-    }
+    if (serverGameData?.partida_con_tiempo === "true") {
+      //timer general
+      document.getElementById("time_createdat").innerHTML = getMinutesFromCreatedAt();
 
-    if (serverGameData?.side === serverGameData?.player2) {
-      document.getElementById("time_toplay_player2").innerHTML = getMinutesromPlayer2();
+      if (serverGameData?.side === serverGameData?.player1) {
+        document.getElementById("time_toplay_player1").innerHTML = getMinutesromPlayer1();
+      } else {
+        document.getElementById("time_toplay_player1").innerHTML = serverGameData?.tiempo_restante_jugador1
+      }
+
+      if (serverGameData?.side === serverGameData?.player2) {
+        document.getElementById("time_toplay_player2").innerHTML = getMinutesromPlayer2();
+      } else {
+        document.getElementById("time_toplay_player2").innerHTML = serverGameData?.tiempo_restante_jugador2
+      }
     } else {
-      document.getElementById("time_toplay_player2").innerHTML = serverGameData?.tiempo_restante_jugador2
+      document.getElementById("time_createdat").innerHTML = "00:00";
+      document.getElementById("time_toplay_player1").innerHTML = "00:00";
+      document.getElementById("time_toplay_player2").innerHTML = "00:00";
     }
   }
 }
@@ -823,7 +833,7 @@ export async function onClick(Y, X) {
       const checkBX = combo_posicionreynegro[0];
       const checkBY = combo_posicionreynegro[1];
 
-      
+
       if (checkPossiblePlaysCHECKMOVE(0, WHITE) === false && moverelreyblanco(parseInt(checkWX), parseInt(checkWY)) === false) {
         //console.log("rey BLANCO ahogado");  
         await getGameDbRef()
@@ -943,14 +953,19 @@ export async function onClick(Y, X) {
       }
       //solo si no hay jaque cambiamos el turno
       if (cambio_de_turno === "Si") {
-        if (currentTeam === WHITE) {
-          var tiempo_disponible_white = getMinutesromPlayer1();
-          var tiempo_disponible_black = serverGameData?.tiempo_restante_jugador2
-        } else {
-          var tiempo_disponible_white = serverGameData?.tiempo_restante_jugador1
-          var tiempo_disponible_black = getMinutesromPlayer2();
-        }
 
+        if (serverGameData?.partida_con_tiempo === "true") {
+          if (currentTeam === WHITE) {
+            var tiempo_disponible_white = getMinutesromPlayer1();
+            var tiempo_disponible_black = serverGameData?.tiempo_restante_jugador2
+          } else {
+            var tiempo_disponible_white = serverGameData?.tiempo_restante_jugador1
+            var tiempo_disponible_black = getMinutesromPlayer2();
+          }
+        } else {
+          var tiempo_disponible_white = "45:00";
+          var tiempo_disponible_black = "45:00";
+        }
         const combo_restante_player1 = serverGameData?.tiempo_restante_jugador1.split(":");
         const minutos_restantes_player1 = parseInt(combo_restante_player1[0]);
         const segundos_restantes_player1 = parseInt(combo_restante_player1[1]);
