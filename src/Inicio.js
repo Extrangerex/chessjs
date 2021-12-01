@@ -117,7 +117,7 @@ export function Inicio() {
         localStorage.setItem('clave_privada', '');
         localStorage.setItem('time', 'false');
         localStorage.setItem('moves', 'true');
-        
+
         return;
     };
 
@@ -165,39 +165,39 @@ export function Inicio() {
 
 
                             <Col xs={12} md={4} style={{ padding: 0 }}>
-                                <a href="#!">
-                                    <div className="card-body">
-                                        <i className="fas fa-chess-rook"></i>
-                                        <h4 className="card-title">
-                                            <button onClick={createGame} className="btn btn-info" style={{margin:"5px"}}>Desafío</button>
-                                        </h4>
-                                        <p className="card-text">Crea una partida con un límite de tiempo de 45 min. y 90 turnos por jugador.</p>
-                                    </div>
-                                </a>
+
+                                <div className="card-body">
+                                    <i className="fas fa-chess-rook"></i>
+                                    <h4 className="card-title">
+                                        <button onClick={createGame} className="btn btn-info" style={{ margin: "5px" }}>Desafío</button>
+                                    </h4>
+                                    <p className="card-text">Crea una partida con un límite de tiempo de 45 min. y 90 turnos por jugador.</p>
+                                </div>
+
                             </Col>
 
                             <Col xs={12} md={4} style={{ padding: 0 }}>
-                                <a href="#!">
-                                    <div className="card-body">
-                                        <i className="fas fa-chess"></i>
-                                        <h4 className="card-title">
-                                            <button onClick={createNoTimeGame} className="btn btn-info" style={{margin:"5px"}}>Reto</button>
-                                        </h4>
-                                        <p className="card-text">Crea una partida sin límite de tiempo y 90 turnos por jugador</p>
-                                    </div>
-                                </a>
+
+                                <div className="card-body">
+                                    <i className="fas fa-chess"></i>
+                                    <h4 className="card-title">
+                                        <button onClick={createNoTimeGame} className="btn btn-info" style={{ margin: "5px" }}>Reto</button>
+                                    </h4>
+                                    <p className="card-text">Crea una partida sin límite de tiempo y 90 turnos por jugador</p>
+                                </div>
+
                             </Col>
 
                             <Col xs={12} md={4} style={{ padding: 0 }}>
-                                <a href="#!">
-                                    <div className="card-body">
-                                        <i className="fas fa-chess-board"></i>
-                                        <h4 className="card-title">
-                                            <button onClick={createNotAnyGame} className="btn btn-info" style={{margin:"5px"}}>Relax</button>
-                                        </h4>
-                                        <p className="card-text">Crea una partida sin límite de tiempo ni turnos.</p>
-                                    </div>
-                                </a>
+
+                                <div className="card-body">
+                                    <i className="fas fa-chess-board"></i>
+                                    <h4 className="card-title">
+                                        <button onClick={createNotAnyGame} className="btn btn-info" style={{ margin: "5px" }}>Relax</button>
+                                    </h4>
+                                    <p className="card-text">Crea una partida sin límite de tiempo ni turnos.</p>
+                                </div>
+
                             </Col>
 
 

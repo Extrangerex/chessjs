@@ -230,8 +230,8 @@ export async function setTimerFromCreatedAt() {
       }
     }
 
-    
-    
+
+
 
     if (serverGameData?.partida_con_tiempo === "true") {
       //timer general
@@ -402,7 +402,7 @@ async function startGame() {
     leer_whiteCasualitiesText();
     leer_blackCasualitiesText();
 
-    if (serverGameData?.partida_con_movimientos === "true") {
+
     try {
       Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
         let element = parseInt(_element);
@@ -490,7 +490,7 @@ async function startGame() {
       reset_jugadas();
     }
 
-  }
+
 
     repaintBoard();
 
