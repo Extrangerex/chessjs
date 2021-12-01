@@ -402,7 +402,7 @@ async function startGame() {
     leer_whiteCasualitiesText();
     leer_blackCasualitiesText();
 
-
+    if (serverGameData?.partida_con_movimientos === "true") {
     try {
       Object.keys(serverGameData?.jugadasPorBloque)?.forEach((_element) => {
         let element = parseInt(_element);
@@ -489,6 +489,9 @@ async function startGame() {
       document.getElementById("bloque10").style.backgroundColor = "red";
       reset_jugadas();
     }
+
+  }
+
     repaintBoard();
 
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
@@ -724,7 +727,7 @@ export async function onClick(Y, X) {
     return;
   }
 
-  if (serverGameData?.numero_turno >= 180) {
+  if (serverGameData?.numero_turno >= 180 && serverGameData?.partida_con_movimientos === "true") {
     await getGameDbRef()
       .update({
         status: "tied",
