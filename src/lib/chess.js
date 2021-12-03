@@ -748,12 +748,14 @@ export async function onClick(Y, X) {
       serverGameData?.lastPiecejoue?.X === X &&
       serverGameData?.lastPiecejoue?.Y === Y
     ) {
-
-      Swal.fire({
-        title: "Opps..",
-        text: "No puedes mover la misma pieza",
-      });
-      return;
+      //vemos si hay alternativas de movimiento ademas del rey
+      if (checkPossiblePlaysCHECKMOVE(0, currentTeam) === true){
+        Swal.fire({
+          title: "Opps..",
+          text: "No puedes mover la misma pieza",
+        });
+        return;
+      }  
     }
   }
 
@@ -1034,7 +1036,7 @@ export async function onClick(Y, X) {
 function checkPossiblePlaysCHECKMOVE(marcar_casilla, equipo) {
   validar = false; //no marcar casillas con validcapture o validmove
 
-  //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
+  //recorremos todo el tablero y llenamos el arreglo de casillas con posiblemovimiento
   for (let xx = 0; xx <= 8; xx++) {
     for (let yy = 0; yy <= 9; yy++) {
 
@@ -4960,7 +4962,7 @@ function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
 }
 
 function checkblockmate(xmirey, ymirey, miequipo) {
-  //recorremos todo el tablero y llenamos el arreglo de casillas en peligro
+  //recorremos todo el tablero y llenamos el arreglo de bloquearjaquemate
   for (let xx = 0; xx <= 8; xx++) {
     for (let yy = 0; yy <= 9; yy++) {
       //vemos que la pieza sea mia
