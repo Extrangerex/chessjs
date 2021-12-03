@@ -202,7 +202,7 @@ export async function setTimerFromCreatedAt() {
       }
     }
     */
-    if (getMillisecondsFromPlayer1() < 0) {
+    if (getMillisecondsFromPlayer1() < 0 && serverGameData?.partida_con_tiempo === "true") {
       if (serverGameData?.status !== "timeover black wins") {
         await getGameDbRef()
           .update({
@@ -216,7 +216,7 @@ export async function setTimerFromCreatedAt() {
       }
     }
 
-    if (getMillisecondsFromPlayer2() < 0) {
+    if (getMillisecondsFromPlayer2() < 0 && serverGameData?.partida_con_tiempo === "true") {
       if (serverGameData?.status !== "timeover white wins") {
         await getGameDbRef()
           .update({
