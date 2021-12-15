@@ -4,19 +4,30 @@ import { Board } from "../models/Board";
 import { finishLoading, startLoading } from "./actions";
 import { ReactSwal } from "../utils/SwalUtils";
 
-export const newGame = (uid,email) => async (dispatch) => {
+export const newGame = (uid, email) => async (dispatch) => {
   if (uid === undefined) return;
   dispatch(startLoading());
 
   const itemRef = await firebase.database().ref("lobby").push();
 
-  const partidas = await firebase.database().ref("lobby").get();
+  let partidas;
+  let next_id_partida;
+  
+  await firebase.database().ref("lobby")
+  .get()
+  .then((snapshot) => {
+    partidas = snapshot.val();
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
-  if (partidas.exists()) {
-    var next_id_partida = Object.keys(partidas).length;
-  }else{
-    var next_id_partida = 1;
-  }  
+  if (partidas === null) {
+    next_id_partida = 1;
+  } else {
+    next_id_partida = Object.keys(partidas).length+1;
+  }
+
 
   const clave = localStorage.getItem("clave_privada");
   const moves = localStorage.getItem("moves");
@@ -26,14 +37,14 @@ export const newGame = (uid,email) => async (dispatch) => {
   const ahorita = new Date();
   const timetoplayplayers = ahorita.getTime() + 45 * 60 * 1000;
   const timetoplay = ahorita.getTime() + 90 * 60 * 1000;
-   
-  if(email === null || email === undefined){
+
+  if (email === null || email === undefined) {
     email = "Anonimo";
   }
 
   await itemRef.set({
-    id_partida:next_id_partida,
-    creador:email,
+    id_partida: next_id_partida,
+    creador: email,
     board: new Board(),
     curX: -1,
     curY: -1,
@@ -51,15 +62,15 @@ export const newGame = (uid,email) => async (dispatch) => {
     jaquereynegro: "No",
     jaquereyblanco: "No",
     createdAt: timetoplay,
-    timeplayer1:timetoplayplayers,
-    timeplayer2:timetoplayplayers,
+    timeplayer1: timetoplayplayers,
+    timeplayer2: timetoplayplayers,
     tiempo_restante_jugador1: "45:00",
     tiempo_restante_jugador2: "45:00",
     side: uid,
     whiteCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     blackCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    whiteCasualitiesText:"",
-    blackCasualitiesText:"",
+    whiteCasualitiesText: "",
+    blackCasualitiesText: "",
     player1: uid,
     player2: null,
     status: "waiting",
@@ -71,19 +82,20 @@ export const newGame = (uid,email) => async (dispatch) => {
     posicionleonblanco: "-1,-1",
     leoncoronadonegrocomible: false,
     posicionleonnegro: "-1,-1",
-    posicionreynegro:"4,0",
-    posicionreyblanco:"4,9",
+    posicionreynegro: "4,0",
+    posicionreyblanco: "4,9",
     bloque: 1,
     numero_turno: 1,
     isTriggeredChangeTeam: false,
     ultimo_movimiento: "",
     clave_privada: clave,
-    partida_con_movimientos:moves,
-    partida_con_tiempo:time,
+    partida_con_movimientos: moves,
+    partida_con_tiempo: time,
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));
   dispatch(finishLoading());
+
 };
 
 export const joinGame = (lobbyItemId, uid) => async (dispatch) => {
@@ -137,16 +149,16 @@ export const reviewGame = (lobbyItemId, uid) => async (dispatch) => {
     .get();
 
   if (lobbyItemRefSnap.exists()) {
-    
+
     if (uid === lobbyItemRefSnap?.toJSON().player1) {
       dispatch(newGameAction(`lobby/${lobbyItemId}`));
     } else {
-    
+
       await firebase
         .database()
         .ref(`lobby/${lobbyItemId}`)
-        .update({ player2: uid});
-       
+        .update({ player2: uid });
+
     }
     dispatch(newGameAction(`lobby/${lobbyItemId}`));
   }

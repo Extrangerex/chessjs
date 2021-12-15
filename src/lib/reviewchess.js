@@ -44,6 +44,19 @@ const WHITE = GameConst.white;
 const BLACK = GameConst.black;
 
 const EMPTY = GameConst.empty;
+const PAWN = GameConst.pawn;
+const KNIGHT = GameConst.knight;
+const BISHOP = GameConst.bishop;
+const ROOK = GameConst.rook;
+const QUEEN = GameConst.queen;
+const KING = GameConst.king;
+const FAKEKING = GameConst.fakeking;
+const ARDILLA = GameConst.squirrel;
+const CONEJO = GameConst.bunny;
+const PERRO = GameConst.dog;
+const PANTERA = GameConst.panter;
+const ELEFANTE = GameConst.elephant;
+const LEON = GameConst.lyon;
 
 let numero_jugada = -1;
 let jugada_actual;
@@ -155,9 +168,22 @@ export async function onClick(Y, X) {
 
 
 function moveSelectedPiece(x, y, piece, oldX, oldY, lost, lost_team) {
-
+   
   //movemos la pieza
-  fakeboard.tiles[oldY][oldX].pieceType = fakeboard.tiles[y][x].pieceType;
+  //descoronacion
+  if(parseInt(y) === 9 || parseInt(y) === 0){
+    if (fakeboard.tiles[y][x].pieceType === BISHOP) fakeboard.tiles[oldY][oldX].pieceType = PAWN; 
+    else if (fakeboard.tiles[y][x].pieceType === ROOK) fakeboard.tiles[oldY][oldX].pieceType = CONEJO;
+    else if (fakeboard.tiles[y][x].pieceType === QUEEN) fakeboard.tiles[oldY][oldX].pieceType = ARDILLA;
+    else if (fakeboard.tiles[y][x].pieceType === FAKEKING) fakeboard.tiles[oldY][oldX].pieceType = LEON;
+    else fakeboard.tiles[oldY][oldX].pieceType = fakeboard.tiles[y][x].pieceType;
+
+  }else{
+
+    fakeboard.tiles[oldY][oldX].pieceType = fakeboard.tiles[y][x].pieceType;
+      
+  }
+  
   fakeboard.tiles[oldY][oldX].team = fakeboard.tiles[y][x].team;
 
   if(lost !== -1){
@@ -220,6 +246,68 @@ function drawBoard() {
 }
 
 function drawPieces() {
+  //coronacion
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[9][j].pieceType;
+    if (pieza === PAWN) {
+      fakeboard.tiles[9][j].pieceType = BISHOP;
+    }
+  }
+
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[0][j].pieceType;
+    if (pieza === PAWN) {
+      fakeboard.tiles[0][j].pieceType = BISHOP;
+    }
+  }
+
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[0][j].pieceType;
+    if (pieza === CONEJO) {
+      fakeboard.tiles[0][j].pieceType = ROOK;
+    }
+  }
+
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[9][j].pieceType;
+    if (pieza === CONEJO) {
+      fakeboard.tiles[9][j].pieceType = ROOK;
+    }
+  }
+
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[0][j].pieceType;
+    if (pieza === ARDILLA) {
+      fakeboard.tiles[0][j].pieceType = QUEEN;
+    }
+  }
+
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[9][j].pieceType;
+    if (pieza === ARDILLA) {
+      fakeboard.tiles[9][j].pieceType = QUEEN;
+    }
+  }
+
+
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[0][j].pieceType;
+    let equipo = fakeboard.tiles[0][j].team;
+
+    if (pieza === LEON && equipo === WHITE) {
+      fakeboard.tiles[0][j].pieceType = FAKEKING;
+    }
+  }
+
+  for (let j = 0; j < BOARD_WIDTH; j++) {
+    let pieza = fakeboard.tiles[9][j].pieceType;
+    let equipo = fakeboard.tiles[9][j].team;
+
+    if (pieza === LEON && equipo === BLACK) {
+      fakeboard.tiles[9][j].pieceType = FAKEKING;
+    }
+  }
+  //fin coronacion
 
   //pintamos las piezas
   for (let i = 0; i < BOARD_HEIGHT; i++) {
