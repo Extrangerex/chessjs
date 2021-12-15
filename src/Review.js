@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { joinGame, newGame } from "./redux/gameAction";
+import { reviewGame, newGame } from "./redux/gameAction";
 import { useParams } from "react-router-dom";
-import * as chess from "./lib/chess";
-import "./Game.css";
+import * as chess from "./lib/reviewchess";
+import "./Review.css";
 
 import "bootstrap/dist/css/bootstrap.css";
 import { Container, Row, Col, Navbar, NavDropdown, Nav, Table } from "react-bootstrap";
@@ -16,7 +16,7 @@ import vacio from "./assets/svg/vacio.svg";
 
 import firebase from "firebase";
 
-export function Game() {
+export function Review() {
   const { lobbyItemId } = useParams();
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
@@ -25,28 +25,35 @@ export function Game() {
   const [chat, setChat] = useState({});
   const [jugadas, setJugadas] = useState({});
   const [serverData, setServerData] = useState({});
-  const [estado, setEstado] = useState({});
-
 
   const [infoside, setSide] = useState({});
   const [infoplayer1, setPlayer1] = useState({});
 
 
   //actualiza todos los relojes cada segundo
+  /*
   const timerInterval = setInterval(() => {
     if (serverData?.createdAt != null) {
       chess.setTimerFromCreatedAt();
     }
   }, 1000);
+*/
+
 
   useEffect(() => {
-    if (!game?.lobbyRef) {
-      if (lobbyItemId === undefined) {
-        dispatch(newGame(auth?.user?.uid, auth?.user?.email));
-      } else {
-        dispatch(joinGame(lobbyItemId, auth?.user?.uid));
-      }
-    }
+    
+  if (!game?.lobbyRef) {
+    /*
+    if (lobbyItemId === undefined) {
+      dispatch(newGame(auth?.user?.uid,auth?.user?.email));
+    } else {
+    */
+    dispatch(reviewGame(lobbyItemId, auth?.user?.uid));
+    
+  }
+  /*
+}
+*/
     if (game?.lobbyRef != null) {
       chess.onLoad(game?.lobbyRef);
     }
@@ -57,7 +64,6 @@ export function Game() {
 
     const player1Ref = firebase.database().ref(`${game?.lobbyRef}/player1`);
 
-    const estado = firebase.database().ref(`${game?.lobbyRef}/status`);
 
     // firebase.database().ref("lobby").remove();
 
@@ -97,15 +103,9 @@ export function Game() {
       setPlayer1(snapshot.val());
     });
 
-    estado.on("value", (snapshot) => {
-      if (!snapshot.exists()) {
-        return;
-      }
-      setEstado(snapshot.val());
-    });
 
     return () => {
-      clearInterval(timerInterval);
+      // clearInterval(timerInterval);
       chatRef.off("value");
       jugadasRef.off("value");
     };
@@ -142,45 +142,17 @@ export function Game() {
           {/*solo para pc*/}
           <Col className='d-lg-block d-none' lg={{ span: 2, order: 1 }} style={{ padding: 0 }}>
             <div align="center" id="clave"></div>
-            <div align="center" style={{ height: "40vh" }}>
-              <img
-                id="jugador2"
-                src={peon}
-                alt=""
-                style={{ width: "100px", height: "100px", marginTop: "12vh" }}
-              ></img>
-              <br></br>
-              <p id="negras_comidas"></p>
-            </div>
-            <div align="center" style={{ height: "10vh" }}>
-              {estado === "playing" ? (
-                infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
-                  <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
-                ) : (
-                  <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
-                )
+            <div align="center" id="total_jugadas" class="d-none"></div>
+            <div align="center" id="jugada_actual" class="d-none"></div>
 
-              ) : (
-                <div></div>
-              )}
-            </div>
-            <div align="center" style={{ height: "45vh" }}>
-              <img
-                id="jugador1"
-                src={peonbco}
-                alt=""
-                style={{
-                  border: "1px solid white",
-                  borderRadius: "50%",
-                  padding: "5px",
-                  width: "100px",
-                  height: "100px",
-                  marginTop: "10vh",
-                }}
-              ></img>
+            <div align="center" style={{marginTop:"5px"}}>
+              <button onClick={() => chess.next_move()}>Siguiente</button>
               <br></br>
-              <p id="blancas_comidas"></p>
+              <button onClick={() => chess.prev_move()}>Anterior</button>
             </div>
+           
+           
+            
           </Col>
           <Col xs={{ span: 11, order: 2 }} lg={{ span: 6, order: 3 }} style={{ padding: 0 }}>
 
@@ -1404,53 +1376,19 @@ export function Game() {
           <Col className='d-block d-lg-none' xs={{ span: 12, order: 3 }} style={{ padding: 0 }}>
             <div align="center" id="clave_movil"></div>
           </Col>
-          <Col className='d-block d-lg-none' xs={{ span: 5, order: 3 }} style={{ padding: 0 }}>
+          <Col className='d-block d-lg-none' xs={{ span: 6, order: 3 }} style={{ padding: 0 }}>
+
+            <div align="center">  
+              <button onClick={() => chess.next_move()}>Siguiente</button>
+            </div>  
+           
+          </Col>
+          <Col className='d-block d-lg-none' xs={{ span: 6, order: 3 }} style={{ padding: 0 }}>
 
             <div align="center">
-              <img
-                id="jugador2_movil"
-                src={peon}
-                alt=""
-                style={{ width: "35px", height: "35px", marginTop: "5px" }}
-              ></img>
-              <br></br>
-              <p id="negras_comidas_movil" style={{ color: "white" }}></p>
-            </div>
-          </Col>
+              <button onClick={() => chess.prev_move()}>Anterior</button>
+            </div>    
 
-          <Col className='d-block d-lg-none' xs={{ span: 2, order: 3 }} style={{ padding: 0 }}>
-            <div align="center" style={{ marginTop: "5px" }}>
-              {estado === "playing" ? (
-                infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
-                  <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
-                ) : (
-                  <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
-                )
-
-              ) : (
-                <div></div>
-              )}
-            </div>
-          </Col>
-
-          <Col className='d-block d-lg-none' xs={{ span: 5, order: 3 }} style={{ padding: 0 }}>
-            <div align="center">
-              <img
-                id="jugador1_movil"
-                src={peonbco}
-                alt=""
-                style={{
-                  border: "1px solid white",
-                  borderRadius: "50%",
-                  padding: "5px",
-                  width: "35px",
-                  height: "35px",
-                  marginTop: "5px",
-                }}
-              ></img>
-              <br></br>
-              <p id="blancas_comidas_movil" style={{ color: "white" }}></p>
-            </div>
           </Col>
 
 
@@ -1521,79 +1459,8 @@ export function Game() {
               <h4 align="center" id="turno">
                 {" "}
               </h4>
-              <div id="chat_mensajes">
-                {Object.keys(chat).length > 0 ? (
-                  Object.keys(chat).map((key) => {
-                    const element = chat[key];
-                    const msgClass =
-                      element.uid !== auth?.user?.uid ? true : false;
-
-                    return (
-                      <p key={element.createdAt}
-                        style={{
-                          padding: ".25em",
-                          textAlign: msgClass ? "left" : "right",
-                          overflowWrap: "normal",
-                          fontSize: "1.2rem",
-                        }}
-                      >
-                        <span
-                          className={`badge badge-info ${msgClass ? "is-success" : "is-info"
-                            }`}
-                        >
-                          {element.msg}
-                        </span>
-                      </p>
-                    );
-                  })
-                ) : (
-                  <p align="center" style={{ margin: "5px" }}>
-                    <span></span>
-                  </p>
-                )}
-              </div>
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  const value = e.target.elements.userInput.value;
-                  await firebase
-                    .database()
-                    .ref(`${game?.lobbyRef}`)
-                    .child("chat")
-                    .push()
-                    .set({
-                      uid: firebase.auth().currentUser?.uid,
-                      msg: value,
-                      createdAt: Date.now(),
-                    });
-                  e.target.reset();
-                  //mandamos el scroll hasta abajo
-                  var chatBox = document.getElementById("chat_mensajes");
-                  chatBox.scrollTop = chatBox.scrollHeight;
-                }}
-              >
-                <div className="form-group">
-                  <input
-                    className="form-control"
-                    name="userInput"
-                    type="text"
-                    placeholder="Escribe tu mensaje"
-                  />
-                </div>
-                <div
-                  align="center"
-                  style={{
-                    backgroundColor: "#1B232F",
-                    paddingTop: "10px",
-                    paddingBottom: "5px",
-                  }}
-                >
-                  <button className="btn btn_enviar">Enviar</button>
-                  <p style={{ marginTop: "10px", color: "white" }}>
-                    <a href="#!">Regístrate</a> para usar el chat
-                  </p>
-                </div>
-              </form>
+              
+              
             </div>
           </Col>
           <Col xs={{ span: 12, order: 5 }} md={{ span: 1, order: 5 }} style={{ padding: 0 }}></Col>

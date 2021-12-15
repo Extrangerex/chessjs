@@ -9,11 +9,12 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Inicio } from "./Inicio";
 import { Videos } from "./Videos";
 import { Movimientos } from "./Movimientos";
-import { Piezas } from "./Piezas";
 import { Blog } from "./Blog";
 import { Comprar } from "./Comprar";
 import { Lobby } from "./Lobby";
 import { Game } from "./Game";
+import { Review } from "./Review";
+
 import { signInAnonymously } from "./redux/firebaseActions";
 import { Login } from "./Login";
 
@@ -37,12 +38,12 @@ function App({ authState }) {
             <Route path="/" component={Inicio} exact></Route>
             <Route path="/videos" component={Videos} exact></Route>
             <Route path="/movimientos" component={Movimientos} exact></Route>
-            <Route path="/piezas" component={Piezas} exact></Route>
             <Route path="/blog" component={Blog} exact></Route>
             <Route path="/login" component={Login} exact></Route>
             <Route path="/comprar" component={Comprar} exact></Route>
             <Route path="/lobby" component={Lobby} exact></Route>
             <Route path="/game/:lobbyItemId?" component={Game} exact></Route>
+            <Route path="/review/:lobbyItemId?" component={Review} exact></Route>
         </Router>
     );
 }

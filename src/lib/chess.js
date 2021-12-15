@@ -540,13 +540,13 @@ async function startGame() {
           }
         }
       }
-      if (serverGameData?.status === "white lion wins") {
+      if (serverGameData?.status === "white lion wins" || serverGameData?.status === "black give up") {
         Swal.fire({
           title: "Opps....",
           text: "HAN GANADO LAS BLANCAS",
         });
       }
-      if (serverGameData?.status === "black lion wins") {
+      if (serverGameData?.status === "black lion wins" || serverGameData?.status === "white give up") {
         Swal.fire({
           title: "Opps....",
           text: "HAN GANADO LAS NEGRAS",
@@ -712,14 +712,14 @@ export async function onClick(Y, X) {
     return;
   }
 
-  if (serverGameData?.status === "white lion wins") {
+  if (serverGameData?.status === "white lion wins" || serverGameData?.status === "black give up") {
     Swal.fire({
       title: "Opps..",
       text: "HAN GANADO LAS BLANCAS",
     });
     return;
   }
-  if (serverGameData?.status === "black lion wins") {
+  if (serverGameData?.status === "black lion wins" || serverGameData?.status === "white give up") {
     Swal.fire({
       title: "Opps..",
       text: "HAN GANADO LAS NEGRAS",
@@ -749,13 +749,13 @@ export async function onClick(Y, X) {
       serverGameData?.lastPiecejoue?.Y === Y
     ) {
       //vemos si hay alternativas de movimiento ademas del rey
-      if (checkPossiblePlaysCHECKMOVE(0, currentTeam) === true){
+      if (checkPossiblePlaysCHECKMOVE(0, currentTeam) === true) {
         Swal.fire({
           title: "Opps..",
           text: "No puedes mover la misma pieza",
         });
         return;
-      }  
+      }
     }
   }
 
@@ -2935,8 +2935,23 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
   }
 
   //guardamos el ultimo movimiento
-  ultimomovimiento =
-    piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam;
+  if (ultimotipodemovimiento === "Captura") {
+    if (currentTeam === 1) {
+      const combo_ultimapiezacapturadablanca = ultimapiezacapturadablanca.split("/");
+
+      ultimomovimiento =
+        piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam + "/" + combo_ultimapiezacapturadablanca[0];
+
+    } else {
+      const combo_ultimapiezacapturadanegra = ultimapiezacapturadanegra.split("/");
+
+      ultimomovimiento =
+        piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam + "/" + combo_ultimapiezacapturadanegra[0];
+    }
+  } else {
+    ultimomovimiento =
+      piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam + "/-1";
+  }
 
   nomenclatura =
     piecesCharacters[piece] +
@@ -2982,6 +2997,7 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
       .push({
         uid: firebase.auth().currentUser?.uid,
         movimiento: nomenclatura,
+        codigo: ultimomovimiento,
         createdAt: Date.now(),
         player: equipo_opuesto,
       })
@@ -3038,6 +3054,7 @@ export async function changeCurrentTeam(skip = false, resetPlayTime = false) {
       .push({
         uid: firebase.auth().currentUser?.uid,
         movimiento: nomenclatura,
+        codigo: ultimomovimiento,
         createdAt: Date.now(),
         player: currentTeam,
       })
@@ -5563,4 +5580,31 @@ function checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, xold, yold, xnew, ynew, pie
 
 function checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza) {
   return !checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza);
+}
+
+export async function rendirse_blancas() {
+  //console.log("Rendirse blancas");
+  getGameDbRef()
+    .update({
+      status: "white give up",
+      board,
+    })
+    .catch(console.error);
+  Swal.fire({
+    title: "Opps....",
+    text: "HAN GANADO LAS NEGRAS",
+  });
+}
+export async function rendirse_negras() {
+  //console.log("Rendirse negras");
+  getGameDbRef()
+    .update({
+      status: "black give up",
+      board,
+    })
+    .catch(console.error);
+  Swal.fire({
+    title: "Opps....",
+    text: "HAN GANADO LAS BLANCAS",
+  });
 }

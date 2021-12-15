@@ -1,0 +1,249 @@
+#fondo_juego{
+    background-color: #3B424E;
+    min-height: 100vh;
+}
+
+#extras{
+    /*height:100vh;*/
+    background-color: #1B232F;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    border-radius: .25rem;
+}
+#extras ul {
+    list-style:none;
+    padding:0;
+    margin-bottom: 5px !important;
+}
+#extras ul li {
+    display:inline-block;
+    padding:5px;
+    margin-top: 3px;
+    margin-right:5px;
+    margin-left:5px;
+    color: #1B232F;
+    background-color: white;
+    border-radius: 5px;
+}
+#chat_mensajes{
+    height: 16vh;
+    overflow: auto;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: .25rem;
+    background-color: white;
+}
+.form-group{
+    margin-bottom: 0;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: .25rem;
+}
+
+#jugadas{
+    height: 35vh;
+    overflow: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+#turno{
+    color:white;
+}
+.btn_enviar{
+    color:white;
+    background-color: darkgray;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+.btnturno{
+    /*margin: 1.5vw;*/
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    border: 0;
+}
+#blancas_comidas{
+    color:white;
+    font-size:.75rem;
+    margin:0;
+    padding-left:10px;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+#negras_comidas{
+    color:white;
+    font-size:.75rem;
+    margin:0;
+    padding-left:10px;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+#clave{
+    color:gold;
+} 
+#clave_movil{
+    color:gold;
+}
+.tablero {
+    margin-top: 1vh;
+}
+.tablero table {
+    margin: inherit;
+    /*border: outset #4A8129 6px;*/
+    background: #B8E37B;
+    cursor: grab;
+    width: auto !important;
+}
+
+.tablero td {
+    position: relative;
+    line-height: 0;
+    width: 3.2vw;
+    height: 3.2vw;
+    background: #4A8129;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+/*
+.tablero tr:nth-child(odd) td:nth-child(odd),
+.tablero tr:nth-child(even) td:nth-child(even) {
+    background: #B8E37B;
+}
+*/
+.tablero .blancas,
+.tablero .negras {
+    display: inline-block;
+    
+    /*width: 80%;*/
+    /*height: 80%;*/
+    /*background: white;*/
+    color: black;
+    /*border: 2px outset black;*/
+    /*border-radius: 100%;*/
+    overflow: hidden;
+    cursor: -ms-grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    cursor: grab;
+}
+
+.tablero .negras {
+    background: transparent;
+    color: white;
+    /*border: 2px outset white;*/
+}
+
+.tablero .mano {
+    cursor: -ms-grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+    cursor: grabbing;
+}
+
+.tablero span img {
+    width: 3.2vw;
+    height: 3.2vw;
+}
+.tablero .nomenclatura_numero{
+    position:absolute;left:2px;top:1.2vw;font-size:.8vw
+}
+.tablero .nomenclatura_letra{
+    position:absolute;left:2px;bottom:1.2vw;font-size:.8vw
+}
+
+.tablero .middle_dark {
+    background-color:#4a812985 !important;
+}
+.tablero .side_light {
+    background: #B8E37B;
+}
+
+
+
+.tablero .middle_light {
+   /* background-color:red;*/
+}
+
+.tablero .marker{
+    background-color: #3B424E !important;
+    border-color: #3B424E !important;
+    cursor: default !important;
+}
+.tablero .marker button{
+    cursor: default !important;
+}
+.block_marker{
+/*    margin: 1.5vw;*/
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    border: 0;
+}
+
+@media only screen and (min-width: 250px) and (max-width: 449px)  {
+    .tablero span img {
+        width: 7vw;
+        height: 7vw;
+    }
+} 
+
+@media only screen and (min-width: 450px) and (max-width: 600px)  {
+    .tablero span img {
+        width: 7.5vw;
+        height: 7.5vw;
+    }
+} 
+@media only screen and (min-width: 601px) and (max-width: 710px)  {
+    .tablero span img {
+        width: 7vw;
+        height: 7vw;
+    }
+} 
+@media only screen and (min-width: 711px) and (max-width: 750px)  {
+    .tablero span img {
+        width: 6.5vw;
+        height: 6.5vw;
+    }
+} 
+@media only screen and (min-width: 751px) and (max-width: 800px)  {
+    .tablero span img {
+        width: 5.5vw;
+        height: 5.5vw;
+    }
+} 
+@media only screen and (min-width: 801px) and (max-width: 991px)  {
+    .tablero span img {
+        width: 4.5vw;
+        height: 4.5vw;
+    }
+} 
+
+@media only screen and (max-width: 752px) {
+    .tablero .table {
+        margin: auto;
+    }   
+    
+    
+      
+}
+@media only screen and (max-width: 1000px) {
+    .btnturno{
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+    }    
+    .block_marker{
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+    }  
+    
+}    
+
+#total_jugadas, #jugada_actual{
+    color:white;
+}

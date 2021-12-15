@@ -143,7 +143,6 @@ export function Inicio() {
                             <NavDropdown title="Aprender" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/videos">Videos</NavDropdown.Item>
                                 <NavDropdown.Item href="/movimientos">Movimientos</NavDropdown.Item>
-                                <NavDropdown.Item href="/piezas">Piezas</NavDropdown.Item>
                             </NavDropdown>
                             <Nav.Link href="/lobby">Lobby</Nav.Link>
                             <Nav.Link href="/blog">Blog</Nav.Link>

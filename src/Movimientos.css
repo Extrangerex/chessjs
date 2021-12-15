@@ -19,3 +19,6 @@
 .movimientos table tbody tr td{
     height: 34px;padding: 6px;background: #ced8dc;text-align: left;font-size: 14px;padding-left: 25px;
 }
+.movimientos .btn-info:hover{
+    background-color: red;
+}

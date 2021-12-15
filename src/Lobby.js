@@ -74,6 +74,7 @@ export function Lobby() {
                     <table className="table">
                         <thead>
                             <tr>
+                                <th>Id:</th>
                                 <th>Creador:</th>
                                 <th>Estado:</th>
                                 <th>Tipo:</th>
@@ -86,7 +87,8 @@ export function Lobby() {
                                     const element = lobby[key];
                                     return (
                                         <tr key={key}>
-                                            <td data-title="Creador:"><span id="code">{element.player1}</span></td>
+                                            <td data-title="Id:">{element.id_partida}</td>
+                                            <td data-title="Creador:"><span id="code">{element.creador}</span></td>
                                             <td data-title="Estado:">{element.status}</td>
                                             <td data-title="Tipo:">
                                                 {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
@@ -94,13 +96,12 @@ export function Lobby() {
                                             <td data-title="Acciones:">
                                                 {
                                                     element?.clave_privada === "" ?
-                                                        (element?.player1 === auth?.user?.uid ||
-                                                            element?.player2 === auth?.user?.uid ? (
+                                                        (element?.status !== "playing" && element?.status !== "waiting" ? (
                                                             <button
                                                                 className="btn btn-success"
-                                                                onClick={() => (window.location = `/game/${key}`)}
+                                                                onClick={() => (window.location = `/review/${key}`)}
                                                             >
-                                                                Volver a jugar
+                                                                Analizar
                                                             </button>
                                                         ) : (
                                                             <button

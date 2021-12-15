@@ -9,6 +9,15 @@ export const newGame = (uid,email) => async (dispatch) => {
   dispatch(startLoading());
 
   const itemRef = await firebase.database().ref("lobby").push();
+
+  const partidas = await firebase.database().ref("lobby").get();
+
+  if (partidas.exists()) {
+    var next_id_partida = Object.keys(partidas).length;
+  }else{
+    var next_id_partida = 1;
+  }  
+
   const clave = localStorage.getItem("clave_privada");
   const moves = localStorage.getItem("moves");
   const time = localStorage.getItem("time");
@@ -23,6 +32,7 @@ export const newGame = (uid,email) => async (dispatch) => {
   }
 
   await itemRef.set({
+    id_partida:next_id_partida,
     creador:email,
     board: new Board(),
     curX: -1,
@@ -111,6 +121,33 @@ export const joinGame = (lobbyItemId, uid) => async (dispatch) => {
         .update({ player2: uid, status: "playing" });
     }
 
+    dispatch(newGameAction(`lobby/${lobbyItemId}`));
+  }
+
+  dispatch(finishLoading());
+};
+
+export const reviewGame = (lobbyItemId, uid) => async (dispatch) => {
+  if (uid === undefined) return;
+  dispatch(startLoading());
+
+  const lobbyItemRefSnap = await firebase
+    .database()
+    .ref(`lobby/${lobbyItemId}`)
+    .get();
+
+  if (lobbyItemRefSnap.exists()) {
+    
+    if (uid === lobbyItemRefSnap?.toJSON().player1) {
+      dispatch(newGameAction(`lobby/${lobbyItemId}`));
+    } else {
+    
+      await firebase
+        .database()
+        .ref(`lobby/${lobbyItemId}`)
+        .update({ player2: uid});
+       
+    }
     dispatch(newGameAction(`lobby/${lobbyItemId}`));
   }
 
