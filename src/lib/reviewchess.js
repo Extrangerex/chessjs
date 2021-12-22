@@ -105,7 +105,8 @@ async function startGame() {
 
     //cargamos el tablero    
     if (inicio_analisis === true) {
-      fakeboard = new Board(snapshot?.toJSON()?.board);
+     // fakeboard = new Board(snapshot?.toJSON()?.board);
+     fakeboard = new Board();
       inicio_analisis = false;
     } else {
       fakeboard = new Board(snapshot?.toJSON()?.fakeboard);
@@ -444,7 +445,8 @@ export function next_move() {
     var jugadas = serverGameData?.jugadas;
     if (jugadas !== null && jugadas !== undefined) {
       var total_jugadas = Object.keys(jugadas).length;
-      numero_jugada = total_jugadas;
+      //numero_jugada = total_jugadas;
+      numero_jugada = 0;
     }
   }
 
@@ -486,7 +488,8 @@ export function prev_move() {
     var jugadas = serverGameData?.jugadas;
     if (jugadas !== null && jugadas !== undefined) {
       var total_jugadas = Object.keys(jugadas).length;
-      numero_jugada = total_jugadas;
+      //numero_jugada = total_jugadas;
+      numero_jugada = 0;
     }
   }
 
