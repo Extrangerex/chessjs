@@ -113,12 +113,20 @@ export function Lobby() {
                                                         )
                                                         )
                                                         :
-                                                        (
+                                                        (element?.status !== "playing" && element?.status !== "waiting" ? (
+                                                            <button
+                                                                className="btn btn-success"
+                                                                onClick={() => (window.location = `/review/${key}`)}
+                                                            >
+                                                                Analizar
+                                                            </button>
+                                                        ) : (
                                                             <form onSubmit={handleSubmit}>
                                                                 <input id="clave_sala" type="text" placeholder="Ingresa la Clave" />
                                                                 <input id="id_sala" type="hidden" value={key} />
                                                                 <input style={{ marginLeft: "5px" }} className="btn btn-info" type="submit" value="Entrar" />
-                                                            </form>
+                                                            </form>  
+                                                        )
                                                         )
                                                 }
 
@@ -137,7 +145,7 @@ export function Lobby() {
                     </table>
                 </Row>
             </Container>
-            <MyFooter/>
+            <MyFooter />
         </section>
     );
 }

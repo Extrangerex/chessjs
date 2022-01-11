@@ -142,6 +142,7 @@ export function Game() {
           {/*solo para pc*/}
           <Col className='d-lg-block d-none' lg={{ span: 2, order: 1 }} style={{ padding: 0 }}>
             <div align="center" id="clave"></div>
+            <div align="center" id="id_partida"></div>
             <div align="center" style={{ height: "40vh" }}>
               <img
                 id="jugador2"
@@ -155,14 +156,34 @@ export function Game() {
             <div align="center" style={{ height: "10vh" }}>
               {estado === "playing" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
+
                   <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
+
                 ) : (
                   <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
+
                 )
 
               ) : (
                 <div></div>
               )}
+
+
+              {estado === "playing" ? (
+                infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
+
+                  <button onClick={() => chess.pausar()}>Pausar</button>
+
+                ) : (
+                  <button onClick={() => chess.pausar()}>Pausar</button>
+
+                )
+
+              ) : (
+                <div></div>
+              )}  
+
+              
             </div>
             <div align="center" style={{ height: "45vh" }}>
               <img
@@ -1403,6 +1424,7 @@ export function Game() {
           {/*solo para movil*/}
           <Col className='d-block d-lg-none' xs={{ span: 12, order: 3 }} style={{ padding: 0 }}>
             <div align="center" id="clave_movil"></div>
+            <div align="center" id="id_partida_movil"></div>
           </Col>
           <Col className='d-block d-lg-none' xs={{ span: 5, order: 3 }} style={{ padding: 0 }}>
 
@@ -1423,13 +1445,29 @@ export function Game() {
               {estado === "playing" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
                   <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
+
                 ) : (
                   <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
+
                 )
 
               ) : (
                 <div></div>
               )}
+
+              {estado === "playing" ? (
+                infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
+                  <button onClick={() => chess.pausar()}>Pausar</button>
+
+                ) : (
+                  <button onClick={() => chess.pausar()}>Pausar</button>
+
+                )
+
+              ) : (
+                <div></div>
+              )}  
+              
             </div>
           </Col>
 

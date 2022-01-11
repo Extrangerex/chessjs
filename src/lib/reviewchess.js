@@ -70,6 +70,8 @@ let inicio_analisis = true;
 let curX;
 let curY;
 
+let ultimapiezacapturadablanca;
+
 let lobbyItemKey;
 
 let serverGameData = {};
@@ -105,8 +107,8 @@ async function startGame() {
 
     //cargamos el tablero    
     if (inicio_analisis === true) {
-     // fakeboard = new Board(snapshot?.toJSON()?.board);
-     fakeboard = new Board();
+      // fakeboard = new Board(snapshot?.toJSON()?.board);
+      fakeboard = new Board();
       inicio_analisis = false;
     } else {
       fakeboard = new Board(snapshot?.toJSON()?.fakeboard);
@@ -169,31 +171,278 @@ export async function onClick(Y, X) {
 
 
 function moveSelectedPiece(x, y, piece, oldX, oldY, lost, lost_team) {
-   
+  var TeaM = getOppositeTeam(lost_team);
   //movemos la pieza
+  //console.log(x, y, piece, oldX, oldY, lost, lost_team);
+
+  //enroque y desenroque
+  if (piece === KING) {
+    //enroque blancas
+    if (
+      (x === 4 &&
+        oldY === 9 &&
+        oldX === 7 &&
+        y === 9) ||
+      (x === 4 &&
+        oldY === 9 &&
+        oldX === 6 &&
+        y === 9)
+    ) {
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[9][8].pieceType = EMPTY;
+      fakeboard.tiles[9][8].team = EMPTY;
+
+      //nueva posicion de la torre
+      fakeboard.tiles[9][5].pieceType = ROOK;
+      fakeboard.tiles[9][5].team = 0;
+    }
+    //vemos si es enroque con la torre1
+    if (
+      (x === 4 &&
+        oldY === 9 &&
+        oldX === 1 &&
+        y === 9) ||
+      (x === 4 &&
+        oldY === 9 &&
+        oldX === 2 &&
+        y === 9)
+    ) {
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[9][0].pieceType = EMPTY;
+      fakeboard.tiles[9][0].team = EMPTY;
+
+      //nueva posicion de la torre
+      fakeboard.tiles[9][3].pieceType = ROOK;
+      fakeboard.tiles[9][3].team = 0;
+    }
+
+    //enroque negras
+    if (
+      (x === 4 &&
+        oldY === 0 &&
+        oldX === 7 &&
+        y === 0) ||
+      (x === 4 &&
+        oldY === 0 &&
+        oldX === 6 &&
+        y === 0)
+    ) {
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[0][8].pieceType = EMPTY;
+      fakeboard.tiles[0][8].team = EMPTY;
+
+      //nueva posicion de la torre
+      fakeboard.tiles[0][5].pieceType = ROOK;
+      fakeboard.tiles[0][5].team = 1;
+    }
+    //vemos si es enroque con la torre1
+    if (
+      (x === 4 &&
+        oldY === 0 &&
+        oldX === 1 &&
+        y === 0) ||
+      (x === 4 &&
+        oldY === 0 &&
+        oldX === 2 &&
+        y === 0)
+    ) {
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[0][0].pieceType = EMPTY;
+      fakeboard.tiles[0][0].team = EMPTY;
+
+      //nueva posicion de la torre
+      fakeboard.tiles[0][3].pieceType = ROOK;
+      fakeboard.tiles[0][3].team = 1;
+    }
+
+    //desenroque blancas
+    if (
+      (oldX === 4 &&
+        oldY === 9 &&
+        x === 7 &&
+        y === 9) ||
+      (oldX === 4 &&
+        oldY === 9 &&
+        x === 6 &&
+        y === 9)
+    ) {
+      //nueva posicion de la torre
+      fakeboard.tiles[9][8].pieceType = ROOK;
+      fakeboard.tiles[9][8].team = 0;
+      
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[9][5].pieceType = EMPTY;
+      fakeboard.tiles[9][5].team = EMPTY;
+    }
+    //vemos si es enroque con la torre1
+    if (
+      (oldX === 4 &&
+        oldY === 9 &&
+        x === 1 &&
+        y === 9) ||
+      (oldX === 4 &&
+        oldY === 9 &&
+        x === 2 &&
+        y === 9)
+    ) {
+      //nueva posicion de la torre
+      fakeboard.tiles[9][0].pieceType = ROOK;
+      fakeboard.tiles[9][0].team = 0;
+      
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[9][3].pieceType = EMPTY;
+      fakeboard.tiles[9][3].team = EMPTY;
+    }
+
+    //desenroque negras
+    if (
+      (oldX === 4 &&
+        oldY === 0 &&
+        x === 7 &&
+        y === 0) ||
+      (oldX === 4 &&
+        oldY === 0 &&
+        x === 6 &&
+        y === 0)
+    ) {
+      //nueva posicion de la torre
+      fakeboard.tiles[0][8].pieceType = ROOK;
+      fakeboard.tiles[0][8].team = 1;
+      
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[0][5].pieceType = EMPTY;
+      fakeboard.tiles[0][5].team = EMPTY;
+    }
+    //vemos si es enroque con la torre1
+    if (
+      (oldX === 4 &&
+        oldY === 0 &&
+        x === 1 &&
+        y === 0) ||
+      (oldX === 4 &&
+        oldY === 0 &&
+        x === 2 &&
+        y === 0)
+    ) {
+      //nueva posicion de la torre
+      fakeboard.tiles[0][0].pieceType = ROOK;
+      fakeboard.tiles[0][0].team = 1;
+      
+      //vaciamos la posicion de la torre
+      fakeboard.tiles[0][3].pieceType = EMPTY;
+      fakeboard.tiles[0][3].team = EMPTY;
+    }
+  
+  }
+
+  //comio elefante
+  if (piece === ELEFANTE) {
+    // Upper-right move
+    if (oldX + 2 === x && oldY - 2 === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY - 1][oldX + 1].pieceType;
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY - 1][oldX + 1].pieceType = EMPTY;
+      fakeboard.tiles[oldY - 1][oldX + 1].team = EMPTY;
+    }
+
+    // Lower-right move
+    if (oldX + 2 === x && oldY + 2 === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY + 1][oldX + 1].pieceType;
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY + 1][oldX + 1].pieceType = EMPTY;
+      fakeboard.tiles[oldY + 1][oldX + 1].team = EMPTY;
+    }
+    // Lower-left move
+    if (oldX - 2 === x && oldY + 2 === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY + 1][oldX - 1].pieceType;
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY + 1][oldX - 1].pieceType = EMPTY;
+      fakeboard.tiles[oldY + 1][oldX - 1].team = EMPTY;
+    }
+    // Upper-left move
+    if (oldX - 2 === x && oldY - 2 === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY - 1][oldX - 1].pieceType;
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY - 1][oldX - 1].pieceType = EMPTY;
+      fakeboard.tiles[oldY - 1][oldX - 1].team = EMPTY;
+    }
+    // Upper move
+    if (oldX === x && oldY - 2 === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY - 1][oldX].pieceType + "/" + oldX + "," + (oldY - 1);
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY - 1][oldX].pieceType = EMPTY;
+      fakeboard.tiles[oldY - 1][oldX].team = EMPTY;
+    }
+    // Right move
+    if (oldX + 2 === x && oldY === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY][oldX + 1].pieceType;
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY][oldX + 1].pieceType = EMPTY;
+      fakeboard.tiles[oldY][oldX + 1].team = EMPTY;
+    }
+    // Lower move
+    if (oldX === x && oldY + 2 === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY + 1][oldX].pieceType;
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY + 1][oldX].pieceType = EMPTY;
+      fakeboard.tiles[oldY + 1][oldX].team = EMPTY;
+    }
+    // Left move
+    if (oldX - 2 === x && oldY === y) {
+      ultimapiezacapturadablanca =
+        fakeboard.tiles[oldY][oldX - 1].pieceType;
+      
+      //capturamos la ficha
+      fakeboard.tiles[oldY][oldX - 1].pieceType = EMPTY;
+      fakeboard.tiles[oldY][oldX - 1].team = EMPTY;
+    }
+  }
+
+  //comio ardilla
+  //comio conejo
+  //comio peon
+  
+  
+
+
   //descoronacion
-  if(parseInt(y) === 9 || parseInt(y) === 0){
-    if (fakeboard.tiles[y][x].pieceType === BISHOP) fakeboard.tiles[oldY][oldX].pieceType = PAWN; 
-    else if (fakeboard.tiles[y][x].pieceType === ROOK) fakeboard.tiles[oldY][oldX].pieceType = CONEJO;
-    else if (fakeboard.tiles[y][x].pieceType === QUEEN) fakeboard.tiles[oldY][oldX].pieceType = ARDILLA;
-    else if (fakeboard.tiles[y][x].pieceType === FAKEKING) fakeboard.tiles[oldY][oldX].pieceType = LEON;
+  if ((parseInt(y) === 9 && fakeboard.tiles[y][x].team === BLACK) || (parseInt(y) === 0 && fakeboard.tiles[y][x].team === WHITE)) {
+
+    if (fakeboard.tiles[y][x].pieceType === BISHOP) fakeboard.tiles[oldY][oldX].pieceType = piece;
+    else if (fakeboard.tiles[y][x].pieceType === ROOK) fakeboard.tiles[oldY][oldX].pieceType = piece;
+    else if (fakeboard.tiles[y][x].pieceType === QUEEN) fakeboard.tiles[oldY][oldX].pieceType = piece;
+    else if (fakeboard.tiles[y][x].pieceType === FAKEKING) fakeboard.tiles[oldY][oldX].pieceType = piece;
     else fakeboard.tiles[oldY][oldX].pieceType = fakeboard.tiles[y][x].pieceType;
 
-  }else{
+  } else {
 
     fakeboard.tiles[oldY][oldX].pieceType = fakeboard.tiles[y][x].pieceType;
-      
+
   }
-  
+
   fakeboard.tiles[oldY][oldX].team = fakeboard.tiles[y][x].team;
 
-  if(lost !== -1){
+  if (lost !== -1) {
     fakeboard.tiles[y][x].pieceType = lost;
     fakeboard.tiles[y][x].team = lost_team;
-  }else{
+  } else {
     fakeboard.tiles[y][x].pieceType = EMPTY;
     fakeboard.tiles[y][x].team = EMPTY;
-  }  
+  }
 
   ultimomovimiento =
     piece + "/" + oldX + "," + oldY + "/" + x + "," + y + "/" + currentTeam;
@@ -426,7 +675,7 @@ function getOppositeTeam(team) {
 }
 
 function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
-  
+
   var coordenadanew = "celda_y" + movnewY + "x" + movnewX;
   var celdanew = document.getElementById(coordenadanew);
   //celdanew.style.backgroundColor = HIGHLIGHT_COLOR;
@@ -440,7 +689,7 @@ function marcar_ultimo_movimiento(movnewX, movnewY, movoldX, movoldY) {
 }
 
 export function next_move() {
-  
+
   if (numero_jugada === -1) {
     var jugadas = serverGameData?.jugadas;
     if (jugadas !== null && jugadas !== undefined) {
@@ -463,26 +712,26 @@ export function next_move() {
       var combo_codigo_actual = codigo_actual.split("/");
       var comboOLD = combo_codigo_actual[1].split(",");
       var comboNEW = combo_codigo_actual[2].split(",");
-      var newx = comboNEW[0];
-      var newy = comboNEW[1];
-      var piece = combo_codigo_actual[0];
-      var oldX = comboOLD[0];
-      var oldY = comboOLD[1];
-      
+      var newx = parseInt(comboNEW[0]);
+      var newy = parseInt(comboNEW[1]);
+      var piece = parseInt(combo_codigo_actual[0]);
+      var oldX = parseInt(comboOLD[0]);
+      var oldY = parseInt(comboOLD[1]);
+
       var lost_piece = -1;
       var lost_team = -1;
 
-      
+
       moveSelectedPiece(oldX, oldY, piece, newx, newy, lost_piece, lost_team);
 
       document.getElementById('jugada_actual').innerHTML = elementos[numero_jugada][1]['movimiento'];
       numero_jugada++;
     }
   }
-  
+
 }
 export function prev_move() {
-  
+
   //buscamos numero de jugada
   if (numero_jugada === -1) {
     var jugadas = serverGameData?.jugadas;
@@ -506,20 +755,20 @@ export function prev_move() {
       var combo_codigo_actual = codigo_actual.split("/");
       var comboOLD = combo_codigo_actual[1].split(",");
       var comboNEW = combo_codigo_actual[2].split(",");
-      var newx = comboNEW[0];
-      var newy = comboNEW[1];
-      var piece = combo_codigo_actual[0];
-      var oldX = comboOLD[0];
-      var oldY = comboOLD[1];
+      var newx = parseInt(comboNEW[0]);
+      var newy = parseInt(comboNEW[1]);
+      var piece = parseInt(combo_codigo_actual[0]);
+      var oldX = parseInt(comboOLD[0]);
+      var oldY = parseInt(comboOLD[1]);
       var Team = parseInt(combo_codigo_actual[3]);
       var lost_piece = parseInt(combo_codigo_actual[4]);
       var lost_team = getOppositeTeam(Team);
 
-      
+
       moveSelectedPiece(newx, newy, piece, oldX, oldY, lost_piece, lost_team);
       document.getElementById('jugada_actual').innerHTML = elementos[numero_jugada][1]['movimiento'];
     }
   }
-  
+
 }
 

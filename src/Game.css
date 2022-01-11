@@ -84,6 +84,17 @@
 #clave_movil{
     color:gold;
 }
+
+#id_partida{
+    color:gold;
+}
+
+#id_partida_movil{
+    color:gold;
+}
+
+
+
 .tablero {
     margin-top: 1vh;
 }

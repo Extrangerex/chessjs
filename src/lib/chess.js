@@ -109,6 +109,8 @@ let posiblemovimiento = [];
 
 let jaquereyblanco;
 let jaquereynegro;
+
+
 let posicionreynegro;
 let posicionreyblanco;
 
@@ -387,6 +389,8 @@ async function startGame() {
 
     leer_jaquereyblanco();
     leer_jaquereynegro();
+     
+
 
     leer_leoncoronadoblancocomible();
     leer_leoncoronadonegrocomible();
@@ -569,6 +573,8 @@ async function startGame() {
         document.getElementById("clave_movil").innerHTML = "Clave: " + clave_privada;
       }
 
+      document.getElementById("id_partida").innerHTML = "ID: " + serverGameData?.id_partida;
+      document.getElementById("id_partida_movil").innerHTML = "ID: " + serverGameData?.id_partida;
     }
 
     if (ultimomovimiento !== null && ultimomovimiento !== undefined) {
@@ -983,35 +989,87 @@ export async function onClick(Y, X) {
         const timeavailableplayer2 = new Date();
         timeavailableplayer2.setTime(timeavailableplayer2.getTime() + (minutos_restantes_player2 * 60 * 1000) + (segundos_restantes_player2 * 1000));
 
+        //console.log(serverGameData?.jaquereyblanco);
+        //console.log(jaquereyblanco);
 
+        //aca tenemos un tema necesitamos guardar jaquedesde solo si hizo jaque sino no
+        //si es el segundo tiro del doble turno y no hizo jaque no guardamos jaquedesde pq talvez hizo jaque en el primer tiro y se nos borraria la posicion de la pieza que esta haciendo jaque
+        if ((serverGameData?.numero_turno % 18 === 1 &&
+          serverGameData?.player2 === serverGameData?.side &&
+          serverGameData?.jaquereyblanco === "Si" &&
+          jaquereyblanco === "No" ) ||
+          (serverGameData?.numero_turno % 18 === 1 &&
+            serverGameData?.player1 === serverGameData?.side &&
+            serverGameData?.jaquereynegro === "Si" &&
+            jaquereynegro === "No") ||
+          (serverGameData?.numero_turno % 18 === 1 &&
+            serverGameData?.player2 === serverGameData?.side &&
+            serverGameData?.jaquereyblanco === "Si" &&
+            jaquereyblanco === "Si") ||
+          (serverGameData?.numero_turno % 18 === 1 &&
+            serverGameData?.player1 === serverGameData?.side &&
+            serverGameData?.jaquereynegro === "Si" &&
+            jaquereynegro === "Si")
+        ) {
+          await getGameDbRef()
+            .update({
+              comeralpaso: comeralpaso,
+              comeralpasoconejo: comeralpasoconejo,
+              comeralpasoardilla: comeralpasoardilla,
+              comeralpasoardillatres: comeralpasoardillatres,
+              contadorreyblanco: contadorreyblanco,
+              contadorreynegro: contadorreynegro,
+              contadortorre1blanco: contadortorre1blanco,
+              contadortorre1negro: contadortorre1negro,
+              contadortorre2blanco: contadortorre2blanco,
+              contadortorre2negro: contadortorre2negro,
+              posicionreynegro: posicionreynegro,
+              posicionreyblanco: posicionreyblanco,
+              jaquereyblanco: jaquereyblanco,
+              jaquereynegro: jaquereynegro,
+              ultimo_movimiento: ultimomovimiento,
+              whiteCasualitiesText: whiteCasualitiesText,
+              blackCasualitiesText: blackCasualitiesText,
+              board,
+              lastPiecejoue: { X, Y, createdAt: Date.now() },
+              timeplayer1: timeavailableplayer1,
+              timeplayer2: timeavailableplayer2,
+              tiempo_restante_jugador1: tiempo_disponible_white,
+              tiempo_restante_jugador2: tiempo_disponible_black,
+            })
+            .catch(console.error);
 
-        await getGameDbRef()
-          .update({
-            comeralpaso: comeralpaso,
-            comeralpasoconejo: comeralpasoconejo,
-            comeralpasoardilla: comeralpasoardilla,
-            comeralpasoardillatres: comeralpasoardillatres,
-            contadorreyblanco: contadorreyblanco,
-            contadorreynegro: contadorreynegro,
-            contadortorre1blanco: contadortorre1blanco,
-            contadortorre1negro: contadortorre1negro,
-            contadortorre2blanco: contadortorre2blanco,
-            contadortorre2negro: contadortorre2negro,
-            posicionreynegro: posicionreynegro,
-            posicionreyblanco: posicionreyblanco,
-            jaquereyblanco: jaquereyblanco,
-            jaquereynegro: jaquereynegro,
-            ultimo_movimiento: ultimomovimiento,
-            whiteCasualitiesText: whiteCasualitiesText,
-            blackCasualitiesText: blackCasualitiesText,
-            board,
-            lastPiecejoue: { X, Y, createdAt: Date.now() },
-            timeplayer1: timeavailableplayer1,
-            timeplayer2: timeavailableplayer2,
-            tiempo_restante_jugador1: tiempo_disponible_white,
-            tiempo_restante_jugador2: tiempo_disponible_black,
-          })
-          .catch(console.error);
+        } else {
+
+          await getGameDbRef()
+            .update({
+              comeralpaso: comeralpaso,
+              comeralpasoconejo: comeralpasoconejo,
+              comeralpasoardilla: comeralpasoardilla,
+              comeralpasoardillatres: comeralpasoardillatres,
+              contadorreyblanco: contadorreyblanco,
+              contadorreynegro: contadorreynegro,
+              contadortorre1blanco: contadortorre1blanco,
+              contadortorre1negro: contadortorre1negro,
+              contadortorre2blanco: contadortorre2blanco,
+              contadortorre2negro: contadortorre2negro,
+              posicionreynegro: posicionreynegro,
+              posicionreyblanco: posicionreyblanco,
+              jaquereyblanco: jaquereyblanco,
+              jaquereynegro: jaquereynegro,
+              jaquedesde: X+","+Y,
+              ultimo_movimiento: ultimomovimiento,
+              whiteCasualitiesText: whiteCasualitiesText,
+              blackCasualitiesText: blackCasualitiesText,
+              board,
+              lastPiecejoue: { X, Y, createdAt: Date.now() },
+              timeplayer1: timeavailableplayer1,
+              timeplayer2: timeavailableplayer2,
+              tiempo_restante_jugador1: tiempo_disponible_white,
+              tiempo_restante_jugador2: tiempo_disponible_black,
+            })
+            .catch(console.error);
+        }
 
         if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
           await changeCurrentTeam();
@@ -3560,16 +3618,18 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         posicionreyblanco = x + "," + y;
 
         //checamos jaque o jaquemate
-        const lastWX = serverGameData?.lastPiecejoue?.X;
-        const lastWY = serverGameData?.lastPiecejoue?.Y;
+        const combo_brute_jaque_desde = serverGameData?.jaquedesde;
+        const combo_jaque_desde = combo_brute_jaque_desde.split(",");
+        const lastWX = parseInt(combo_jaque_desde[0]);
+        const lastWY = parseInt(combo_jaque_desde[1]);
+        
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-
-
-        if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
+        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
-          checkblockmate(x, y, WHITE) === false
+          checkblockmate(x, y, WHITE) === false) 
         ) {
 
           getGameDbRef()
@@ -3586,6 +3646,14 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         } else {
           if (aviso_jaque === false) {
             aviso_jaque = true;
+
+            getGameDbRef()
+            .update({
+              jaquereyblanco: jaquereyblanco,
+            })
+            .catch(console.error);
+
+
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -3596,15 +3664,18 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         jaquereynegro = "Si";
         posicionreynegro = x + "," + y;
 
-
-        const lastBX = serverGameData?.lastPiecejoue?.X;
-        const lastBY = serverGameData?.lastPiecejoue?.Y;
+        const combo_brute_jaque_desde = serverGameData?.jaquedesde;
+        const combo_jaque_desde = combo_brute_jaque_desde.split(",");
+        const lastBX = parseInt(combo_jaque_desde[0]);
+        const lastBY = parseInt(combo_jaque_desde[1]);
+        
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-        if (moverelreynegro(parseInt(x), parseInt(y)) === false &&
+        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        if ((moverelreynegro(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
-          checkblockmate(x, y, BLACK) === false
+          checkblockmate(x, y, BLACK) === false) 
         ) {
 
           getGameDbRef()
@@ -3621,6 +3692,13 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         } else {
           if (aviso_jaque === false) {
             aviso_jaque = true;
+
+            getGameDbRef()
+            .update({
+              jaquereynegro: jaquereynegro,
+            })
+            .catch(console.error);
+            
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -3677,23 +3755,26 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
   if (casillasenpeligro.includes(x + "/" + y)) {
     //vaciamos el arreglo
     casillasenpeligro = [];
+    
     if (board.tiles[y][x].pieceType === KING && checarjaquemate === true) {
-
+      
       if (board.tiles[y][x].team === WHITE) {
         jaquereyblanco = "Si";
         posicionreyblanco = x + "," + y;
 
         //checamos jaque o jaquemate
-        const lastWX = serverGameData?.lastPiecejoue?.X;
-        const lastWY = serverGameData?.lastPiecejoue?.Y;
+        const combo_brute_jaque_desde = serverGameData?.jaquedesde;
+        const combo_jaque_desde = combo_brute_jaque_desde.split(",");
+        const lastWX = parseInt(combo_jaque_desde[0]);
+        const lastWY = parseInt(combo_jaque_desde[1]);
+        
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-
-
-        if (moverelreyblanco(parseInt(x), parseInt(y)) === false &&
+        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
-          checkblockmate(x, y, WHITE) === false
+          checkblockmate(x, y, WHITE) === false) 
         ) {
 
           getGameDbRef()
@@ -3710,6 +3791,13 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         } else {
           if (aviso_jaque === false) {
             aviso_jaque = true;
+
+            getGameDbRef()
+            .update({
+              jaquereyblanco: jaquereyblanco,
+            })
+            .catch(console.error);
+
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -3721,14 +3809,18 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         posicionreynegro = x + "," + y;
 
 
-        const lastBX = serverGameData?.lastPiecejoue?.X;
-        const lastBY = serverGameData?.lastPiecejoue?.Y;
+        const combo_brute_jaque_desde = serverGameData?.jaquedesde;
+        const combo_jaque_desde = combo_brute_jaque_desde.split(",");
+        const lastBX = parseInt(combo_jaque_desde[0]);
+        const lastBY = parseInt(combo_jaque_desde[1]);
+        
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-        if (moverelreynegro(parseInt(x), parseInt(y)) === false &&
+        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        if ((moverelreynegro(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
-          checkblockmate(x, y, BLACK) === false
+          checkblockmate(x, y, BLACK) === false)
         ) {
 
           getGameDbRef()
@@ -3745,6 +3837,13 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         } else {
           if (aviso_jaque === false) {
             aviso_jaque = true;
+
+            getGameDbRef()
+            .update({
+              jaquereynegro: jaquereynegro,
+            })
+            .catch(console.error);  
+
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -4809,6 +4908,9 @@ async function leer_jaquereyblanco() {
       console.error(error);
     });
 }
+
+
+
 async function leer_jaquereynegro() {
   await getGameDbRef()
     .child("jaquereynegro")
@@ -4820,6 +4922,7 @@ async function leer_jaquereynegro() {
       console.error(error);
     });
 }
+
 async function leer_ultimo_movimiento() {
   await getGameDbRef()
     .child("ultimo_movimiento")
@@ -5607,4 +5710,16 @@ export async function rendirse_negras() {
     title: "Opps....",
     text: "HAN GANADO LAS BLANCAS",
   });
+}
+
+export async function pausar() {
+  //console.log("Rendirse blancas");
+  getGameDbRef()
+    .update({
+      status: "pause",
+      
+      board,
+    })
+    .catch(console.error);
+  
 }

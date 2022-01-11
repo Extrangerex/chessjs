@@ -61,6 +61,7 @@ export const newGame = (uid, email) => async (dispatch) => {
     contadortorre2negro: 0,
     jaquereynegro: "No",
     jaquereyblanco: "No",
+    jaquedesde:"-1,-1",
     createdAt: timetoplay,
     timeplayer1: timetoplayplayers,
     timeplayer2: timetoplayplayers,
