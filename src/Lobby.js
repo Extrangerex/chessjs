@@ -96,7 +96,7 @@ export function Lobby() {
                                             <td data-title="Acciones:">
                                                 {
                                                     element?.clave_privada === "" ?
-                                                        (element?.status !== "playing" && element?.status !== "waiting" ? (
+                                                        (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
                                                             <button
                                                                 className="btn btn-success"
                                                                 onClick={() => (window.location = `/review/${key}`)}
@@ -113,7 +113,7 @@ export function Lobby() {
                                                         )
                                                         )
                                                         :
-                                                        (element?.status !== "playing" && element?.status !== "waiting" ? (
+                                                        (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
                                                             <button
                                                                 className="btn btn-success"
                                                                 onClick={() => (window.location = `/review/${key}`)}

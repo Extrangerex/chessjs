@@ -12,20 +12,20 @@ export const newGame = (uid, email) => async (dispatch) => {
 
   let partidas;
   let next_id_partida;
-  
+
   await firebase.database().ref("lobby")
-  .get()
-  .then((snapshot) => {
-    partidas = snapshot.val();
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+    .get()
+    .then((snapshot) => {
+      partidas = snapshot.val();
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
   if (partidas === null) {
     next_id_partida = 1;
   } else {
-    next_id_partida = Object.keys(partidas).length+1;
+    next_id_partida = Object.keys(partidas).length + 1;
   }
 
 
@@ -61,7 +61,7 @@ export const newGame = (uid, email) => async (dispatch) => {
     contadortorre2negro: 0,
     jaquereynegro: "No",
     jaquereyblanco: "No",
-    jaquedesde:"-1,-1",
+    jaquedesde: "-1,-1",
     createdAt: timetoplay,
     timeplayer1: timetoplayplayers,
     timeplayer2: timetoplayplayers,
@@ -92,6 +92,7 @@ export const newGame = (uid, email) => async (dispatch) => {
     clave_privada: clave,
     partida_con_movimientos: moves,
     partida_con_tiempo: time,
+    pidio_pausa: "",
   });
 
   dispatch(newGameAction(`lobby/${itemRef.key}`));
@@ -111,7 +112,7 @@ export const joinGame = (lobbyItemId, uid) => async (dispatch) => {
   if (lobbyItemRefSnap.exists()) {
     const game = lobbyItemRefSnap?.toJSON();
 
-    if (game?.player1 != null && game?.player2 != null) {
+    if (game?.player1 != null && game?.player2 != null && game?.status !== "pause") {
       if (game?.player1 !== uid && game?.player2 !== uid) {
         ReactSwal.fire({
           title: "Opps..",
@@ -128,10 +129,14 @@ export const joinGame = (lobbyItemId, uid) => async (dispatch) => {
     if (uid === lobbyItemRefSnap?.toJSON().player1) {
       dispatch(newGameAction(`lobby/${lobbyItemId}`));
     } else {
-      await firebase
-        .database()
-        .ref(`lobby/${lobbyItemId}`)
-        .update({ player2: uid, status: "playing" });
+      //si estamos en pausa el player 2 no puede reanudar
+      if (game?.status !== "pause") {
+        await firebase
+          .database()
+          .ref(`lobby/${lobbyItemId}`)
+          .update({ player2: uid, status: "playing" });
+      }
+
     }
 
     dispatch(newGameAction(`lobby/${lobbyItemId}`));
