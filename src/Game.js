@@ -26,6 +26,8 @@ export function Game() {
   const [jugadas, setJugadas] = useState({});
   const [serverData, setServerData] = useState({});
   const [estado, setEstado] = useState({});
+  const [creador, setCreador] = useState({});
+
 
 
   const [infoside, setSide] = useState({});
@@ -58,6 +60,8 @@ export function Game() {
     const player1Ref = firebase.database().ref(`${game?.lobbyRef}/player1`);
 
     const estado = firebase.database().ref(`${game?.lobbyRef}/status`);
+    const creador = firebase.database().ref(`${game?.lobbyRef}/creador`);
+
 
     // firebase.database().ref("lobby").remove();
 
@@ -102,6 +106,13 @@ export function Game() {
         return;
       }
       setEstado(snapshot.val());
+    });
+
+    creador.on("value", (snapshot) => {
+      if (!snapshot.exists()) {
+        return;
+      }
+      setCreador(snapshot.val());
     });
 
     return () => {
@@ -169,7 +180,7 @@ export function Game() {
               )}
 
 
-              {estado === "playing" ? (
+              {estado === "playing" && creador !== "Anonimo" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
 
                   <button onClick={() => chess.pausar()}>Pausar</button>
@@ -181,9 +192,9 @@ export function Game() {
 
               ) : (
                 <div></div>
-              )}  
+              )}
 
-              
+
             </div>
             <div align="center" style={{ height: "45vh" }}>
               <img
@@ -1455,7 +1466,7 @@ export function Game() {
                 <div></div>
               )}
 
-              {estado === "playing" ? (
+              {estado === "playing" && creador !== "Anonimo" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
                   <button onClick={() => chess.pausar()}>Pausar</button>
 
@@ -1466,8 +1477,8 @@ export function Game() {
 
               ) : (
                 <div></div>
-              )}  
-              
+              )}
+
             </div>
           </Col>
 
