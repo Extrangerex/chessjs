@@ -180,7 +180,7 @@ export function Game() {
               )}
 
 
-              {estado === "playing" && creador !== "Anonimo" ? (
+              {/*estado === "playing" && creador !== "Anonimo" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
 
                   <button onClick={() => chess.pausar()}>Pausar</button>
@@ -192,7 +192,7 @@ export function Game() {
 
               ) : (
                 <div></div>
-              )}
+              )*/}
 
 
             </div>
@@ -1466,7 +1466,7 @@ export function Game() {
                 <div></div>
               )}
 
-              {estado === "playing" && creador !== "Anonimo" ? (
+              {/*estado === "playing" && creador !== "Anonimo" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
                   <button onClick={() => chess.pausar()}>Pausar</button>
 
@@ -1477,7 +1477,7 @@ export function Game() {
 
               ) : (
                 <div></div>
-              )}
+              )*/}
 
             </div>
           </Col>

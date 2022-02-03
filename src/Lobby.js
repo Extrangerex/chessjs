@@ -8,9 +8,10 @@ import { MyFooter } from "./Footer";
 import "./css/lobby.css";
 import { MyNavbar } from "./Navbar";
 import Swal from "sweetalert2";
-
+import { useOnlineState } from "./hooks/useOnlineState";
 
 export function Lobby() {
+    const isOnline = useOnlineState();
     const dispatch = useDispatch();
     const auth = useSelector((state) => state.auth);
 
@@ -85,54 +86,111 @@ export function Lobby() {
                             {Object.keys(lobby).length > 0 ? (
                                 Object.keys(lobby).map((key) => {
                                     const element = lobby[key];
-                                    return (
-                                        <tr key={key}>
-                                            <td data-title="Id:">{element.id_partida}</td>
-                                            <td data-title="Creador:"><span id="code">{element.creador}</span></td>
-                                            <td data-title="Estado:">{element.status}</td>
-                                            <td data-title="Tipo:">
-                                                {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
-                                            </td>
-                                            <td data-title="Acciones:">
-                                                {
-                                                    element?.clave_privada === "" ?
-                                                        (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
-                                                            <button
-                                                                className="btn btn-success"
-                                                                onClick={() => (window.location = `/review/${key}`)}
-                                                            >
-                                                                Analizar
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                className="btn btn-danger"
-                                                                onClick={() => (window.location = `/game/${key}`)}
-                                                            >
-                                                                Jugar
-                                                            </button>
-                                                        )
-                                                        )
-                                                        :
-                                                        (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
-                                                            <button
-                                                                className="btn btn-success"
-                                                                onClick={() => (window.location = `/review/${key}`)}
-                                                            >
-                                                                Analizar
-                                                            </button>
-                                                        ) : (
-                                                            <form onSubmit={handleSubmit}>
-                                                                <input id="clave_sala" type="text" placeholder="Ingresa la Clave" />
-                                                                <input id="id_sala" type="hidden" value={key} />
-                                                                <input style={{ marginLeft: "5px" }} className="btn btn-info" type="submit" value="Entrar" />
-                                                            </form>  
-                                                        )
-                                                        )
-                                                }
-
-                                            </td>
-                                        </tr>
-                                    );
+                                    const hoy = new Date();
+                                    const fechacreacion = element.fecha_creacion;
+                                    if(isOnline){
+                                        if (element.creador !== 'Anonimo') {
+                                            return (
+                                                <tr key={key}>
+                                                    <td data-title="Id:">{element.id_partida}</td>
+                                                    <td data-title="Creador:"><span id="code">{element.creador}</span></td>
+                                                    <td data-title="Estado:">{element.status}</td>
+                                                    <td data-title="Tipo:">
+                                                        {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
+                                                    </td>
+                                                    <td data-title="Acciones:">
+                                                        {
+                                                            element?.clave_privada === "" ?
+                                                                (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
+                                                                    <button
+                                                                        className="btn btn-success"
+                                                                        onClick={() => (window.location = `/review/${key}`)}
+                                                                    >
+                                                                        Analizar
+                                                                    </button>
+                                                                ) : (
+                                                                    <button
+                                                                        className="btn btn-danger"
+                                                                        onClick={() => (window.location = `/game/${key}`)}
+                                                                    >
+                                                                        Jugar
+                                                                    </button>
+                                                                )
+                                                                )
+                                                                :
+                                                                (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
+                                                                    <button
+                                                                        className="btn btn-success"
+                                                                        onClick={() => (window.location = `/review/${key}`)}
+                                                                    >
+                                                                        Analizar
+                                                                    </button>
+                                                                ) : (
+                                                                    <form onSubmit={handleSubmit}>
+                                                                        <input id="clave_sala" type="text" placeholder="Ingresa la Clave" />
+                                                                        <input id="id_sala" type="hidden" value={key} />
+                                                                        <input style={{ marginLeft: "5px" }} className="btn btn-info" type="submit" value="Entrar" />
+                                                                    </form>
+                                                                )
+                                                                )
+                                                        }
+    
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    }else{
+                                        if ((element.creador === 'Anonimo' && element.status === 'playing' && (hoy >= fechacreacion || fechacreacion === undefined )) || (element.creador === 'Anonimo' && element.status === 'waiting' && (hoy >= fechacreacion || fechacreacion === undefined)) ) {
+                                            return (
+                                                <tr key={key}>
+                                                    <td data-title="Id:">{element.id_partida}</td>
+                                                    <td data-title="Creador:"><span id="code">{element.creador}</span></td>
+                                                    <td data-title="Estado:">{element.status}</td>
+                                                    <td data-title="Tipo:">
+                                                        {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
+                                                    </td>
+                                                    <td data-title="Acciones:">
+                                                        {
+                                                            element?.clave_privada === "" ?
+                                                                (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
+                                                                    <button
+                                                                        className="btn btn-success"
+                                                                        onClick={() => (window.location = `/review/${key}`)}
+                                                                    >
+                                                                        Analizar
+                                                                    </button>
+                                                                ) : (
+                                                                    <button
+                                                                        className="btn btn-danger"
+                                                                        onClick={() => (window.location = `/game/${key}`)}
+                                                                    >
+                                                                        Jugar
+                                                                    </button>
+                                                                )
+                                                                )
+                                                                :
+                                                                (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
+                                                                    <button
+                                                                        className="btn btn-success"
+                                                                        onClick={() => (window.location = `/review/${key}`)}
+                                                                    >
+                                                                        Analizar
+                                                                    </button>
+                                                                ) : (
+                                                                    <form onSubmit={handleSubmit}>
+                                                                        <input id="clave_sala" type="text" placeholder="Ingresa la Clave" />
+                                                                        <input id="id_sala" type="hidden" value={key} />
+                                                                        <input style={{ marginLeft: "5px" }} className="btn btn-info" type="submit" value="Entrar" />
+                                                                    </form>
+                                                                )
+                                                                )
+                                                        }
+    
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    }
                                 })
                             ) : (
                                 <tr>

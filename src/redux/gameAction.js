@@ -45,6 +45,7 @@ export const newGame = (uid, email) => async (dispatch) => {
   await itemRef.set({
     id_partida: next_id_partida,
     creador: email,
+    fecha_creacion:ahorita,
     board: new Board(),
     curX: -1,
     curY: -1,
