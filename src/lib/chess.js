@@ -3009,9 +3009,9 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     const checkX = combo_posicionreyblanco[0];
     const checkY = combo_posicionreyblanco[1];
 
-    if (checkTileUnderAttack(checkX, checkY, BLACK, true) === true) {
+    if (checkTileUnderAttack(checkX, checkY, BLACK, true) === true && piece !== KING) {
       //alert('Movimiento inválido');
-      //regresamos todo a como estaba antes del movimiento
+      //regresamos todo a como estaba antes del movimiento solo si la pieza movida no es el rey
       board.tiles[oldY][oldX].pieceType = board.tiles[y][x].pieceType;
       board.tiles[oldY][oldX].team = board.tiles[y][x].team;
       board.tiles[y][x].pieceType = EMPTY;
@@ -3036,9 +3036,9 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
     const checkX = combo_posicionreynegro[0];
     const checkY = combo_posicionreynegro[1];
 
-    if (checkTileUnderAttack(checkX, checkY, WHITE, true) === true) {
+    if (checkTileUnderAttack(checkX, checkY, WHITE, true) === true && piece !== KING) {
       //alert('Movimiento inválido');
-      //regresamos todo a como estaba antes del movimiento
+      //regresamos todo a como estaba antes del movimiento solo si la pieza movida no es el rey
       board.tiles[oldY][oldX].pieceType = board.tiles[y][x].pieceType;
       board.tiles[oldY][oldX].team = board.tiles[y][x].team;
       board.tiles[y][x].pieceType = EMPTY;
