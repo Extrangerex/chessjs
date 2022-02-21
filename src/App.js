@@ -12,6 +12,8 @@ import { Movimientos } from "./Movimientos";
 import { Blog } from "./Blog";
 import { Comprar } from "./Comprar";
 import { Lobby } from "./Lobby";
+import { Allgames } from "./Allgames";
+
 import { Game } from "./Game";
 import { Review } from "./Review";
 
@@ -44,6 +46,7 @@ function App({ authState }) {
             <Route path="/lobby" component={Lobby} exact></Route>
             <Route path="/game/:lobbyItemId?" component={Game} exact></Route>
             <Route path="/review/:lobbyItemId?" component={Review} exact></Route>
+            <Route path="/allgames" component={Allgames} exact></Route>
         </Router>
     );
 }

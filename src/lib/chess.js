@@ -602,13 +602,13 @@ async function startGame() {
       if (serverGameData?.status === "white lion wins" || serverGameData?.status === "black give up") {
         Swal.fire({
           title: "Opps....",
-          text: "HAN GANADO LAS BLANCAS",
+          text: "SE CORONÓ EL LEÓN, HAN GANADO LAS BLANCAS",
         });
       }
       if (serverGameData?.status === "black lion wins" || serverGameData?.status === "white give up") {
         Swal.fire({
           title: "Opps....",
-          text: "HAN GANADO LAS NEGRAS",
+          text: "SE CORONÓ EL LEÓN, HAN GANADO LAS NEGRAS",
         });
       }
 
@@ -787,14 +787,14 @@ export async function onClick(Y, X) {
   if (serverGameData?.status === "white lion wins" || serverGameData?.status === "black give up") {
     Swal.fire({
       title: "Opps..",
-      text: "HAN GANADO LAS BLANCAS",
+      text: "SE CORONÓ EL LEÓN, HAN GANADO LAS BLANCAS",
     });
     return;
   }
   if (serverGameData?.status === "black lion wins" || serverGameData?.status === "white give up") {
     Swal.fire({
       title: "Opps..",
-      text: "HAN GANADO LAS NEGRAS",
+      text: "SE CORONÓ EL LEÓN, HAN GANADO LAS NEGRAS",
     });
     return;
   }
@@ -4876,7 +4876,12 @@ async function leer_act_numero_turno() {
     .get()
     .then((snapshot) => {
       numero_turno = snapshot.val();
-      document.getElementById("numero_turno").innerHTML = numero_turno;
+      //1 turno son 2 jugadas
+      var numero_turno_actual = parseInt(numero_turno / 2);
+      if(numero_turno_actual === 0){
+        numero_turno_actual = 1;
+      }
+      document.getElementById("numero_turno").innerHTML = numero_turno_actual;
     })
     .catch((error) => {
       console.error(error);

@@ -82,7 +82,7 @@ export function Review() {
       setChat(snapshot.val());
       //mandamos el scroll hasta abajo
       var chatBox = document.getElementById("chat_mensajes");
-      chatBox.scrollTop = chatBox.scrollHeight;
+      //chatBox.scrollTop = chatBox.scrollHeight;
     });
 
     jugadasRef.on("value", (snapshot) => {
