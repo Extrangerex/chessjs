@@ -86,6 +86,7 @@ let board;
 let currentTeam;
 let currentTeamJUSTCHECK;
 let currentTeamCHECKBLOCKMATE;
+let currentTeamKINGRESOLVEMATE;
 let currentTeamCHECKMOVE;
 
 let flag = 1;
@@ -106,6 +107,7 @@ let contadortorre2negro;
 let casillasenpeligro = [];
 let bloquearjaquemate = [];
 let posiblemovimiento = [];
+let resolverjaquemate = [];
 
 
 let jaquereyblanco;
@@ -3838,10 +3840,11 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        //si el rey puede comer y quedar sin jaque
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
-          checkblockmate(x, y, WHITE) === false)
+          checkblockmate(x, y, WHITE) === false && 
+          checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE) === false)
         ) {
 
           getGameDbRef()
@@ -3884,10 +3887,11 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        //si el rey puede comer y quedar sin jaque
         if ((moverelreynegro(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
-          checkblockmate(x, y, BLACK) === false)
+          checkblockmate(x, y, BLACK) === false &&
+          checkKINGRESOLVEMATE(parseInt(x), parseInt(y), BLACK) === false)
         ) {
 
           getGameDbRef()
@@ -3983,10 +3987,11 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        //si el rey puede comer y quedar sin jaque
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
-          checkblockmate(x, y, WHITE) === false)
+          checkblockmate(x, y, WHITE) === false &&
+          checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE) === false)
         ) {
 
           getGameDbRef()
@@ -4029,10 +4034,11 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //sino se puede mover el rey
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
-        //aqui falta aumentar que revise si hay mas de 1 jaque y si se los puede quitar pero con el mismo tiro
+        //si el rey puede comer y quedar sin jaque
         if ((moverelreynegro(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
-          checkblockmate(x, y, BLACK) === false)
+          checkblockmate(x, y, BLACK) === false && 
+          checkKINGRESOLVEMATE(parseInt(x), parseInt(y), BLACK) === false)
         ) {
 
           getGameDbRef()
@@ -5126,8 +5132,6 @@ async function leer_jaquereyblanco() {
     });
 }
 
-
-
 async function leer_jaquereynegro() {
   await getGameDbRef()
     .child("jaquereynegro")
@@ -5901,6 +5905,96 @@ function checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, xold, yold, xnew, ynew, pie
 function checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza) {
   return !checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza);
 }
+
+
+
+
+
+
+
+
+
+
+
+function checkKINGRESOLVEMATE(xmirey, ymirey, miequipo) {
+  currentTeamKINGRESOLVEMATE = miequipo;
+
+  checkPossiblePlaysKINGRESOLVEMATE(xmirey, ymirey);
+    
+  if (resolverjaquemate.includes("si")) {
+    //vaciamos el arreglo
+    resolverjaquemate = [];
+    return true;
+  } else {
+    resolverjaquemate = [];
+    return false;
+  }
+}
+
+function checkPossiblePlaysKINGRESOLVEMATE(curX, curY) {
+  for (let i = -1; i <= 1; i++) {
+    if (curY + i < 0 || curY + i > BOARD_HEIGHT - 1) continue;
+
+    for (let j = -1; j <= 1; j++) {
+      if (curX + j < 0 || curX + j > BOARD_WIDTH - 1) continue;
+      if (i === 0 && j === 0) continue;
+
+      checkPossibleKINGRESOLVEMATE(curX, curY, curX + j, curY + i);
+    }
+  }
+}
+
+
+
+function checkPossibleKINGRESOLVEMATE(xold, yold, xnew, ynew) {
+  //si la casilla esta ocupada por una pieza nuestra no podemos hace nada  
+  if (board.tiles[ynew][xnew].team === currentTeamKINGRESOLVEMATE) return false;
+
+  //liberamos la casilla vieja
+  board.tiles[yold][xold].team = EMPTY;
+  board.tiles[yold][xold].pieceType = EMPTY;
+  //guardamos el equipo y pieza de la casilla nueva
+  var equipo_old = board.tiles[ynew][xnew].team; 
+  var pieza_old = board.tiles[ynew][xnew].pieceType;
+
+  //hacemos el movimiento nuevo  
+  board.tiles[ynew][xnew].team = currentTeamKINGRESOLVEMATE;
+  board.tiles[ynew][xnew].pieceType = KING;
+  //checamos si todavia hay jaque
+  if (checkTileUnderAttack(xnew, ynew, getOppositeTeam(currentTeamKINGRESOLVEMATE), false) === true) {
+    //regresamos el tablero como estaba
+    board.tiles[ynew][xnew].team = equipo_old;
+    board.tiles[ynew][xnew].pieceType = pieza_old;
+    board.tiles[yold][xold].team = currentTeamKINGRESOLVEMATE;
+    board.tiles[yold][xold].pieceType = KING;
+
+    resolverjaquemate.push("no");
+    return false; //no hay salvacion
+  } else {
+    //regresamos el tablero como estaba
+    board.tiles[ynew][xnew].team = equipo_old;
+    board.tiles[ynew][xnew].pieceType = pieza_old;
+    board.tiles[yold][xold].team = currentTeamKINGRESOLVEMATE;
+    board.tiles[yold][xold].pieceType = KING;
+
+    resolverjaquemate.push("si");
+    return true; //si hay salvacion
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export async function rendirse_blancas() {
   //console.log("Rendirse blancas");
