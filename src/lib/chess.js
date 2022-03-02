@@ -553,6 +553,125 @@ async function startGame() {
 
     repaintBoard();
 
+    if (firebase?.auth()?.currentUser?.uid === serverGameData?.player1) {
+      if (serverGameData?.status === "tied_black_prop") {
+        Swal.fire({
+          title: "Opps....",
+          text: "Las negras proponen tablas",
+          showCancelButton: true,
+          confirmButtonColor: '#DD6B55',
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: "Rechazar",
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            getGameDbRef()
+              .update({
+                status: "tied",
+                board,
+              })
+              .catch(console.error);
+
+          } else {
+            getGameDbRef()
+              .update({
+                status: "playing",
+                board,
+              })
+              .catch(console.error);
+          }
+        });
+      }
+      if (serverGameData?.status === "black_revenge_prop") {
+        Swal.fire({
+          title: "Opps....",
+          text: "Las negras proponen revancha",
+          showCancelButton: true,
+          confirmButtonColor: '#DD6B55',
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: "Rechazar",
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            //creamos nueva partida y vamos para alla
+            getGameDbRef()
+              .update({
+                status: "black_revenge_accepted",
+              })
+             .catch(console.error);
+            window.location.assign("/lobby");
+          } else {
+            getGameDbRef()
+              .update({
+                status: "whites denied",
+              })
+             .catch(console.error);
+          }
+        });
+      }
+      if (serverGameData?.status === "white_revenge_accepted") {
+        window.location.assign("/lobby");
+      }  
+    }
+    
+    if (firebase?.auth()?.currentUser?.uid === serverGameData?.player2) {
+      if (serverGameData?.status === "tied_white_prop") {
+        Swal.fire({
+          title: "Opps....",
+          text: "Las blancas proponen tablas",
+          showCancelButton: true,
+          confirmButtonColor: '#DD6B55',
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: "Rechazar",
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            getGameDbRef()
+              .update({
+                status: "tied",
+                board,
+              })
+              .catch(console.error);
+
+          } else {
+            getGameDbRef()
+              .update({
+                status: "playing",
+                board,
+              })
+              .catch(console.error);
+          }
+        });
+      }
+      if (serverGameData?.status === "white_revenge_prop") {
+        Swal.fire({
+          title: "Opps....",
+          text: "Las blancas proponen revancha",
+          showCancelButton: true,
+          confirmButtonColor: '#DD6B55',
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: "Rechazar",
+        }).then(function (result) {
+          if (result.isConfirmed) {
+            //creamos nueva partida y vamos para alla
+            getGameDbRef()
+              .update({
+                status: "white_revenge_accepted",
+              })
+             .catch(console.error);
+            window.location.assign("/lobby");
+
+          } else {
+            getGameDbRef()
+              .update({
+                status: "blacks denied",
+              })
+             .catch(console.error);
+          }
+        });
+      }
+      if (serverGameData?.status === "black_revenge_accepted") {
+        window.location.assign("/lobby");
+      }  
+    }
+
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
       document.getElementById("turno").innerHTML = "Turno de tu oponente";
 
@@ -581,7 +700,6 @@ async function startGame() {
             });
           }
         }
-
       }
 
       if (serverGameData?.side === serverGameData?.player2) {
@@ -599,16 +717,30 @@ async function startGame() {
           }
         }
       }
-      if (serverGameData?.status === "white lion wins" || serverGameData?.status === "black give up") {
+      if (serverGameData?.status === "white lion wins") {
         Swal.fire({
           title: "Opps....",
           text: "SE CORONÓ EL LEÓN, HAN GANADO LAS BLANCAS",
         });
       }
-      if (serverGameData?.status === "black lion wins" || serverGameData?.status === "white give up") {
+      if (serverGameData?.status === "black lion wins") {
         Swal.fire({
           title: "Opps....",
           text: "SE CORONÓ EL LEÓN, HAN GANADO LAS NEGRAS",
+        });
+      }
+
+      if (serverGameData?.status === "black give up") {
+        Swal.fire({
+          title: "Opps....",
+          text: "SE RINDIERON LAS NEGRAS, HAN GANADO LAS BLANCAS",
+        });
+      }
+
+      if (serverGameData?.status === "white give up") {
+        Swal.fire({
+          title: "Opps....",
+          text: "SE RINDIERON LAS BLANCAS, HAN GANADO LAS NEGRAS",
         });
       }
 
@@ -618,8 +750,6 @@ async function startGame() {
           text: "El juego se ha empatado",
         });
       }
-
-
 
       document.getElementById("turno").innerHTML = "Tu turno";
 
@@ -784,17 +914,33 @@ export async function onClick(Y, X) {
     return;
   }
 
-  if (serverGameData?.status === "white lion wins" || serverGameData?.status === "black give up") {
+  if (serverGameData?.status === "white lion wins") {
     Swal.fire({
       title: "Opps..",
       text: "SE CORONÓ EL LEÓN, HAN GANADO LAS BLANCAS",
     });
     return;
   }
-  if (serverGameData?.status === "black lion wins" || serverGameData?.status === "white give up") {
+  if (serverGameData?.status === "black lion wins") {
     Swal.fire({
       title: "Opps..",
       text: "SE CORONÓ EL LEÓN, HAN GANADO LAS NEGRAS",
+    });
+    return;
+  }
+
+  if (serverGameData?.status === "black give up") {
+    Swal.fire({
+      title: "Opps....",
+      text: "SE RINDIERON LAS NEGRAS, HAN GANADO LAS BLANCAS",
+    });
+    return;
+  }
+
+  if (serverGameData?.status === "white give up") {
+    Swal.fire({
+      title: "Opps....",
+      text: "SE RINDIERON LAS BLANCAS, HAN GANADO LAS NEGRAS",
     });
     return;
   }
@@ -4878,7 +5024,7 @@ async function leer_act_numero_turno() {
       numero_turno = snapshot.val();
       //1 turno son 2 jugadas
       var numero_turno_actual = parseInt(numero_turno / 2);
-      if(numero_turno_actual === 0){
+      if (numero_turno_actual === 0) {
         numero_turno_actual = 1;
       }
       document.getElementById("numero_turno").innerHTML = numero_turno_actual;
@@ -5780,6 +5926,58 @@ export async function rendirse_negras() {
   Swal.fire({
     title: "Opps....",
     text: "HAN GANADO LAS BLANCAS",
+  });
+}
+
+export async function tablas_blancas() {
+  getGameDbRef()
+    .update({
+      status: "tied_white_prop",
+      board,
+    })
+    .catch(console.error);
+  Swal.fire({
+    title: "Opps....",
+    text: "Has propuesto tablas",
+  });
+}
+
+export async function tablas_negras() {
+  getGameDbRef()
+    .update({
+      status: "tied_black_prop",
+      board,
+    })
+    .catch(console.error);
+  Swal.fire({
+    title: "Opps....",
+    text: "Has propuesto tablas",
+  });
+}
+
+export async function revancha_blancas() {
+  getGameDbRef()
+    .update({
+      status: "white_revenge_prop",
+      board,
+    })
+    .catch(console.error);
+  Swal.fire({
+    title: "Opps....",
+    text: "Has propuesto revancha",
+  });
+}
+
+export async function revancha_negras() {
+  getGameDbRef()
+    .update({
+      status: "black_revenge_prop",
+      board,
+    })
+    .catch(console.error);
+  Swal.fire({
+    title: "Opps....",
+    text: "Has propuesto revancha",
   });
 }
 

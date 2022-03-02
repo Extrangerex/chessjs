@@ -165,18 +165,31 @@ export function Game() {
               <p id="negras_comidas"></p>
             </div>
             <div align="center" style={{ height: "10vh" }}>
-              {estado === "playing" ? (
+              {estado === "playing" || estado === "tied_white_prop" || estado === "tied_black_prop" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
-
-                  <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
-
+                  <div>
+                    <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
+                    <button onClick={() => chess.tablas_blancas()}>Ofrecer Tablas</button>
+                  </div>
                 ) : (
-                  <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
-
+                  <div>
+                    <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
+                    <button onClick={() => chess.tablas_negras()}>Ofrecer Tablas</button>
+                  </div>
                 )
 
               ) : (
-                <div></div>
+                <div>
+                  {estado !== "waiting" && estado !== "playing" ? (
+                    infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
+                      <button onClick={() => chess.revancha_blancas()}>Ofrecer Revancha</button>
+                    ) : (
+                      <button onClick={() => chess.revancha_negras()}>Ofrecer Revancha</button>
+                    )
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
               )}
 
 
@@ -1453,19 +1466,34 @@ export function Game() {
 
           <Col className='d-block d-lg-none' xs={{ span: 2, order: 3 }} style={{ padding: 0 }}>
             <div align="center" style={{ marginTop: "5px" }}>
-              {estado === "playing" ? (
+              {estado === "playing" || estado === "tied_white_prop" || estado === "tied_black_prop" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
-                  <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
+                  <div>
+                    <button onClick={() => chess.rendirse_blancas()}>Rendirse</button>
+                    <button onClick={() => chess.tablas_blancas()}>Ofrecer Tablas</button>
+                  </div>
 
                 ) : (
-                  <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
-
+                  <div>
+                    <button onClick={() => chess.rendirse_negras()}>Rendirse</button>
+                    <button onClick={() => chess.tablas_negras()}>Ofrecer Tablas</button>
+                  </div>
                 )
 
               ) : (
-                <div></div>
-              )}
-
+                <div>
+                  {estado !== "waiting" && estado !== "playing" ? (
+                    infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
+                      <button onClick={() => chess.revancha_blancas()}>Ofrecer Revancha</button>
+                    ) : (
+                      <button onClick={() => chess.revancha_negras()}>Ofrecer Revancha</button>
+                    )
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
+              )
+              }
               {/*estado === "playing" && creador !== "Anonimo" ? (
                 infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
                   <button onClick={() => chess.pausar()}>Pausar</button>
