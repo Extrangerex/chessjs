@@ -598,22 +598,22 @@ async function startGame() {
               .update({
                 status: "black_revenge_accepted",
               })
-             .catch(console.error);
+              .catch(console.error);
             window.location.assign("/lobby");
           } else {
             getGameDbRef()
               .update({
                 status: "whites denied",
               })
-             .catch(console.error);
+              .catch(console.error);
           }
         });
       }
       if (serverGameData?.status === "white_revenge_accepted") {
         window.location.assign("/lobby");
-      }  
+      }
     }
-    
+
     if (firebase?.auth()?.currentUser?.uid === serverGameData?.player2) {
       if (serverGameData?.status === "tied_white_prop") {
         Swal.fire({
@@ -657,7 +657,7 @@ async function startGame() {
               .update({
                 status: "white_revenge_accepted",
               })
-             .catch(console.error);
+              .catch(console.error);
             window.location.assign("/lobby");
 
           } else {
@@ -665,13 +665,13 @@ async function startGame() {
               .update({
                 status: "blacks denied",
               })
-             .catch(console.error);
+              .catch(console.error);
           }
         });
       }
       if (serverGameData?.status === "black_revenge_accepted") {
         window.location.assign("/lobby");
-      }  
+      }
     }
 
     if (serverGameData?.side !== firebase?.auth()?.currentUser?.uid) {
@@ -1673,7 +1673,9 @@ function checkPossiblePlaysPerro(curX, curY, marcar_casilla) {
   }
   //movimiento hacia atras 2 casillas
   if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
-    checkPossibleMove(curX, curY - 2 * direction, marcar_casilla);
+    if (board.tiles[curY - 1 * direction][curX].team === EMPTY) {
+      checkPossibleMove(curX, curY - 2 * direction, marcar_casilla);
+    }
   }
 }
 
@@ -3843,7 +3845,7 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         //si el rey puede comer y quedar sin jaque
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
-          checkblockmate(x, y, WHITE) === false && 
+          checkblockmate(x, y, WHITE) === false &&
           checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE) === false)
         ) {
 
@@ -4037,7 +4039,7 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //si el rey puede comer y quedar sin jaque
         if ((moverelreynegro(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
-          checkblockmate(x, y, BLACK) === false && 
+          checkblockmate(x, y, BLACK) === false &&
           checkKINGRESOLVEMATE(parseInt(x), parseInt(y), BLACK) === false)
         ) {
 
@@ -4345,7 +4347,9 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   }
   //movimiento hacia atras 2 casillas
   if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
-    checkPossibleMoveJUSTCHECK(curX, curY - 2 * direction);
+    if (board.tiles[curY - 1 * direction][curX].team === EMPTY) {
+      checkPossibleMoveJUSTCHECK(curX, curY - 2 * direction);
+    }
   }
 }
 
@@ -5674,7 +5678,9 @@ function checkPossiblePlaysPerroCHECKBLOCKMATE(xrey, yrey, curX, curY) {
   }
   //movimiento hacia atras 2 casillas
   if (curY - 2 * direction >= 0 && curY - 2 * direction <= BOARD_HEIGHT - 1) {
-    checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - 2 * direction, PERRO);
+    if (board.tiles[curY - 1 * direction][curX].team === EMPTY) {
+      checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - 2 * direction, PERRO);
+    }
   }
 }
 
@@ -5920,7 +5926,7 @@ function checkKINGRESOLVEMATE(xmirey, ymirey, miequipo) {
   currentTeamKINGRESOLVEMATE = miequipo;
 
   checkPossiblePlaysKINGRESOLVEMATE(xmirey, ymirey);
-    
+
   if (resolverjaquemate.includes("si")) {
     //vaciamos el arreglo
     resolverjaquemate = [];
@@ -5954,7 +5960,7 @@ function checkPossibleKINGRESOLVEMATE(xold, yold, xnew, ynew) {
   board.tiles[yold][xold].team = EMPTY;
   board.tiles[yold][xold].pieceType = EMPTY;
   //guardamos el equipo y pieza de la casilla nueva
-  var equipo_old = board.tiles[ynew][xnew].team; 
+  var equipo_old = board.tiles[ynew][xnew].team;
   var pieza_old = board.tiles[ynew][xnew].pieceType;
 
   //hacemos el movimiento nuevo  
