@@ -6,7 +6,7 @@ import { ReactSwal } from "./utils/SwalUtils";
 import axios from 'axios';
 import firebase from 'firebase';
 import "bootstrap/dist/css/bootstrap.css";
-import { Container, Row, Col, Navbar, NavDropdown, Nav, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
 
 import "./fonts/fontawesome-all.min.css";
 import "./fonts/ionicons.min.css";
@@ -25,12 +25,25 @@ import { MyFooter } from "./Footer";
 
 export function Inicio() {
     const [show, setShow] = useState(false);
+    const [show2, setShow2] = useState(false);
+    const [show3, setShow3] = useState(false);
+    const [show4, setShow4] = useState(false);
+
     const [setLoading] = useState(false);
     const { reset } = useForm();
+
     const handleShow = () => setShow(true);
     const handleClose = () => setShow(false);
-
     window.addEventListener('load', handleShow);
+
+    const handleShow2 = () => setShow2(true);
+    const handleClose2 = () => setShow2(false);
+
+    const handleShow3 = () => setShow3(true);
+    const handleClose3 = () => setShow3(false);
+
+    const handleShow4 = () => setShow4(true);
+    const handleClose4 = () => setShow4(false);
 
     const isOnline = useOnlineState();
     const loginForm = useForm();
@@ -38,7 +51,7 @@ export function Inicio() {
 
     const onLoginSubmit = data => {
         reset();
-        setLoading(true);
+        //setLoading(true);
 
         firebase.auth().createUserWithEmailAndPassword(data.emailAddress, data.password).then((user) => {
             ReactSwal.fire({
@@ -55,7 +68,7 @@ export function Inicio() {
                 text: error.toString()
             });
         }).finally(() => {
-            setLoading(false);
+          //  setLoading(false);
         })
     }
 
@@ -88,13 +101,14 @@ export function Inicio() {
             })
     }
 
+    /*
     useEffect(() => {
         console.log(isOnline);
         if (isOnline) {
             window.location = "/lobby";
         }
     }, [isOnline])
-
+    */
 
     const [publicaciones, setPublicaciones] = useState({});
 
@@ -113,9 +127,46 @@ export function Inicio() {
         return;
     };
 
+    const createPrivateGame = () => {
+        window.location = "/game";
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for (let i = 0; i < num; i++) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+
     const createNoTimeGame = () => {
         window.location = "/game";
         localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'true');
+
+        return;
+    };
+
+    const createNoTimeGamePrivate = () => {
+        window.location = "/game";
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for (let i = 0; i < num; i++) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
         localStorage.setItem('time', 'false');
         localStorage.setItem('moves', 'true');
 
@@ -130,10 +181,28 @@ export function Inicio() {
         return;
     };
 
+    const createNotAnyGamePrivate = () => {
+        window.location = "/game";
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for (let i = 0; i < num; i++) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'false');
+        return;
+    };
+
     return (
         <section>
             <MyNavbar />
-            
+
             <section className="encabezado">
                 <header className="masthead">
                     <Container>
@@ -150,7 +219,30 @@ export function Inicio() {
                                 <div className="card-body">
                                     <i className="fas fa-chess-rook"></i>
                                     <h4 className="card-title">
-                                        <button onClick={createGame} className="btn btn-info" style={{ margin: "5px" }}>Desafío</button>
+                                        <Button onClick={handleShow2} className="btn btn-info" style={{ margin: "5px" }}>Desafío</Button>
+                                        <Modal show={show2}>
+                                            <Modal.Header closeButton onClick={handleClose2}>
+                                                <Modal.Title>Desafío</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                                <div align="center">
+                                                    <h4>Seleccione el tipo de partida</h4>
+                                                    {isOnline ? (
+                                                        <div>
+                                                            <button onClick={createPrivateGame} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
+                                                            <button onClick={createGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <button onClick={createGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" onClick={handleClose2}>Cerrar</Button>
+                                            </Modal.Footer>
+                                        </Modal>
                                     </h4>
                                     <p className="card-text">Crea una partida con un límite de tiempo de 45 min. y 90 turnos por jugador.</p>
                                 </div>
@@ -162,7 +254,30 @@ export function Inicio() {
                                 <div className="card-body">
                                     <i className="fas fa-chess"></i>
                                     <h4 className="card-title">
-                                        <button onClick={createNoTimeGame} className="btn btn-info" style={{ margin: "5px" }}>Reto</button>
+                                        <Button onClick={handleShow3} className="btn btn-info" style={{ margin: "5px" }}>Reto</Button>
+                                        <Modal show={show3}>
+                                            <Modal.Header closeButton onClick={handleClose3}>
+                                                <Modal.Title>Reto</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                                <div align="center">
+                                                    <h4>Seleccione el tipo de partida</h4>
+                                                    {isOnline ? (
+                                                        <div>
+                                                            <button onClick={createNoTimeGamePrivate} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
+                                                            <button onClick={createNoTimeGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <button onClick={createNoTimeGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" onClick={handleClose3}>Cerrar</Button>
+                                            </Modal.Footer>
+                                        </Modal>
                                     </h4>
                                     <p className="card-text">Crea una partida sin límite de tiempo y 90 turnos por jugador</p>
                                 </div>
@@ -174,7 +289,30 @@ export function Inicio() {
                                 <div className="card-body">
                                     <i className="fas fa-chess-board"></i>
                                     <h4 className="card-title">
-                                        <button onClick={createNotAnyGame} className="btn btn-info" style={{ margin: "5px" }}>Relax</button>
+                                        <Button onClick={handleShow4} className="btn btn-info" style={{ margin: "5px" }}>Relax</Button>
+                                        <Modal show={show4}>
+                                            <Modal.Header closeButton onClick={handleClose4}>
+                                                <Modal.Title>Relax</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                                <div align="center">
+                                                    <h4>Seleccione el tipo de partida</h4>
+                                                    {isOnline ? (
+                                                        <div>
+                                                            <button onClick={createNotAnyGamePrivate} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
+                                                            <button onClick={createNotAnyGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <button onClick={createNotAnyGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" onClick={handleClose4}>Cerrar</Button>
+                                            </Modal.Footer>
+                                        </Modal>
                                     </h4>
                                     <p className="card-text">Crea una partida sin límite de tiempo ni turnos.</p>
                                 </div>

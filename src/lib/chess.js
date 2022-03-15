@@ -78,6 +78,7 @@ const piecesCharacters = {
   11: "Le",
   12: "FK",
 };
+let conexion;
 
 let whiteCasualitiesText;
 let blackCasualitiesText;
@@ -1206,88 +1207,109 @@ export async function onClick(Y, X) {
         //console.log(serverGameData?.jaquereyblanco);
         //console.log(jaquereyblanco);
 
-        //aca tenemos un tema necesitamos guardar jaquedesde solo si hizo jaque sino no
-        //si es el segundo tiro del doble turno y no hizo jaque no guardamos jaquedesde pq talvez hizo jaque en el primer tiro y se nos borraria la posicion de la pieza que esta haciendo jaque
-        if ((serverGameData?.numero_turno % 18 === 1 &&
-          serverGameData?.player2 === serverGameData?.side &&
-          serverGameData?.jaquereyblanco === "Si" &&
-          jaquereyblanco === "No") ||
-          (serverGameData?.numero_turno % 18 === 1 &&
-            serverGameData?.player1 === serverGameData?.side &&
-            serverGameData?.jaquereynegro === "Si" &&
-            jaquereynegro === "No") ||
-          (serverGameData?.numero_turno % 18 === 1 &&
+
+        //este fragmento revisa su esta conectado o no a firebase
+        const lobbyRef = firebase.database().ref(lobbyItemKey);
+        lobbyRef.on("value", (snap) => {
+          if (snap.val() === null) {
+            Swal.fire({
+              title: "Opps..",
+              text: "Perdiste la conexión a internet",
+            });
+            conexion = "offline";
+          } else {
+            //console.log("connected");
+            conexion = "online";
+          }
+        });
+
+        if (conexion === "online") {
+
+          //aca tenemos un tema necesitamos guardar jaquedesde solo si hizo jaque sino no
+          //si es el segundo tiro del doble turno y no hizo jaque no guardamos jaquedesde pq talvez hizo jaque en el primer tiro y se nos borraria la posicion de la pieza que esta haciendo jaque
+          if ((serverGameData?.numero_turno % 18 === 1 &&
             serverGameData?.player2 === serverGameData?.side &&
             serverGameData?.jaquereyblanco === "Si" &&
-            jaquereyblanco === "Si") ||
-          (serverGameData?.numero_turno % 18 === 1 &&
-            serverGameData?.player1 === serverGameData?.side &&
-            serverGameData?.jaquereynegro === "Si" &&
-            jaquereynegro === "Si")
-        ) {
-          await getGameDbRef()
-            .update({
-              comeralpaso: comeralpaso,
-              comeralpasoconejo: comeralpasoconejo,
-              comeralpasoardilla: comeralpasoardilla,
-              comeralpasoardillatres: comeralpasoardillatres,
-              contadorreyblanco: contadorreyblanco,
-              contadorreynegro: contadorreynegro,
-              contadortorre1blanco: contadortorre1blanco,
-              contadortorre1negro: contadortorre1negro,
-              contadortorre2blanco: contadortorre2blanco,
-              contadortorre2negro: contadortorre2negro,
-              posicionreynegro: posicionreynegro,
-              posicionreyblanco: posicionreyblanco,
-              jaquereyblanco: jaquereyblanco,
-              jaquereynegro: jaquereynegro,
-              ultimo_movimiento: ultimomovimiento,
-              whiteCasualitiesText: whiteCasualitiesText,
-              blackCasualitiesText: blackCasualitiesText,
-              board,
-              lastPiecejoue: { X, Y, createdAt: Date.now() },
-              timeplayer1: timeavailableplayer1,
-              timeplayer2: timeavailableplayer2,
-              tiempo_restante_jugador1: tiempo_disponible_white,
-              tiempo_restante_jugador2: tiempo_disponible_black,
-            })
-            .catch(console.error);
+            jaquereyblanco === "No") ||
+            (serverGameData?.numero_turno % 18 === 1 &&
+              serverGameData?.player1 === serverGameData?.side &&
+              serverGameData?.jaquereynegro === "Si" &&
+              jaquereynegro === "No") ||
+            (serverGameData?.numero_turno % 18 === 1 &&
+              serverGameData?.player2 === serverGameData?.side &&
+              serverGameData?.jaquereyblanco === "Si" &&
+              jaquereyblanco === "Si") ||
+            (serverGameData?.numero_turno % 18 === 1 &&
+              serverGameData?.player1 === serverGameData?.side &&
+              serverGameData?.jaquereynegro === "Si" &&
+              jaquereynegro === "Si")
+          ) {
+            await getGameDbRef()
+              .update({
+                comeralpaso: comeralpaso,
+                comeralpasoconejo: comeralpasoconejo,
+                comeralpasoardilla: comeralpasoardilla,
+                comeralpasoardillatres: comeralpasoardillatres,
+                contadorreyblanco: contadorreyblanco,
+                contadorreynegro: contadorreynegro,
+                contadortorre1blanco: contadortorre1blanco,
+                contadortorre1negro: contadortorre1negro,
+                contadortorre2blanco: contadortorre2blanco,
+                contadortorre2negro: contadortorre2negro,
+                posicionreynegro: posicionreynegro,
+                posicionreyblanco: posicionreyblanco,
+                jaquereyblanco: jaquereyblanco,
+                jaquereynegro: jaquereynegro,
+                ultimo_movimiento: ultimomovimiento,
+                whiteCasualitiesText: whiteCasualitiesText,
+                blackCasualitiesText: blackCasualitiesText,
+                board,
+                lastPiecejoue: { X, Y, createdAt: Date.now() },
+                timeplayer1: timeavailableplayer1,
+                timeplayer2: timeavailableplayer2,
+                tiempo_restante_jugador1: tiempo_disponible_white,
+                tiempo_restante_jugador2: tiempo_disponible_black,
+              })
+              .catch(console.error);
 
-        } else {
+          } else {
 
-          await getGameDbRef()
-            .update({
-              comeralpaso: comeralpaso,
-              comeralpasoconejo: comeralpasoconejo,
-              comeralpasoardilla: comeralpasoardilla,
-              comeralpasoardillatres: comeralpasoardillatres,
-              contadorreyblanco: contadorreyblanco,
-              contadorreynegro: contadorreynegro,
-              contadortorre1blanco: contadortorre1blanco,
-              contadortorre1negro: contadortorre1negro,
-              contadortorre2blanco: contadortorre2blanco,
-              contadortorre2negro: contadortorre2negro,
-              posicionreynegro: posicionreynegro,
-              posicionreyblanco: posicionreyblanco,
-              jaquereyblanco: jaquereyblanco,
-              jaquereynegro: jaquereynegro,
-              jaquedesde: X + "," + Y,
-              ultimo_movimiento: ultimomovimiento,
-              whiteCasualitiesText: whiteCasualitiesText,
-              blackCasualitiesText: blackCasualitiesText,
-              board,
-              lastPiecejoue: { X, Y, createdAt: Date.now() },
-              timeplayer1: timeavailableplayer1,
-              timeplayer2: timeavailableplayer2,
-              tiempo_restante_jugador1: tiempo_disponible_white,
-              tiempo_restante_jugador2: tiempo_disponible_black,
-            })
-            .catch(console.error);
-        }
+            await getGameDbRef()
+              .update({
+                comeralpaso: comeralpaso,
+                comeralpasoconejo: comeralpasoconejo,
+                comeralpasoardilla: comeralpasoardilla,
+                comeralpasoardillatres: comeralpasoardillatres,
+                contadorreyblanco: contadorreyblanco,
+                contadorreynegro: contadorreynegro,
+                contadortorre1blanco: contadortorre1blanco,
+                contadortorre1negro: contadortorre1negro,
+                contadortorre2blanco: contadortorre2blanco,
+                contadortorre2negro: contadortorre2negro,
+                posicionreynegro: posicionreynegro,
+                posicionreyblanco: posicionreyblanco,
+                jaquereyblanco: jaquereyblanco,
+                jaquereynegro: jaquereynegro,
+                jaquedesde: X + "," + Y,
+                ultimo_movimiento: ultimomovimiento,
+                whiteCasualitiesText: whiteCasualitiesText,
+                blackCasualitiesText: blackCasualitiesText,
+                board,
+                lastPiecejoue: { X, Y, createdAt: Date.now() },
+                timeplayer1: timeavailableplayer1,
+                timeplayer2: timeavailableplayer2,
+                tiempo_restante_jugador1: tiempo_disponible_white,
+                tiempo_restante_jugador2: tiempo_disponible_black,
+              })
+              .catch(console.error);
+          }
 
-        if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
-          await changeCurrentTeam();
-        }
+          if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
+            await changeCurrentTeam();
+          }
+
+        }//conexion
+
       }
       /*await repaintBoard();*/
     }
