@@ -3843,6 +3843,12 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
         //si el rey puede comer y quedar sin jaque
+        console.log(moverelreyblanco(parseInt(x), parseInt(y)));
+        console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
+        console.log(checkblockmate(x, y, WHITE));
+        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
+        console.log("FIN");
+
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
           checkblockmate(x, y, WHITE) === false &&
@@ -3990,6 +3996,12 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
         //si el rey puede comer y quedar sin jaque
+        console.log(moverelreyblanco(parseInt(x), parseInt(y)));
+        console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
+        console.log(checkblockmate(x, y, WHITE));
+        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
+        console.log("FINal");
+
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
           checkblockmate(x, y, WHITE) === false &&

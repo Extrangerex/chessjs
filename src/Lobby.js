@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import firebase from "firebase";
 
 import "bootstrap/dist/css/bootstrap.css";
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button, Modal } from "react-bootstrap";
 import { MyFooter } from "./Footer";
 import "./css/lobby.css";
 import { MyNavbar } from "./Navbar";
@@ -14,6 +14,36 @@ export function Lobby() {
     const isOnline = useOnlineState();
     const dispatch = useDispatch();
     const auth = useSelector((state) => state.auth);
+
+    const createGame = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+
+    const createPrivateGame = () => {
+        window.location = "/game";
+
+        const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1= '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for ( let i = 0; i < num; i++ ) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+    const handleClose = () => setShow(false);
 
     const [lobby, setLobby] = useState({});
     useEffect(() => {
@@ -71,6 +101,33 @@ export function Lobby() {
                 </header>
             </section>
             <Container>
+                <Row>
+                    <Col xs={12} className="centrar">
+                        <Button onClick={handleShow} style={{marginTop:"10px"}}>Crear Juego</Button>
+                        <Modal show={show}>
+                            <Modal.Header closeButton onClick={handleClose}>
+                                <Modal.Title>Seleccione el tipo de partida</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <div align="center">
+                                {isOnline ? (
+                                <div>    
+                                    <button onClick={createPrivateGame} className="btn btn-success" style={{margin:"5px"}}>Privada</button>
+                                    <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
+                                </div>
+                                ) : (
+                                <div>    
+                                    <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
+                                </div>
+                                )}
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </Col>       
+                </Row>
                 <Row id="no-more-tables">
                     <table className="table">
                         <thead>

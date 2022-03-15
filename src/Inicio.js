@@ -17,9 +17,10 @@ import "./css/Social-Icons.css";
 import "./css/menu.css";
 import "./inicio.css";
 
-import logo from "./images/logo-megachess.png";
+
 import popup from "./images/pop-up.jpg";
 
+import { MyNavbar } from "./Navbar";
 import { MyFooter } from "./Footer";
 
 export function Inicio() {
@@ -131,27 +132,8 @@ export function Inicio() {
 
     return (
         <section>
-            <Navbar bg="light" expand="md">
-                <Container>
-                    <Navbar.Brand href="/">
-                        <img src={logo} alt="" />
-                    </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="mr-auto">
-                            <Nav.Link href="/">Inicio</Nav.Link>
-                            <NavDropdown title="Aprender" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="/videos">Videos</NavDropdown.Item>
-                                <NavDropdown.Item href="/movimientos">Movimientos</NavDropdown.Item>
-                            </NavDropdown>
-                            <Nav.Link href="/lobby">Lobby</Nav.Link>
-                            <Nav.Link href="/blog">Blog</Nav.Link>
-                            <Nav.Link href="/comprar">Comprar</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-
+            <MyNavbar />
+            
             <section className="encabezado">
                 <header className="masthead">
                     <Container>

@@ -8,6 +8,10 @@ table {
 table #code {
 	font-size: 12px;
 }	
+
+.centrar {
+	text-align: center;
+}
 /* responsive tables */
 @media only screen and (max-width: 800px) {
 	/* Force table to not be like tables anymore */

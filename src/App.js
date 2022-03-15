@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { setAuthData } from "./redux/actions";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Inicio } from "./Inicio";
-import { Videos } from "./Videos";
+import { Reglas } from "./Reglas";
 import { Movimientos } from "./Movimientos";
 import { Blog } from "./Blog";
 import { Comprar } from "./Comprar";
@@ -38,7 +38,7 @@ function App({ authState }) {
     return (
         <Router>
             <Route path="/" component={Inicio} exact></Route>
-            <Route path="/videos" component={Videos} exact></Route>
+            <Route path="/reglas" component={Reglas} exact></Route>
             <Route path="/movimientos" component={Movimientos} exact></Route>
             <Route path="/blog" component={Blog} exact></Route>
             <Route path="/login" component={Login} exact></Route>

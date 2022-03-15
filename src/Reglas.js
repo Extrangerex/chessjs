@@ -10,11 +10,10 @@ import "./css/Social-Icons.css";
 import "./css/menu.css";
 import "./css/encabezado.css";
 
-import logo from "./images/logo-megachess.png";
 import { MyNavbar } from "./Navbar";
 import { MyFooter } from "./Footer";
 
-export function Comprar() {
+export function Reglas() {
 
     return (
         <section>
@@ -26,7 +25,7 @@ export function Comprar() {
                         <Row>
                             <Col xs={12} style={{ padding: 0 }}>
                                 <div className="site-heading">
-                                    <h1>Comprar</h1>
+                                    <h1>Reglas</h1>
                                 </div>
                             </Col>
                         </Row>
