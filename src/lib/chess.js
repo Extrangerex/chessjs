@@ -1207,14 +1207,25 @@ export async function onClick(Y, X) {
         //console.log(serverGameData?.jaquereyblanco);
         //console.log(jaquereyblanco);
 
+        /*//este fragmento si realmente checa si hay conexion a internet o no
+        lobbyRef.onDisconnect().remove((err) => {
+          if (err) {
+            Swal.fire({
+              title: "Opps..",
+              text: "Perdiste la conexión a internet",
+            });
+          }
+        });
+        */
 
-        //este fragmento revisa su esta conectado o no a firebase
+        //este fragmento revisa si existe la referencia o no en firebase
         const lobbyRef = firebase.database().ref(lobbyItemKey);
+
         lobbyRef.on("value", (snap) => {
           if (snap.val() === null) {
             Swal.fire({
               title: "Opps..",
-              text: "Perdiste la conexión a internet",
+              text: "Se perdió la conexión con la BD",
             });
             conexion = "offline";
           } else {
@@ -1270,6 +1281,11 @@ export async function onClick(Y, X) {
                 tiempo_restante_jugador1: tiempo_disponible_white,
                 tiempo_restante_jugador2: tiempo_disponible_black,
               })
+              .then(function(){
+                if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
+                  changeCurrentTeam();
+                }
+              })
               .catch(console.error);
 
           } else {
@@ -1301,15 +1317,14 @@ export async function onClick(Y, X) {
                 tiempo_restante_jugador1: tiempo_disponible_white,
                 tiempo_restante_jugador2: tiempo_disponible_black,
               })
+              .then(function(){
+                if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
+                  changeCurrentTeam();
+                }
+              })
               .catch(console.error);
           }
-
-          if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
-            await changeCurrentTeam();
-          }
-
         }//conexion
-
       }
       /*await repaintBoard();*/
     }
@@ -3865,11 +3880,11 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
         //si el rey puede comer y quedar sin jaque
-        console.log(moverelreyblanco(parseInt(x), parseInt(y)));
-        console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
-        console.log(checkblockmate(x, y, WHITE));
-        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
-        console.log("FIN");
+        //console.log(moverelreyblanco(parseInt(x), parseInt(y)));
+        //console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
+        //console.log(checkblockmate(x, y, WHITE));
+        //console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
+        //console.log("FIN");
 
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
@@ -4018,11 +4033,11 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         //la pieza que hace jaque nadie se la puede comer
         //y no hay pieza que pueda tapar el jaque es MATE
         //si el rey puede comer y quedar sin jaque
-        console.log(moverelreyblanco(parseInt(x), parseInt(y)));
-        console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
-        console.log(checkblockmate(x, y, WHITE));
-        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
-        console.log("FINal");
+        //console.log(moverelreyblanco(parseInt(x), parseInt(y)));
+        //console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
+        //console.log(checkblockmate(x, y, WHITE));
+        //console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
+        //console.log("FINal");
 
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
           checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
@@ -4129,7 +4144,7 @@ function checkPossiblePlaysPawnJUSTCHECK(curX, curY) {
   if (curX - 1 >= 0) {
     if (board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE) {
       if (board.tiles[curY + direction][curX - 1].pieceType !== LEON) {
-        checkPossibleCaptureJUSTCHECK(curX - 1, curY + direction);
+        checkPossiblePlayJUSTCHECK(curX - 1, curY + direction);
       }
     }
   }
@@ -4138,7 +4153,7 @@ function checkPossiblePlaysPawnJUSTCHECK(curX, curY) {
   if (curX + 1 <= BOARD_WIDTH - 1) {
     if (board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE) {
       if (board.tiles[curY + direction][curX + 1].pieceType !== LEON) {
-        checkPossibleCaptureJUSTCHECK(curX + 1, curY + direction);
+        checkPossiblePlayJUSTCHECK(curX + 1, curY + direction);
       }
     }
   }
@@ -4180,14 +4195,14 @@ function checkPossiblePlaysConejoJUSTCHECK(curX, curY) {
   // Check diagonal left capture
   if (curX - 1 >= 0) {
     if (board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE) {
-      checkPossibleCaptureJUSTCHECK(curX - 1, curY + direction);
+      checkPossiblePlayJUSTCHECK(curX - 1, curY + direction);
     }
   }
 
   // Check diagonal right capture
   if (curX + 1 <= BOARD_WIDTH - 1) {
     if (board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE) {
-      checkPossibleCaptureJUSTCHECK(curX + 1, curY + direction);
+      checkPossiblePlayJUSTCHECK(curX + 1, curY + direction);
     }
   }
 }
@@ -4277,14 +4292,14 @@ function checkPossiblePlaysArdillaJUSTCHECK(curX, curY) {
   // Check diagonal left capture
   if (curX - 1 >= 0) {
     if (board.tiles[curY + direction][curX - 1].pieceType !== ELEFANTE) {
-      checkPossibleCaptureJUSTCHECK(curX - 1, curY + direction);
+      checkPossiblePlayJUSTCHECK(curX - 1, curY + direction);
     }
   }
 
   // Check diagonal right capture
   if (curX + 1 <= BOARD_WIDTH - 1) {
     if (board.tiles[curY + direction][curX + 1].pieceType !== ELEFANTE) {
-      checkPossibleCaptureJUSTCHECK(curX + 1, curY + direction);
+      checkPossiblePlayJUSTCHECK(curX + 1, curY + direction);
     }
   }
 }
@@ -4299,7 +4314,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
 
   // Advance one tile
   checkPossibleMoveJUSTCHECK(curX, curY + direction);
-  checkPossibleCaptureJUSTCHECK(curX, curY + direction);
+  checkPossiblePlayJUSTCHECK(curX, curY + direction);
 
 
   if (
@@ -4310,7 +4325,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
   ) {
     // Advance two tile
     checkPossibleMoveJUSTCHECK(curX, curY + 2 * direction);
-    checkPossibleCaptureJUSTCHECK(curX, curY + 2 * direction);
+    checkPossiblePlayJUSTCHECK(curX, curY + 2 * direction);
   }
 
   // Advance Horizontal tile
@@ -4351,7 +4366,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
 
   // Check diagonal left capture
   if (curX - 1 >= 0) {
-    checkPossibleCaptureJUSTCHECK(curX - 1, curY + direction);
+    checkPossiblePlayJUSTCHECK(curX - 1, curY + direction);
   }
   if (
     curX - 2 >= 0 &&
@@ -4359,12 +4374,12 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 1 * direction][curX - 1].pieceType === EMPTY
   ) {
-    checkPossibleCaptureJUSTCHECK(curX - 2, curY + 2 * direction);
+    checkPossiblePlayJUSTCHECK(curX - 2, curY + 2 * direction);
   }
 
   // Check diagonal right capture
   if (curX + 1 <= BOARD_WIDTH - 1) {
-    checkPossibleCaptureJUSTCHECK(curX + 1, curY + direction);
+    checkPossiblePlayJUSTCHECK(curX + 1, curY + direction);
   }
   if (
     curX + 2 <= BOARD_WIDTH - 1 &&
@@ -4372,7 +4387,7 @@ function checkPossiblePlaysPerroJUSTCHECK(curX, curY) {
     curY + 2 * direction <= BOARD_HEIGHT - 1 &&
     board.tiles[curY + 1 * direction][curX + 1].pieceType === EMPTY
   ) {
-    checkPossibleCaptureJUSTCHECK(curX + 2, curY + 2 * direction);
+    checkPossiblePlayJUSTCHECK(curX + 2, curY + 2 * direction);
   }
   //movimiento hacia atras 1 casilla
   // Lower move
