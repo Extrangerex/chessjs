@@ -15,6 +15,19 @@ export function Lobby() {
     const dispatch = useDispatch();
     const auth = useSelector((state) => state.auth);
 
+    const [show2, setShow2] = useState(false);
+    const [show3, setShow3] = useState(false);
+    const [show4, setShow4] = useState(false);
+
+    const handleShow2 = () => setShow2(true);
+    const handleClose2 = () => setShow2(false);
+
+    const handleShow3 = () => setShow3(true);
+    const handleClose3 = () => setShow3(false);
+
+    const handleShow4 = () => setShow4(true);
+    const handleClose4 = () => setShow4(false);
+
     const createGame = () => {
         window.location = "/game";
         localStorage.setItem('clave_privada', '');
@@ -26,18 +39,72 @@ export function Lobby() {
     const createPrivateGame = () => {
         window.location = "/game";
 
-        const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result1= '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
         const charactersLength = characters.length;
         const num = 5;
 
-        for ( let i = 0; i < num; i++ ) {
+        for (let i = 0; i < num; i++) {
             result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
 
         localStorage.setItem('clave_privada', result1);
         localStorage.setItem('time', 'true');
         localStorage.setItem('moves', 'true');
+        return;
+    };
+
+    const createNoTimeGame = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'true');
+
+        return;
+    };
+
+    const createNoTimeGamePrivate = () => {
+        window.location = "/game";
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for (let i = 0; i < num; i++) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'true');
+
+        return;
+    };
+
+    const createNotAnyGame = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'false');
+        return;
+    };
+
+    const createNotAnyGamePrivate = () => {
+        window.location = "/game";
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for (let i = 0; i < num; i++) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'false');
+        localStorage.setItem('moves', 'false');
         return;
     };
 
@@ -102,31 +169,84 @@ export function Lobby() {
             </section>
             <Container>
                 <Row>
-                    <Col xs={12} className="centrar">
-                        <Button onClick={handleShow} style={{marginTop:"10px"}}>Crear Juego</Button>
-                        <Modal show={show}>
-                            <Modal.Header closeButton onClick={handleClose}>
-                                <Modal.Title>Seleccione el tipo de partida</Modal.Title>
+                    <Col xs={12} md={4} className="centrar">
+                        <Button onClick={handleShow2} className="btn btn-info" style={{ margin: "5px" }}>Desafío</Button>
+                        <Modal show={show2}>
+                            <Modal.Header closeButton onClick={handleClose2}>
+                                <Modal.Title>Desafío</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
                                 <div align="center">
-                                {isOnline ? (
-                                <div>    
-                                    <button onClick={createPrivateGame} className="btn btn-success" style={{margin:"5px"}}>Privada</button>
-                                    <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
-                                </div>
-                                ) : (
-                                <div>    
-                                    <button onClick={createGame} className="btn btn-success" style={{margin:"5px"}}>Pública</button>
-                                </div>
-                                )}
+                                    <h4>Seleccione el tipo de partida</h4>
+                                    {isOnline ? (
+                                        <div>
+                                            <button onClick={createPrivateGame} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
+                                            <button onClick={createGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <button onClick={createGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                        </div>
+                                    )}
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>
-                                <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
+                                <Button variant="secondary" onClick={handleClose2}>Cerrar</Button>
                             </Modal.Footer>
                         </Modal>
-                    </Col>       
+                    </Col>
+                    <Col xs={12} md={4} className="centrar">
+                        <Button onClick={handleShow3} className="btn btn-info" style={{ margin: "5px" }}>Reto</Button>
+                        <Modal show={show3}>
+                            <Modal.Header closeButton onClick={handleClose3}>
+                                <Modal.Title>Reto</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <div align="center">
+                                    <h4>Seleccione el tipo de partida</h4>
+                                    {isOnline ? (
+                                        <div>
+                                            <button onClick={createNoTimeGamePrivate} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
+                                            <button onClick={createNoTimeGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <button onClick={createNoTimeGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose3}>Cerrar</Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </Col>
+                    <Col xs={12} md={4} className="centrar">
+                        <Button onClick={handleShow4} className="btn btn-info" style={{ margin: "5px" }}>Relax</Button>
+                        <Modal show={show4}>
+                            <Modal.Header closeButton onClick={handleClose4}>
+                                <Modal.Title>Relax</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <div align="center">
+                                    <h4>Seleccione el tipo de partida</h4>
+                                    {isOnline ? (
+                                        <div>
+                                            <button onClick={createNotAnyGamePrivate} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
+                                            <button onClick={createNotAnyGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <button onClick={createNotAnyGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose4}>Cerrar</Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </Col>
                 </Row>
                 <Row id="no-more-tables">
                     <table className="table">
@@ -145,7 +265,7 @@ export function Lobby() {
                                     const element = lobby[key];
                                     const hoy = new Date();
                                     const fechacreacion = element.fecha_creacion;
-                                    if(isOnline){
+                                    if (isOnline) {
                                         if (element.creador !== 'Anonimo') {
                                             return (
                                                 <tr key={key}>
@@ -191,13 +311,13 @@ export function Lobby() {
                                                                 )
                                                                 )
                                                         }
-    
+
                                                     </td>
                                                 </tr>
                                             );
                                         }
-                                    }else{
-                                        if ((element.creador === 'Anonimo' && element.status === 'playing' && (hoy >= fechacreacion || fechacreacion === undefined )) || (element.creador === 'Anonimo' && element.status === 'waiting' && (hoy >= fechacreacion || fechacreacion === undefined)) ) {
+                                    } else {
+                                        if ((element.creador === 'Anonimo' && element.status === 'playing' && (hoy >= fechacreacion || fechacreacion === undefined)) || (element.creador === 'Anonimo' && element.status === 'waiting' && (hoy >= fechacreacion || fechacreacion === undefined))) {
                                             return (
                                                 <tr key={key}>
                                                     <td data-title="Id:">{element.id_partida}</td>
@@ -242,7 +362,7 @@ export function Lobby() {
                                                                 )
                                                                 )
                                                         }
-    
+
                                                     </td>
                                                 </tr>
                                             );
