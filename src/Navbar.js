@@ -10,7 +10,8 @@ export function MyNavbar() {
 
     
 
-    return (<Navbar bg="light" expand="md">
+    return (
+    <Navbar expand="md" class="fondo_principal">
         <Container>
             <Navbar.Brand href="/">
                 <img src={logo} alt="" />

@@ -55,7 +55,7 @@ export function Allgames() {
     }
 
     return (
-        <section>
+        <section className="fondo_principal">
             <MyNavbar />
             <section className="encabezado">
                 <header className="masthead">

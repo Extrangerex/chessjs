@@ -13,7 +13,7 @@ code {
 }
 .banner{
   height: 80px;
-  background-color: #20a2d2;
+  background-color: #00a6b4;
 }
 .banner_content{
   margin-bottom: 0px;
@@ -47,7 +47,7 @@ code {
 
 .newsletter .banner .btn-newsletter{
   margin-bottom: 0px;
-  background: #3799bd;
+  background: #00a6b4;
   font-size: 14px;
   color: rgb(255,255,255)
 }

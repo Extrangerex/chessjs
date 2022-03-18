@@ -29,11 +29,11 @@ export function MyFooter() {
                     <p id="logo_footer"><img src={logo_footer} alt="" /></p>
                 </Col>
                 <Col xs={12} lg={5} style={{ padding: 0 }}>
-                    <p id="marca_footer"> Mega Chess ® 2021 Todos los derechos reservados.</p>
+                    <p id="marca_footer"> LeoChess ® 2021 Todos los derechos reservados.</p>
                 </Col>
                 <Col xs={12} lg={3} style={{ padding: 0 }}>
                     <p style={{ textAlign: "center" }}>Diseñado por 
-                        <a href="https://www.agencianuba.com" target="_blank" rel="noreferrer"> Agencia NUBA</a>
+                        <a href="https://www.agencianuba.com" target="_blank" rel="noreferrer" style={{color:"#00a6b4"}}> Agencia NUBA</a>
                     </p>
                 </Col>
                 <Col xs={12} lg={3} style={{ padding: 0 }}>

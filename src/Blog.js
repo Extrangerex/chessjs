@@ -26,7 +26,7 @@ export function Blog() {
             setPublicaciones(res.data);
         })
     return (
-        <section>
+        <section className="fondo_principal">
             <MyNavbar />
             
             <section className="encabezado">
@@ -57,10 +57,10 @@ export function Blog() {
                                     </Col>
                                     <Col sm={12} lg={6} className="order-lg-2">
                                         <div className="p-5">
-                                            <h2>
+                                            <h2 style={{color:"white"}}>
                                                 <strong>{element.titulo}</strong>
                                             </h2>
-                                            <p>{element.body}</p>
+                                            <p style={{color:"white"}}>{element.body}</p>
                                         </div>
                                     </Col>
                                 </Row>

@@ -115,7 +115,7 @@ export function Review() {
 
 
   return (
-    <section>
+    <section className="fondo_principal">
       <MyNavbar />
       
 

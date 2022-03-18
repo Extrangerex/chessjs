@@ -6,4 +6,10 @@
 .encabezado .masthead h1{ 
     color: rgb(255,255,255);
     text-align: center;
-}    
+}  
+.fondo_principal {
+    background-color:#00a6b4;
+}  
+.nav-link{
+    color:white !important;
+}

@@ -17,8 +17,8 @@ box-sizing: content-box;
     margin:10px;
 }
 .card-body i{
-    color: rgb(55,153,189);
-    font-size: 28px;
+    color: #00a6b4;
+    font-size: 45px;
     padding: 20px;
 }
 .card-body p{
@@ -36,4 +36,7 @@ box-sizing: content-box;
     .post .p-5{
         padding: 5px !important;
     }
+}
+.card-body .btn-info{
+    background-color: #00a6b4;
 }

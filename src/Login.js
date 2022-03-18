@@ -34,7 +34,8 @@ export function Login() {
         }
     }, [isOnline])
 
-    return (<>
+    return (
+        <section className="fondo_principal">
         <MyNavbar />
 
         <section className="encabezado">
@@ -53,16 +54,16 @@ export function Login() {
         <Container className="p-2">
             <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
                 <div className="form-group mb-3">
-                    <label>Correo electrónico</label>
+                    <label style={{color:"white"}}>Correo electrónico</label>
                     <input className="form-control" {...loginForm.register("emailAddress", { required: true })} type="email" placeholder="ej. jhohn@example.com" />
                     {loginForm.formState.errors.emailAddress?.type === 'required' && "Email address is required"}
                 </div>
                 <div className="form-group mb-3">
-                    <label>Contraseña</label>
+                    <label style={{color:"white"}}>Contraseña</label>
                     <input className="form-control" {...loginForm.register("password", { required: true })} type="password" placeholder="*********" />
                     {loginForm.formState.errors.password?.type === 'required' && "Password is required"}
                 </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <button type="submit" className="btn btn-danger">Submit</button>
             </form>
 
             <div
@@ -76,11 +77,11 @@ export function Login() {
                 align="center"
                 className="p-3"
             >
-                <p style={{ marginTop: "10px" }}>
+                <p style={{ marginTop: "10px",color:"white" }} >
                     ¿Aún no tienes cuenta?  <Signup />
                 </p>
             </div>
         </Container>
-    </>
+    </section>
     )
 }

@@ -126,7 +126,7 @@ export function Game() {
 
 
   return (
-    <section>
+    <section className="fondo_principal">
       <MyNavbar />
       
       <Container fluid id="fondo_juego">

@@ -65,7 +65,7 @@ export function Movimientos() {
     const [numeroimagen, setNumeroImagen] = useState(0);
     
     return (
-        <section>
+        <section className="fondo_principal">
             <MyNavbar />
             
             <section className="encabezado">

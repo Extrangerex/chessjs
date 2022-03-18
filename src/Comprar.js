@@ -17,7 +17,7 @@ import { MyFooter } from "./Footer";
 export function Comprar() {
 
     return (
-        <section>
+        <section className="fondo_principal">
             <MyNavbar />
             
             <section className="encabezado">

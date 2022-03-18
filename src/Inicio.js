@@ -269,7 +269,7 @@ export function Inicio() {
     };
 
     return (
-        <section>
+        <section className="fondo_principal">
             <MyNavbar />
 
             <section className="encabezado">
@@ -288,7 +288,7 @@ export function Inicio() {
                                 <div className="card-body">
                                     <i className="fas fa-chess-rook"></i>
                                     <h4 className="card-title">
-                                        <Button onClick={handleShow2} className="btn btn-info" style={{ margin: "5px" }}>Desafío</Button>
+                                        <Button onClick={handleShow2} className="btn btn-lg btn-info" style={{ margin: "5px" }}>Desafío</Button>
                                         <Modal show={show2}>
                                             <Modal.Header closeButton onClick={handleClose2}>
                                                 <Modal.Title>Desafío</Modal.Title>
@@ -349,7 +349,7 @@ export function Inicio() {
                                             </Modal.Footer>
                                         </Modal>
                                     </h4>
-                                    <p className="card-text">Crea una partida con un límite de tiempo de 45,30 ó 15 min. y 90 turnos por jugador.</p>
+                                    <p className="card-text">Crea una partida con un límite de tiempo de 45, 30 ó 15 min. (90 turnos por jugador).</p>
                                 </div>
 
                             </Col>
@@ -359,7 +359,7 @@ export function Inicio() {
                                 <div className="card-body">
                                     <i className="fas fa-chess"></i>
                                     <h4 className="card-title">
-                                        <Button onClick={handleShow3} className="btn btn-info" style={{ margin: "5px" }}>Reto</Button>
+                                        <Button onClick={handleShow3} className="btn btn-lg btn-info" style={{ margin: "5px" }}>Reto</Button>
                                         <Modal show={show3}>
                                             <Modal.Header closeButton onClick={handleClose3}>
                                                 <Modal.Title>Reto</Modal.Title>
@@ -394,7 +394,7 @@ export function Inicio() {
                                 <div className="card-body">
                                     <i className="fas fa-chess-board"></i>
                                     <h4 className="card-title">
-                                        <Button onClick={handleShow4} className="btn btn-info" style={{ margin: "5px" }}>Relax</Button>
+                                        <Button onClick={handleShow4} className="btn btn-lg btn-info" style={{ margin: "5px" }}>Relax</Button>
                                         <Modal show={show4}>
                                             <Modal.Header closeButton onClick={handleClose4}>
                                                 <Modal.Title>Relax</Modal.Title>
@@ -452,10 +452,10 @@ export function Inicio() {
                                             </Col>
                                             <Col sm={12} lg={6} className="order-lg-2">
                                                 <div className="p-5">
-                                                    <h2>
+                                                    <h2 style={{color:"white"}}>
                                                         <strong>{element.titulo}</strong>
                                                     </h2>
-                                                    <p>{element.body}</p>
+                                                    <p style={{color:"white"}}>{element.body}</p>
                                                 </div>
                                             </Col>
                                         </Row>

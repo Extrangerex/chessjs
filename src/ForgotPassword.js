@@ -35,7 +35,7 @@ export function ForgotPassword() {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>Recuperar contraseña</Button>
+            <Button className="btn btn-danger" onClick={handleShow}>Recuperar contraseña</Button>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -50,7 +50,7 @@ export function ForgotPassword() {
 
                         </div>
 
-                        <Button variant="primary" type="submit" disabled={loading}>
+                        <Button className="btn btn-danger" type="submit" disabled={loading}>
                             Recuperar contraseña
                             </Button>
                     </form>

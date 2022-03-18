@@ -41,7 +41,7 @@ export function Signup() {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
+            <Button className="btn btn-danger" onClick={handleShow}>
                 Regístrate
       </Button>
 
@@ -64,7 +64,7 @@ export function Signup() {
                         </div>
 
 
-                        <Button variant="primary" type="submit" disabled={loading}>
+                        <Button className="btn btn-danger" type="submit" disabled={loading}>
                             Crear cuenta
           </Button>
                     </form>

@@ -16,7 +16,7 @@ import { MyFooter } from "./Footer";
 export function Reglas() {
 
     return (
-        <section>
+        <section className="fondo_principal">
             <MyNavbar />
             
             <section className="encabezado">

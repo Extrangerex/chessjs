@@ -220,7 +220,7 @@ export function Lobby() {
     }
 
     return (
-        <section>
+        <section className="fondo_principal">
             <MyNavbar />
             <section className="encabezado">
                 <header className="masthead">
@@ -238,7 +238,7 @@ export function Lobby() {
             <Container>
                 <Row>
                     <Col xs={12} md={4} className="centrar">
-                        <Button onClick={handleShow2} className="btn btn-info" style={{ margin: "5px" }}>Desafío</Button>
+                        <Button onClick={handleShow2} className="btn btn-lg btn-danger" style={{ margin: "5px" }}>Desafío</Button>
                         <Modal show={show2}>
                             <Modal.Header closeButton onClick={handleClose2}>
                                 <Modal.Title>Desafío</Modal.Title>
@@ -300,7 +300,7 @@ export function Lobby() {
                         </Modal>
                     </Col>
                     <Col xs={12} md={4} className="centrar">
-                        <Button onClick={handleShow3} className="btn btn-info" style={{ margin: "5px" }}>Reto</Button>
+                        <Button onClick={handleShow3} className="btn btn-lg btn-danger" style={{ margin: "5px" }}>Reto</Button>
                         <Modal show={show3}>
                             <Modal.Header closeButton onClick={handleClose3}>
                                 <Modal.Title>Reto</Modal.Title>
@@ -326,7 +326,7 @@ export function Lobby() {
                         </Modal>
                     </Col>
                     <Col xs={12} md={4} className="centrar">
-                        <Button onClick={handleShow4} className="btn btn-info" style={{ margin: "5px" }}>Relax</Button>
+                        <Button onClick={handleShow4} className="btn btn-lg btn-danger" style={{ margin: "5px" }}>Relax</Button>
                         <Modal show={show4}>
                             <Modal.Header closeButton onClick={handleClose4}>
                                 <Modal.Title>Relax</Modal.Title>
@@ -356,11 +356,11 @@ export function Lobby() {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th>Id:</th>
-                                <th>Creador:</th>
-                                <th>Estado:</th>
-                                <th>Tipo:</th>
-                                <th>Acciones:</th>
+                                <th style={{color:"white"}}>Id:</th>
+                                <th style={{color:"white"}}>Creador:</th>
+                                <th style={{color:"white"}}>Estado:</th>
+                                <th style={{color:"white"}}>Tipo:</th>
+                                <th style={{color:"white"}}>Acciones:</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -373,13 +373,13 @@ export function Lobby() {
                                         if (element.creador !== 'Anonimo') {
                                             return (
                                                 <tr key={key}>
-                                                    <td data-title="Id:">{element.id_partida}</td>
-                                                    <td data-title="Creador:"><span id="code">{element.creador}</span></td>
-                                                    <td data-title="Estado:">{element.status}</td>
-                                                    <td data-title="Tipo:">
+                                                    <td style={{color:"white"}} data-title="Id:">{element.id_partida}</td>
+                                                    <td style={{color:"white"}} data-title="Creador:"><span id="code">{element.creador}</span></td>
+                                                    <td style={{color:"white"}} data-title="Estado:">{element.status}</td>
+                                                    <td style={{color:"white"}} data-title="Tipo:">
                                                         {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
                                                     </td>
-                                                    <td data-title="Acciones:">
+                                                    <td style={{color:"white"}} data-title="Acciones:">
                                                         {
                                                             element?.clave_privada === "" ?
                                                                 (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
@@ -424,13 +424,13 @@ export function Lobby() {
                                         if ((element.creador === 'Anonimo' && element.status === 'playing' && (hoy >= fechacreacion || fechacreacion === undefined)) || (element.creador === 'Anonimo' && element.status === 'waiting' && (hoy >= fechacreacion || fechacreacion === undefined))) {
                                             return (
                                                 <tr key={key}>
-                                                    <td data-title="Id:">{element.id_partida}</td>
-                                                    <td data-title="Creador:"><span id="code">{element.creador}</span></td>
-                                                    <td data-title="Estado:">{element.status}</td>
-                                                    <td data-title="Tipo:">
+                                                    <td style={{color:"white"}} data-title="Id:">{element.id_partida}</td>
+                                                    <td style={{color:"white"}} data-title="Creador:"><span id="code">{element.creador}</span></td>
+                                                    <td style={{color:"white"}} data-title="Estado:">{element.status}</td>
+                                                    <td style={{color:"white"}} data-title="Tipo:">
                                                         {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
                                                     </td>
-                                                    <td data-title="Acciones:">
+                                                    <td style={{color:"white"}} data-title="Acciones:">
                                                         {
                                                             element?.clave_privada === "" ?
                                                                 (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
@@ -475,7 +475,7 @@ export function Lobby() {
                                 })
                             ) : (
                                 <tr>
-                                    <td data-title="Mensaje:" colSpan="4" >
+                                    <td style={{color:"white"}} data-title="Mensaje:" colSpan="4" >
                                         Aun no hay juegos en espera, ¿por qué no creas uno?
                                     </td>
                                 </tr>
