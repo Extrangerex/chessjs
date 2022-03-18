@@ -19,6 +19,9 @@ export function Lobby() {
     const [show3, setShow3] = useState(false);
     const [show4, setShow4] = useState(false);
 
+    const [show5, setShow5] = useState(false);//desafio/privada(45,30,15)
+    const [show6, setShow6] = useState(false);//desafio/publica(45,30,15)
+
     const handleShow2 = () => setShow2(true);
     const handleClose2 = () => setShow2(false);
 
@@ -28,15 +31,38 @@ export function Lobby() {
     const handleShow4 = () => setShow4(true);
     const handleClose4 = () => setShow4(false);
 
-    const createGame = () => {
+    const handleShow5 = () => setShow5(true);
+    const handleClose5 = () => setShow5(false);
+
+    const handleShow6 = () => setShow6(true);
+    const handleClose6 = () => setShow6(false);
+
+    const createGame45 = () => {
         window.location = "/game";
         localStorage.setItem('clave_privada', '');
         localStorage.setItem('time', 'true');
+        localStorage.setItem('minutes', 45);
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+    const createGame30 = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('minutes', 30);
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+    const createGame15 = () => {
+        window.location = "/game";
+        localStorage.setItem('clave_privada', '');
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('minutes', 15);
         localStorage.setItem('moves', 'true');
         return;
     };
 
-    const createPrivateGame = () => {
+    const createPrivateGame45 = () => {
         window.location = "/game";
 
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -50,6 +76,44 @@ export function Lobby() {
 
         localStorage.setItem('clave_privada', result1);
         localStorage.setItem('time', 'true');
+        localStorage.setItem('minutes', 45);
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+    const createPrivateGame30 = () => {
+        window.location = "/game";
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for (let i = 0; i < num; i++) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('minutes', 30);
+        localStorage.setItem('moves', 'true');
+        return;
+    };
+
+    const createPrivateGame15 = () => {
+        window.location = "/game";
+
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result1 = '';
+        const charactersLength = characters.length;
+        const num = 5;
+
+        for (let i = 0; i < num; i++) {
+            result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+
+        localStorage.setItem('clave_privada', result1);
+        localStorage.setItem('time', 'true');
+        localStorage.setItem('minutes', 15);
         localStorage.setItem('moves', 'true');
         return;
     };
@@ -58,6 +122,7 @@ export function Lobby() {
         window.location = "/game";
         localStorage.setItem('clave_privada', '');
         localStorage.setItem('time', 'false');
+        localStorage.setItem('minutes', 45);
         localStorage.setItem('moves', 'true');
 
         return;
@@ -77,6 +142,7 @@ export function Lobby() {
 
         localStorage.setItem('clave_privada', result1);
         localStorage.setItem('time', 'false');
+        localStorage.setItem('minutes', 45);
         localStorage.setItem('moves', 'true');
 
         return;
@@ -86,6 +152,7 @@ export function Lobby() {
         window.location = "/game";
         localStorage.setItem('clave_privada', '');
         localStorage.setItem('time', 'false');
+        localStorage.setItem('minutes', 45);
         localStorage.setItem('moves', 'false');
         return;
     };
@@ -104,6 +171,7 @@ export function Lobby() {
 
         localStorage.setItem('clave_privada', result1);
         localStorage.setItem('time', 'false');
+        localStorage.setItem('minutes', 45);
         localStorage.setItem('moves', 'false');
         return;
     };
@@ -180,18 +248,54 @@ export function Lobby() {
                                     <h4>Seleccione el tipo de partida</h4>
                                     {isOnline ? (
                                         <div>
-                                            <button onClick={createPrivateGame} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
-                                            <button onClick={createGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                            <button onClick={handleShow5} className="btn btn-success" style={{ margin: "5px" }}>Privada</button>
+                                            <button onClick={handleShow6} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
                                         </div>
                                     ) : (
                                         <div>
-                                            <button onClick={createGame} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
+                                            <button onClick={handleShow6} className="btn btn-success" style={{ margin: "5px" }}>Pública</button>
                                         </div>
                                     )}
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>
                                 <Button variant="secondary" onClick={handleClose2}>Cerrar</Button>
+                            </Modal.Footer>
+                        </Modal>
+                        <Modal show={show5}>
+                            <Modal.Header closeButton onClick={handleClose5}>
+                                <Modal.Title>Desafío/Privada</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <div align="center">
+                                    <h4>Seleccione el tiempo</h4>
+                                    <div>
+                                        <button onClick={createPrivateGame45} className="btn btn-success" style={{ margin: "5px" }}>Normal(45min.)</button>
+                                        <button onClick={createPrivateGame30} className="btn btn-success" style={{ margin: "5px" }}>Rápida(30min.)</button>
+                                        <button onClick={createPrivateGame15} className="btn btn-success" style={{ margin: "5px" }}>Relámpago(15min.)</button>
+                                    </div>
+
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose5}>Cerrar</Button>
+                            </Modal.Footer>
+                        </Modal>
+                        <Modal show={show6}>
+                            <Modal.Header closeButton onClick={handleClose6}>
+                                <Modal.Title>Desafío/Pública</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <div align="center">
+                                    <div>
+                                        <button onClick={createGame45} className="btn btn-success" style={{ margin: "5px" }}>Normal(45min.)</button>
+                                        <button onClick={createGame30} className="btn btn-success" style={{ margin: "5px" }}>Rápida(30min.)</button>
+                                        <button onClick={createGame15} className="btn btn-success" style={{ margin: "5px" }}>Relámpago(15min.)</button>
+                                    </div>
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose6}>Cerrar</Button>
                             </Modal.Footer>
                         </Modal>
                     </Col>

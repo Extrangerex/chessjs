@@ -32,11 +32,15 @@ export const newGame = (uid, email) => async (dispatch) => {
   const clave = localStorage.getItem("clave_privada");
   const moves = localStorage.getItem("moves");
   const time = localStorage.getItem("time");
+  const minutosdetiempo = localStorage.getItem("minutes");
 
+  const tiemporestantejugadores = minutosdetiempo.toString()+":00";
 
   const ahorita = new Date();
-  const timetoplayplayers = ahorita.getTime() + 45 * 60 * 1000;
-  const timetoplay = ahorita.getTime() + 90 * 60 * 1000;
+  const timetoplayplayers = ahorita.getTime() + minutosdetiempo * 60 * 1000;
+
+
+  const timetoplay = ahorita.getTime() + (minutosdetiempo*2) * 60 * 1000;
 
   if (email === null || email === undefined) {
     email = "Anonimo";
@@ -66,8 +70,8 @@ export const newGame = (uid, email) => async (dispatch) => {
     createdAt: timetoplay,
     timeplayer1: timetoplayplayers,
     timeplayer2: timetoplayplayers,
-    tiempo_restante_jugador1: "45:00",
-    tiempo_restante_jugador2: "45:00",
+    tiempo_restante_jugador1: tiemporestantejugadores,
+    tiempo_restante_jugador2: tiemporestantejugadores,
     side: uid,
     whiteCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     blackCasualities: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

@@ -406,10 +406,12 @@ async function startGame() {
         aviso_inicio = "false";
 
         const timetoplay = new Date();
-        timetoplay.setTime(timetoplay.getTime() + 90 * 60 * 1000);
+        const minutosdetiempo = localStorage.getItem("minutes");
+        timetoplay.setTime(timetoplay.getTime() + (minutosdetiempo*2) * 60 * 1000);
 
         const timeavailableplayer1 = new Date();
-        timeavailableplayer1.setTime(timeavailableplayer1.getTime() + 45 * 60 * 1000);
+       
+        timeavailableplayer1.setTime(timeavailableplayer1.getTime() + minutosdetiempo * 60 * 1000);
 
         await getGameDbRef()
           .update({
