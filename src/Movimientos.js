@@ -178,7 +178,7 @@ export function Movimientos() {
                             </table>
                         </Col>
                         <Col xs={12} style={{ padding: 0 }}>
-                            <p style={{paddingLeft:"30px",paddingRight:"30px"}}>{textos[numeroimagen]}</p>
+                            <p style={{paddingLeft:"30px",paddingRight:"30px",color:"white"}}>{textos[numeroimagen]}</p>
                         </Col>
                     </Row>
                 </Container>

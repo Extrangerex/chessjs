@@ -44,7 +44,7 @@ export function ForgotPassword() {
                 <Modal.Body>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group mb-3">
-                            <label>Correo electrónico</label>
+                            <label style={{color:"white"}}>Correo electrónico</label>
                             <input className="form-control" {...register("emailAddress", { required: true })} placeholder="ej. jhohn@example.com" />
                             {formState.errors.emailAddress?.type === 'required' && "Email address is required"}
 

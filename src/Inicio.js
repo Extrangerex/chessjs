@@ -494,7 +494,7 @@ export function Inicio() {
 
             <Modal id="popup" show={show}>
                 <Modal.Header closeButton onClick={handleClose}>
-                    <Modal.Title style={{ color: "#135eae" }}>Aprende a jugar MegaChess70</Modal.Title>
+                    <Modal.Title style={{ color: "#135eae" }}>Regístrate para crear partidas privadas</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="show-grid">
                     <Container>
@@ -515,7 +515,10 @@ export function Inicio() {
                                         <button type="submit" className="form-control btn btn-success">Registrarme</button>
                                     </div>
                                     <div className="form-group" style={{ marginTop: "16px" }}>
-                                        <a href="/lobby" className="form-control btn btn-info">Practicar</a>
+                                        <a href="/lobby" className="form-control btn btn-info">Practicar sin registrarme</a>
+                                    </div>
+                                    <div className="form-group" style={{ marginTop: "16px" }}>
+                                        <button onClick={handleClose} className="form-control btn btn-danger">En otro momento</button>
                                     </div>
                                 </form>
                             </Col>

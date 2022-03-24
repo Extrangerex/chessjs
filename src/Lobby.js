@@ -374,7 +374,7 @@ export function Lobby() {
                                             return (
                                                 <tr key={key}>
                                                     <td style={{color:"white"}} data-title="Id:">{element.id_partida}</td>
-                                                    <td style={{color:"white"}} data-title="Creador:"><span id="code">{element.creador}</span></td>
+                                                    <td style={{color:"white"}} data-title="Creador:"><span id="code">Anónimo</span></td>
                                                     <td style={{color:"white"}} data-title="Estado:">{element.status}</td>
                                                     <td style={{color:"white"}} data-title="Tipo:">
                                                         {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
@@ -425,7 +425,7 @@ export function Lobby() {
                                             return (
                                                 <tr key={key}>
                                                     <td style={{color:"white"}} data-title="Id:">{element.id_partida}</td>
-                                                    <td style={{color:"white"}} data-title="Creador:"><span id="code">{element.creador}</span></td>
+                                                    <td style={{color:"white"}} data-title="Creador:"><span id="code">Anónimo</span></td>
                                                     <td style={{color:"white"}} data-title="Estado:">{element.status}</td>
                                                     <td style={{color:"white"}} data-title="Tipo:">
                                                         {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
