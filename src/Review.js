@@ -30,7 +30,7 @@ export function Review() {
 
   const [infoside, setSide] = useState({});
   const [infoplayer1, setPlayer1] = useState({});
-
+  
 
   //actualiza todos los relojes cada segundo
   /*
@@ -65,6 +65,8 @@ export function Review() {
     const gameRef = firebase.database().ref(`${game?.lobbyRef}`);
 
     const player1Ref = firebase.database().ref(`${game?.lobbyRef}/player1`);
+    const infoside = firebase.database().ref(`${game?.lobbyRef}/side`);
+
 
 
     // firebase.database().ref("lobby").remove();
@@ -105,6 +107,12 @@ export function Review() {
       setPlayer1(snapshot.val());
     });
 
+    infoside.on("value", (snapshot) => {
+      if (!snapshot.exists()) {
+        return;
+      }
+      setSide(snapshot.val());
+    });
 
     return () => {
       // clearInterval(timerInterval);
@@ -140,7 +148,7 @@ export function Review() {
 
             <div align="center" className="tablero">
 
-              {infoplayer1 === firebase?.auth()?.currentUser?.uid ? (
+              {infoplayer1 === infoside ? (
 
                 <Table responsive>
                   <tbody>

@@ -5457,7 +5457,7 @@ function checkPossiblePlaysKnightCHECKBLOCKMATE(xrey, yrey, curX, curY) {
 function checkPossiblePlaysBishopCHECKBLOCKMATE(xrey, yrey, curX, curY) {
   // Upper-right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, BISHOP)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, BISHOP));
   }
 
   // Lower-right move
@@ -5466,46 +5466,46 @@ function checkPossiblePlaysBishopCHECKBLOCKMATE(xrey, yrey, curX, curY) {
     curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1;
     i++
   ) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, BISHOP)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, BISHOP));
   }
 
   // Lower-left move
   for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, BISHOP)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, BISHOP));
   }
 
   // Upper-left move
   for (let i = 1; curX - i >= 0 && curY - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, BISHOP)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, BISHOP)) ;
   }
 }
 
 function checkPossiblePlaysRookCHECKBLOCKMATE(xrey, yrey, curX, curY) {
   // Upper move
   for (let i = 1; curY - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, ROOK)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, ROOK));
   }
 
   // Right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, ROOK)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, ROOK));
   }
 
   // Lower move
   for (let i = 1; curY + i <= BOARD_HEIGHT - 1; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, ROOK)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, ROOK));
   }
 
   // Left move
   for (let i = 1; curX - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, ROOK)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, ROOK));
   }
 }
 
 function checkPossiblePlaysQueenCHECKBLOCKMATE(xrey, yrey, curX, curY) {
   // Upper-right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, QUEEN));
   }
 
   // Lower-right move
@@ -5514,37 +5514,37 @@ function checkPossiblePlaysQueenCHECKBLOCKMATE(xrey, yrey, curX, curY) {
     curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1;
     i++
   ) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, QUEEN));
   }
 
   // Lower-left move
   for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, QUEEN));
   }
 
   // Upper-left move
   for (let i = 1; curX - i >= 0 && curY - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, QUEEN));
   }
 
   // Upper move
   for (let i = 1; curY - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, QUEEN));
   }
 
   // Right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, QUEEN));
   }
 
   // Lower move
   for (let i = 1; curY + i <= BOARD_HEIGHT - 1; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, QUEEN));
   }
 
   // Left move
   for (let i = 1; curX - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, QUEEN)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, QUEEN));
 
   }
 }
@@ -5889,42 +5889,42 @@ function checkPossiblePlaysElefanteCHECKBLOCKMATE(xrey, yrey, curX, curY) {
 function checkPossiblePlaysLeonCHECKBLOCKMATE(xrey, yrey, curX, curY) {
   // Upper-right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY - i >= 0 && i <= 2; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY - i, LEON));
   }
 
   // Lower-right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY + i, LEON));
   }
 
   // Lower-left move
   for (let i = 1; curX - i >= 0 && curY + i <= BOARD_HEIGHT - 1 && i <= 2; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY + i, LEON));
   }
 
   // Upper-left move
   for (let i = 1; curX - i >= 0 && curY - i >= 0 && i <= 2; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, LEON));
   }
 
   // Upper move
   for (let i = 1; curY - i >= 0 && i <= 3; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY - i, LEON));
   }
 
   // Right move
   for (let i = 1; curX + i <= BOARD_WIDTH - 1 && i <= 3; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX + i, curY, LEON));
   }
 
   // Lower move
   for (let i = 1; curY + i <= BOARD_HEIGHT - 1 && i <= 3; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX, curY + i, LEON));
   }
 
   // Left move
   for (let i = 1; curX - i >= 0 && i <= 3; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, LEON)) break;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY, LEON));
   }
 }
 
@@ -5962,13 +5962,6 @@ function checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, xold, yold, xnew, ynew, pie
 function checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza) {
   return !checkPossibleMoveCHECKBLOCKMATE(xrey, yrey, curX, curY, x, y, pieza);
 }
-
-
-
-
-
-
-
 
 
 

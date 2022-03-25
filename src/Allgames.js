@@ -75,11 +75,11 @@ export function Allgames() {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th>Id:</th>
-                                <th>Creador:</th>
-                                <th>Estado:</th>
-                                <th>Tipo:</th>
-                                <th>Acciones:</th>
+                                <th style={{color:"white"}}>Id:</th>
+                                <th style={{color:"white"}}>Creador:</th>
+                                <th style={{color:"white"}}>Estado:</th>
+                                <th style={{color:"white"}}>Tipo:</th>
+                                <th style={{color:"white"}}>Acciones:</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,13 +88,13 @@ export function Allgames() {
                                     const element = lobby[key];
                                     return (
                                         <tr key={key}>
-                                            <td data-title="Id:">{element.id_partida}</td>
-                                            <td data-title="Creador:"><span id="code">{element.creador}</span></td>
-                                            <td data-title="Estado:">{element.status}</td>
-                                            <td data-title="Tipo:">
+                                            <td style={{color:"white"}} data-title="Id:">{element.id_partida}</td>
+                                            <td style={{color:"white"}} data-title="Creador:"><span id="code">{element.creador}</span></td>
+                                            <td style={{color:"white"}} data-title="Estado:">{element.status}</td>
+                                            <td style={{color:"white"}} data-title="Tipo:">
                                                 {element.clave_privada === "" ? (<span>Pública</span>) : (<span>Privada</span>)}
                                             </td>
-                                            <td data-title="Acciones:">
+                                            <td style={{color:"white"}} data-title="Acciones:">
                                                 {
                                                     element?.clave_privada === "" ?
                                                         (element?.status !== "playing" && element?.status !== "waiting" && element?.status !== "pause" ? (
