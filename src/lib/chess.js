@@ -407,10 +407,10 @@ async function startGame() {
 
         const timetoplay = new Date();
         const minutosdetiempo = localStorage.getItem("minutes");
-        timetoplay.setTime(timetoplay.getTime() + (minutosdetiempo*2) * 60 * 1000);
+        timetoplay.setTime(timetoplay.getTime() + (minutosdetiempo * 2) * 60 * 1000);
 
         const timeavailableplayer1 = new Date();
-       
+
         timeavailableplayer1.setTime(timeavailableplayer1.getTime() + minutosdetiempo * 60 * 1000);
 
         await getGameDbRef()
@@ -1102,10 +1102,11 @@ export async function onClick(Y, X) {
       //ponemos en cero los jaques
       jaquereyblanco = "No";
       jaquereynegro = "No";
-
+      aviso_jaque = false;
       casillasenpeligro = [];
       var cambio_de_turno = "Si";
 
+      
       //revisamos que nadie le haga jaque al rey blanco
       //si hay jaque regresamos la jugada el false de la funcion de abajo es para que no cheque checkmate
       if (checkTileUnderAttack(checkWX, checkWY, BLACK, false) === true &&
@@ -1247,15 +1248,7 @@ export async function onClick(Y, X) {
             (serverGameData?.numero_turno % 18 === 1 &&
               serverGameData?.player1 === serverGameData?.side &&
               serverGameData?.jaquereynegro === "Si" &&
-              jaquereynegro === "No") ||
-            (serverGameData?.numero_turno % 18 === 1 &&
-              serverGameData?.player2 === serverGameData?.side &&
-              serverGameData?.jaquereyblanco === "Si" &&
-              jaquereyblanco === "Si") ||
-            (serverGameData?.numero_turno % 18 === 1 &&
-              serverGameData?.player1 === serverGameData?.side &&
-              serverGameData?.jaquereynegro === "Si" &&
-              jaquereynegro === "Si")
+              jaquereynegro === "No")
           ) {
             await getGameDbRef()
               .update({
@@ -1283,7 +1276,7 @@ export async function onClick(Y, X) {
                 tiempo_restante_jugador1: tiempo_disponible_white,
                 tiempo_restante_jugador2: tiempo_disponible_black,
               })
-              .then(function(){
+              .then(function () {
                 if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
                   changeCurrentTeam();
                 }
@@ -1319,7 +1312,7 @@ export async function onClick(Y, X) {
                 tiempo_restante_jugador1: tiempo_disponible_white,
                 tiempo_restante_jugador2: tiempo_disponible_black,
               })
-              .then(function(){
+              .then(function () {
                 if (serverGameData?.side === firebase?.auth()?.currentUser?.uid) {
                   changeCurrentTeam();
                 }
@@ -3192,7 +3185,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
   curY = -1;
   board.resetValidMoves();
 
-  //revisamos si al mover hace jaque
+  //revisamos si al mover me hacen jaque si, si regresamos la jugada
   if (currentTeam === 0 && jaquereyblanco === "Si") {
     const combo_posicionreyblanco = posicionreyblanco.split(",");
     const checkX = combo_posicionreyblanco[0];
@@ -3219,7 +3212,7 @@ function moveSelectedPiece(x, y, piece, oldX, oldY) {
       }
     }
   }
-
+  //revisamos si al mover me hacen jaque si, si regresamos la jugada
   if (currentTeam === 1 && jaquereynegro === "Si") {
     const combo_posicionreynegro = posicionreynegro.split(",");
     const checkX = combo_posicionreynegro[0];
@@ -3877,19 +3870,34 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         const combo_jaque_desde = combo_brute_jaque_desde.split(",");
         const lastWX = parseInt(combo_jaque_desde[0]);
         const lastWY = parseInt(combo_jaque_desde[1]);
+        //hay jaque mate si:
+        //no se puede mover el rey
+        //nadie se puede comer a la pieza que hace jaque o si pero hay doble jaque
+        //no hay pieza que pueda tapar el jaque es MATE
+        //el rey no puede comer y quedar sin jaque
+        console.log(moverelreyblanco(parseInt(x), parseInt(y)));
+        console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
+        console.log(checkdoblejaque(lastWX, lastWY, WHITE))
+        console.log(checkblockmate(x, y, WHITE));
+        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
+        console.log("FIN");
 
-        //sino se puede mover el rey
-        //la pieza que hace jaque nadie se la puede comer
-        //y no hay pieza que pueda tapar el jaque es MATE
-        //si el rey puede comer y quedar sin jaque
-        //console.log(moverelreyblanco(parseInt(x), parseInt(y)));
-        //console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
-        //console.log(checkblockmate(x, y, WHITE));
-        //console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
-        //console.log("FIN");
+        var respuesta;
+        //vemos si se pueden comer a la pieza que hace jaque
+        if (checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === true) {
+          //si se la pueden comer pero necesitamos ver si hay doble jaque
+          if (checkdoblejaque(lastWX, lastWY, WHITE) === true) {
+            respuesta = false; //no se salva
+          } else {
+            respuesta = true; //si se salva
+          }
+        } else {
+          //no se la pueden comer
+          respuesta = false; //no se salva
+        }
 
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
+          respuesta === false &&
           checkblockmate(x, y, WHITE) === false &&
           checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE) === false)
         ) {
@@ -3906,16 +3914,14 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
           });
 
         } else {
+          getGameDbRef()
+            .update({
+              jaquereyblanco: jaquereyblanco,
+            })
+            .catch(console.error);
+
           if (aviso_jaque === false) {
             aviso_jaque = true;
-
-            getGameDbRef()
-              .update({
-                jaquereyblanco: jaquereyblanco,
-              })
-              .catch(console.error);
-
-
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -3931,12 +3937,34 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
         const lastBX = parseInt(combo_jaque_desde[0]);
         const lastBY = parseInt(combo_jaque_desde[1]);
 
-        //sino se puede mover el rey
-        //la pieza que hace jaque nadie se la puede comer
-        //y no hay pieza que pueda tapar el jaque es MATE
-        //si el rey puede comer y quedar sin jaque
+        //hay jaque mate si:
+        //no se puede mover el rey
+        //nadie se puede comer a la pieza que hace jaque o si pero hay doble jaque
+        //no hay pieza que pueda tapar el jaque es MATE
+        //el rey no puede comer y quedar sin jaque
+        console.log(moverelreynegro(parseInt(x), parseInt(y)));
+        console.log(checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true));
+        console.log(checkdoblejaque(lastBX, lastBY, BLACK));
+        console.log(checkblockmate(x, y, BLACK));
+        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), BLACK));
+
+        var respuesta2;
+        //vemos si se pueden comer a la pieza que hace jaque
+        if (checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === true) {
+          //si se la pueden comer pero necesitamos ver si hay doble jaque
+          if (checkdoblejaque(lastBX, lastBY, BLACK) === true) {
+            respuesta2 = false; //no se salva
+          } else {
+            respuesta2 = true; //si se salva
+          }
+        } else {
+          //no se la pueden comer
+          respuesta2 = false; //no se salva
+        }
+
+
         if ((moverelreynegro(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
+          respuesta2 === false &&
           checkblockmate(x, y, BLACK) === false &&
           checkKINGRESOLVEMATE(parseInt(x), parseInt(y), BLACK) === false)
         ) {
@@ -3953,15 +3981,13 @@ function checkTileUnderAttackNO_KING(x, y, equipo, checarjaquemate) {
           });
 
         } else {
+          getGameDbRef()
+            .update({
+              jaquereynegro: jaquereynegro,
+            })
+            .catch(console.error);
           if (aviso_jaque === false) {
             aviso_jaque = true;
-
-            getGameDbRef()
-              .update({
-                jaquereynegro: jaquereynegro,
-              })
-              .catch(console.error);
-
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -4031,18 +4057,35 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         const lastWX = parseInt(combo_jaque_desde[0]);
         const lastWY = parseInt(combo_jaque_desde[1]);
 
-        //sino se puede mover el rey
-        //la pieza que hace jaque nadie se la puede comer
-        //y no hay pieza que pueda tapar el jaque es MATE
-        //si el rey puede comer y quedar sin jaque
-        //console.log(moverelreyblanco(parseInt(x), parseInt(y)));
-        //console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
-        //console.log(checkblockmate(x, y, WHITE));
-        //console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
-        //console.log("FINal");
+        //hay jaque mate si:
+        //no se puede mover el rey
+        //nadie se puede comer a la pieza que hace jaque o si pero hay doble jaque
+        //no hay pieza que pueda tapar el jaque es MATE
+        //el rey no puede comer y quedar sin jaque
+        console.log(moverelreyblanco(parseInt(x), parseInt(y)));
+        console.log(checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true));
+        console.log(checkdoblejaque(lastWX, lastWY, WHITE));
+        console.log(checkblockmate(x, y, WHITE));
+        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE));
+
+        console.log("FINal");
+
+        var respuesta3;
+        //vemos si se pueden comer a la pieza que hace jaque
+        if (checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === true) {
+          //si se la pueden comer pero necesitamos ver si hay doble jaque
+          if (checkdoblejaque(lastWX, lastWY, WHITE) === true) {
+            respuesta3 = false; //no se salva
+          } else {
+            respuesta3 = true; //si se salva
+          }
+        } else {
+          //no se la pueden comer
+          respuesta3 = false; //no se salva
+        }
 
         if ((moverelreyblanco(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttackNO_KING(lastWX, lastWY, WHITE, true) === false &&
+          respuesta3 === false &&
           checkblockmate(x, y, WHITE) === false &&
           checkKINGRESOLVEMATE(parseInt(x), parseInt(y), WHITE) === false)
         ) {
@@ -4059,15 +4102,14 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
           });
 
         } else {
+          getGameDbRef()
+            .update({
+              jaquereyblanco: jaquereyblanco,
+            })
+            .catch(console.error);
+
           if (aviso_jaque === false) {
             aviso_jaque = true;
-
-            getGameDbRef()
-              .update({
-                jaquereyblanco: jaquereyblanco,
-              })
-              .catch(console.error);
-
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -4084,12 +4126,35 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
         const lastBX = parseInt(combo_jaque_desde[0]);
         const lastBY = parseInt(combo_jaque_desde[1]);
 
-        //sino se puede mover el rey
-        //la pieza que hace jaque nadie se la puede comer
-        //y no hay pieza que pueda tapar el jaque es MATE
-        //si el rey puede comer y quedar sin jaque
+        //hay jaque mate si:
+        //no se puede mover el rey
+        //nadie se puede comer a la pieza que hace jaque o si pero hay doble jaque
+        //no hay pieza que pueda tapar el jaque es MATE
+        //el rey no puede comer y quedar sin jaque
+
+        console.log(moverelreynegro(parseInt(x), parseInt(y)));
+        console.log(checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true));
+        console.log(checkdoblejaque(lastBX, lastBY, BLACK));
+        console.log(checkblockmate(x, y, BLACK));
+        console.log(checkKINGRESOLVEMATE(parseInt(x), parseInt(y), BLACK));
+
+
+        var respuesta4;
+        //vemos si se pueden comer a la pieza que hace jaque
+        if (checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === true) {
+          //si se la pueden comer pero necesitamos ver si hay doble jaque
+          if (checkdoblejaque(lastBX, lastBY, BLACK) === true) {
+            respuesta4 = false; //no se salva
+          } else {
+            respuesta4 = true; //si se salva
+          }
+        } else {
+          //no se la pueden comer
+          respuesta4 = false; //no se salva
+        }
+
         if ((moverelreynegro(parseInt(x), parseInt(y)) === false &&
-          checkTileUnderAttackNO_KING(lastBX, lastBY, BLACK, true) === false &&
+          respuesta4 === false &&
           checkblockmate(x, y, BLACK) === false &&
           checkKINGRESOLVEMATE(parseInt(x), parseInt(y), BLACK) === false)
         ) {
@@ -4106,15 +4171,14 @@ function checkTileUnderAttack(x, y, equipo, checarjaquemate) {
           });
 
         } else {
+          getGameDbRef()
+            .update({
+              jaquereynegro: jaquereynegro,
+            })
+            .catch(console.error);
+
           if (aviso_jaque === false) {
             aviso_jaque = true;
-
-            getGameDbRef()
-              .update({
-                jaquereynegro: jaquereynegro,
-              })
-              .catch(console.error);
-
             Swal.fire({
               title: "Opps....",
               text: "JAQUE",
@@ -5476,7 +5540,7 @@ function checkPossiblePlaysBishopCHECKBLOCKMATE(xrey, yrey, curX, curY) {
 
   // Upper-left move
   for (let i = 1; curX - i >= 0 && curY - i >= 0; i++) {
-    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, BISHOP)) ;
+    if (checkPossiblePlayCHECKBLOCKMATE(xrey, yrey, curX, curY, curX - i, curY - i, BISHOP));
   }
 }
 
@@ -6140,4 +6204,45 @@ export async function pausar() {
     .then(function () {
       window.location.assign("/lobby");
     });
+}
+function checkdoblejaque(piezaX, piezaY, color_rey) {
+  var conclusion;
+
+  //1.- guardamos info de la pieza
+  var tipo_pieza = board.tiles[piezaY][piezaX].pieceType;
+  var equipo_pieza = board.tiles[piezaY][piezaX].team;
+
+  //2.- eliminamos la pieza
+  board.tiles[piezaY][piezaX].pieceType = EMPTY;
+  board.tiles[piezaY][piezaX].team = EMPTY;
+
+  //3.- revisamos si hay jaque
+  if (color_rey === WHITE) {
+    const combo_posicionreyblanco = posicionreyblanco.split(",");
+    const checkX = combo_posicionreyblanco[0];
+    const checkY = combo_posicionreyblanco[1];
+
+    if (checkTileUnderAttack(checkX, checkY, BLACK, false) === true) {
+      conclusion = true;
+    } else {
+      conclusion = false;
+    }
+  } else {
+    const combo_posicionreynegro = posicionreynegro.split(",");
+    const checkX = combo_posicionreynegro[0];
+    const checkY = combo_posicionreynegro[1];
+
+    if (checkTileUnderAttack(checkX, checkY, WHITE, false) === true) {
+      conclusion = true;
+    } else {
+      conclusion = false;
+    }
+  }
+
+  //4.- regresamos la pieza a su lugar
+  board.tiles[piezaY][piezaX].pieceType = tipo_pieza;
+  board.tiles[piezaY][piezaX].team = equipo_pieza;
+
+  //5.- regresamos resultado
+  return conclusion;
 }
