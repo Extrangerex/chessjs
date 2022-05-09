@@ -37,3 +37,6 @@
 .navbar .dropdown-item{
     width: auto;
 }
+.navbar .navbar-toggler{
+    background-color: white;
+}

@@ -1648,7 +1648,7 @@ export function Game() {
                 >
                   <button className="btn btn_enviar">Enviar</button>
                   <p style={{ marginTop: "10px", color: "white" }}>
-                    <a href="#!">Regístrate</a> para usar el chat
+                    <a href="#!">Regístrate</a>
                   </p>
                 </div>
               </form>

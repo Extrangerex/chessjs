@@ -43,7 +43,7 @@ export function Blog() {
                 </header>
             </section>
 
-            <ul style={{ listStyle: "none" }}>
+            <ul style={{ listStyle: "none",padding:0 }}>
                 {Object.keys(publicaciones).length > 0 ? (
                     Object.keys(publicaciones).map((llave) => {
                         const element = publicaciones[llave];
