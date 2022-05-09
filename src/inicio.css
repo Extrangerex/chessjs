@@ -34,7 +34,7 @@ box-sizing: content-box;
 }
 @media only screen and (max-width: 767px) {
     .post .p-5{
-        padding: 5px !important;
+        /*padding: 5px !important;*/
     }
 }
 .card-body .btn-info{

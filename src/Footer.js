@@ -32,7 +32,7 @@ export function MyFooter() {
                     <p id="marca_footer"> LeoChess ® 2021 Todos los derechos reservados.</p>
                 </Col>
                 <Col xs={12} lg={3} style={{ padding: 0 }}>
-                    <p style={{ textAlign: "center" }}>Diseñado por 
+                    <p style={{ textAlign: "center", fontSize:".75rem", paddingTop:"8px" }}>Diseñado por 
                         <a href="https://www.agencianuba.com" target="_blank" rel="noreferrer" style={{color:"#00a6b4"}}> Agencia NUBA</a>
                     </p>
                 </Col>

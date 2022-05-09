@@ -13,6 +13,8 @@
 }
 .footer-dark #marca_footer{
     text-align: center;
+    font-size: .75rem;
+    padding-top: 8px;
 }
 @media only screen and (min-width: 992px) {
     .footer-dark #marca_footer{
