@@ -237,7 +237,7 @@ export function Lobby() {
             </section>
             <Container>
                 <Row>
-                    <Col xs={12} md={4} className="centrar">
+                    <Col xs={4} className="centrar">
                         <Button onClick={handleShow2} className="btn btn-lg btn-danger" style={{ margin: "5px" }}>Desafío</Button>
                         <Modal show={show2}>
                             <Modal.Header closeButton onClick={handleClose2}>
@@ -299,7 +299,7 @@ export function Lobby() {
                             </Modal.Footer>
                         </Modal>
                     </Col>
-                    <Col xs={12} md={4} className="centrar">
+                    <Col xs={4} className="centrar">
                         <Button onClick={handleShow3} className="btn btn-lg btn-danger" style={{ margin: "5px" }}>Reto</Button>
                         <Modal show={show3}>
                             <Modal.Header closeButton onClick={handleClose3}>
@@ -325,7 +325,7 @@ export function Lobby() {
                             </Modal.Footer>
                         </Modal>
                     </Col>
-                    <Col xs={12} md={4} className="centrar">
+                    <Col xs={4}  className="centrar">
                         <Button onClick={handleShow4} className="btn btn-lg btn-danger" style={{ margin: "5px" }}>Relax</Button>
                         <Modal show={show4}>
                             <Modal.Header closeButton onClick={handleClose4}>

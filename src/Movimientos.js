@@ -91,7 +91,7 @@ export function Movimientos() {
                                 <img src={imagenes[numeroimagen]} className="img-fluid pieza" alt=""></img>
                             </div>
                         </Col>
-                        <Col xs={12} md={6} style={{ padding: 0 }}>
+                        <Col xs={12} md={6} >
                             <table className="table">
                                 <thead>
                                     <tr>

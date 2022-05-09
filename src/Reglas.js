@@ -26,7 +26,7 @@ export function Reglas() {
                 <header className="masthead">
                     <Container>
                         <Row>
-                            <Col xs={12} style={{ padding: 0 }}>
+                            <Col xs={12} >
                                 <div className="site-heading">
                                     <h1 className="titulo">Reglas</h1>
 
@@ -83,7 +83,7 @@ export function Reglas() {
                                         fila y el Rey negro en una casilla oscura en el centro de la décima fila, frente a ellos se
                                         pondrán sus respectivos leones, el resto de las piezas se deben acomodar como se indica
                                         en el siguiente diagrama:</p>
-                                        <img src={tablero} alt="" ></img>
+                                        <img src={tablero} alt="" className="img-fluid" ></img>
                                         <br></br>    
                                         <br></br>
                                     <h4>1.3 OBJETIVO DEL JUEGO</h4>
