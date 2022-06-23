@@ -36,6 +36,9 @@ box-sizing: content-box;
     .post .p-5{
         /*padding: 5px !important;*/
     }
+    .card-body {
+        margin:50px;
+    }
 }
 .card-body .btn-info{
     background-color: #00a6b4;

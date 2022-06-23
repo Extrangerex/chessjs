@@ -40,3 +40,6 @@
 .navbar .navbar-toggler{
     background-color: white;
 }
+.navbar .navbar-nav{
+    text-align: right;
+}
